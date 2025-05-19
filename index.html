@@ -1,0 +1,2065 @@
+
+// Facebook Group Activity Tracker
+// This application tracks member activity in a Facebook group
+
+// Configuration - modify these values with your group information
+const config = {
+  apiVersion: 'v18.0',           // Facebook Graph API version (Latest stable version)
+  groupId: 'YOUR_GROUP_ID',      // The ID of your Facebook group (you'll need to add this)
+  accessToken: 'YOUR_ACCESS_TOKEN', // Your Facebook access token with appropriate permissions
+  dataRetentionDays: 90,         // Keep 90 days of historical data as requested
+  refreshInterval: 7 * 24 * 60 * 60 * 1000 // Weekly refresh as requested (in milliseconds)
+};
+
+// Main application class
+class FacebookGroupTracker {
+  constructor(config) {
+    this.config = config;
+    this.members = new Map(); // Map to store member data
+    this.activities = [];     // Array to store all activities
+    this.lastUpdate = null;   // Timestamp of last update
+    this.currentReport = null; // Current generated report
+    this.currentSection = 'overview'; // Current active section
+    
+    // Initialize database
+    this.initDatabase();
+  }
+  
+  // Initialize database for storing member and activity data
+  async initDatabase() {
+    return new Promise((resolve, reject) => {
+      const request = indexedDB.open('FacebookGroupTracker', 1);
+      
+      request.onerror = (event) => {
+        console.error('Database error:', event.target.error);
+        reject(event.target.error);
+      };
+      
+      request.onupgradeneeded = (event) => {
+        const db = event.target.result;
+        
+        // Create object stores
+        if (!db.objectStoreNames.contains('members')) {
+          const memberStore = db.createObjectStore('members', { keyPath: 'id' });
+          memberStore.createIndex('name', 'name', { unique: false });
+        }
+        
+        if (!db.objectStoreNames.contains('activities')) {
+          const activityStore = db.createObjectStore('activities', { keyPath: 'id', autoIncrement: true });
+          activityStore.createIndex('memberId', 'memberId', { unique: false });
+          activityStore.createIndex('timestamp', 'timestamp', { unique: false });
+          activityStore.createIndex('type', 'type', { unique: false });
+        }
+        
+        if (!db.objectStoreNames.contains('config')) {
+          db.createObjectStore('config', { keyPath: 'key' });
+        }
+      };
+      
+      request.onsuccess = (event) => {
+        this.db = event.target.result;
+        console.log('Database initialized successfully');
+        resolve();
+      };
+    });
+  }
+  
+  // Save configuration to database
+  async saveConfig() {
+    const transaction = this.db.transaction(['config'], 'readwrite');
+    const configStore = transaction.objectStore('config');
+    
+    Object.entries(this.config).forEach(([key, value]) => {
+      configStore.put({ key, value });
+    });
+    
+    return new Promise((resolve) => {
+      transaction.oncomplete = () => {
+        console.log('Configuration saved');
+        resolve();
+      };
+    });
+  }
+  
+  // Load configuration from database
+  async loadConfig() {
+    const transaction = this.db.transaction(['config'], 'readonly');
+    const configStore = transaction.objectStore('config');
+    
+    const keys = Object.keys(this.config);
+    const promises = keys.map(key => {
+      return new Promise((resolve) => {
+        const request = configStore.get(key);
+        request.onsuccess = (event) => {
+          if (event.target.result) {
+            this.config[key] = event.target.result.value;
+          }
+          resolve();
+        };
+        request.onerror = () => resolve(); // Continue even if there's an error
+      });
+    });
+    
+    await Promise.all(promises);
+    console.log('Configuration loaded');
+  }
+  
+  // Show or hide loading indicator
+  showLoading(show) {
+    const loadingSection = document.getElementById('loading-section');
+    if (loadingSection) {
+      loadingSection.style.display = show ? 'block' : 'none';
+    }
+  }
+  
+  // Switch between dashboard sections
+  switchSection(sectionId) {
+    // Hide all sections
+    document.querySelectorAll('.dashboard-section').forEach(section => {
+      section.style.display = 'none';
+    });
+    
+    // Show the selected section
+    const selectedSection = document.getElementById(`${sectionId}-section`);
+    if (selectedSection) {
+      selectedSection.style.display = 'block';
+    }
+    
+    // Update active nav item
+    document.querySelectorAll('.nav li').forEach(item => {
+      item.classList.remove('active');
+    });
+    
+    const navItem = document.querySelector(`.nav li a[data-section="${sectionId}"]`);
+    if (navItem) {
+      navItem.parentElement.classList.add('active');
+    }
+    
+    this.currentSection = sectionId;
+  }
+  
+  // Fetch group members from Facebook API
+  async fetchMembers() {
+    try {
+      // Show loading indicator
+      this.showLoading(true);
+      
+      const url = `https://graph.facebook.com/${this.config.apiVersion}/${this.config.groupId}/members?limit=100&access_token=${this.config.accessToken}`;
+      let nextUrl = url;
+      let members = [];
+      
+      // Paginate through all members
+      while (nextUrl) {
+        const response = await fetch(nextUrl);
+        const data = await response.json();
+        
+        if (data.error) {
+          console.error('API Error:', data.error);
+          break;
+        }
+        
+        members = members.concat(data.data);
+        
+        // Check if there are more pages
+        if (data.paging && data.paging.next) {
+          nextUrl = data.paging.next;
+        } else {
+          nextUrl = null;
+        }
+      }
+      
+      console.log(`Fetched ${members.length} members`);
+      
+      // Store members in database
+      const transaction = this.db.transaction(['members'], 'readwrite');
+      const memberStore = transaction.objectStore('members');
+      
+      members.forEach(member => {
+        // Get existing member data first
+        const request = memberStore.get(member.id);
+        
+        request.onsuccess = (event) => {
+          const existingMember = event.target.result;
+          
+          if (existingMember) {
+            // Update name if needed
+            existingMember.name = member.name;
+            memberStore.put(existingMember);
+          } else {
+            // Create new member record
+            memberStore.put({
+              id: member.id,
+              name: member.name,
+              joinedDate: new Date().toISOString(),
+              lastActivity: null,
+              activityCount: 0,
+              postCount: 0,
+              commentCount: 0,
+              reactionCount: 0
+            });
+          }
+        };
+      });
+      
+      // Hide loading indicator after transaction completes
+      return new Promise((resolve) => {
+        transaction.oncomplete = () => {
+          this.showLoading(false);
+          resolve(members);
+        };
+      });
+      
+    } catch (error) {
+      console.error('Error fetching members:', error);
+      this.showLoading(false);
+      return [];
+    }
+  }
+  
+  // Fetch group posts from Facebook API
+  async fetchPosts(daysBack = 90) {
+    try {
+      // Show loading indicator
+      this.showLoading(true);
+      
+      const since = new Date();
+      since.setDate(since.getDate() - daysBack);
+      
+      const sinceTimestamp = Math.floor(since.getTime() / 1000);
+      const url = `https://graph.facebook.com/${this.config.apiVersion}/${this.config.groupId}/feed?limit=100&fields=id,from,created_time,message,comments.limit(500){from,created_time,message},reactions.limit(500){type,from}&since=${sinceTimestamp}&access_token=${this.config.accessToken}`;
+      
+      let nextUrl = url;
+      let posts = [];
+      
+      // Paginate through all posts
+      while (nextUrl) {
+        const response = await fetch(nextUrl);
+        const data = await response.json();
+        
+        if (data.error) {
+          console.error('API Error:', data.error);
+          break;
+        }
+        
+        posts = posts.concat(data.data);
+        
+        // Check if there are more pages
+        if (data.paging && data.paging.next) {
+          nextUrl = data.paging.next;
+        } else {
+          nextUrl = null;
+        }
+      }
+      
+      console.log(`Fetched ${posts.length} posts`);
+      
+      // Hide loading indicator
+      this.showLoading(false);
+      
+      return posts;
+    } catch (error) {
+      console.error('Error fetching posts:', error);
+      this.showLoading(false);
+      return [];
+    }
+  }
+  
+  // Process posts and extract activities
+  async processActivities(posts) {
+    // Show loading indicator
+    this.showLoading(true);
+    
+    const transaction = this.db.transaction(['activities', 'members'], 'readwrite');
+    const activityStore = transaction.objectStore('activities');
+    const memberStore = transaction.objectStore('members');
+    
+    const activityTracker = new Map(); // Track activity counts by member
+    
+    // Process each post
+    for (const post of posts) {
+      // Record post creation
+      if (post.from) {
+        const postActivity = {
+          id: `post_${post.id}`,
+          memberId: post.from.id,
+          memberName: post.from.name,
+          type: 'post',
+          content: post.message || '',
+          timestamp: new Date(post.created_time).toISOString()
+        };
+        
+        activityStore.put(postActivity);
+        
+        // Update activity counter
+        if (!activityTracker.has(post.from.id)) {
+          activityTracker.set(post.from.id, { posts: 0, comments: 0, reactions: 0 });
+        }
+        activityTracker.get(post.from.id).posts++;
+      }
+      
+      // Process comments
+      if (post.comments && post.comments.data) {
+        for (const comment of post.comments.data) {
+          if (comment.from) {
+            const commentActivity = {
+              id: `comment_${comment.id}`,
+              memberId: comment.from.id,
+              memberName: comment.from.name,
+              type: 'comment',
+              content: comment.message || '',
+              postId: post.id,
+              postAuthorId: post.from ? post.from.id : null,
+              timestamp: new Date(comment.created_time).toISOString()
+            };
+            
+            activityStore.put(commentActivity);
+            
+            // Update activity counter
+            if (!activityTracker.has(comment.from.id)) {
+              activityTracker.set(comment.from.id, { posts: 0, comments: 0, reactions: 0 });
+            }
+            activityTracker.get(comment.from.id).comments++;
+          }
+        }
+      }
+      
+      // Process reactions
+      if (post.reactions && post.reactions.data) {
+        for (const reaction of post.reactions.data) {
+          if (reaction.from) {
+            const reactionActivity = {
+              id: `reaction_${post.id}_${reaction.from.id}`,
+              memberId: reaction.from.id,
+              memberName: reaction.from.name,
+              type: 'reaction',
+              content: reaction.type || 'LIKE',
+              postId: post.id,
+              postAuthorId: post.from ? post.from.id : null,
+              timestamp: new Date().toISOString() // Reactions don't have timestamps in API
+            };
+            
+            activityStore.put(reactionActivity);
+            
+            // Update activity counter
+            if (!activityTracker.has(reaction.from.id)) {
+              activityTracker.set(reaction.from.id, { posts: 0, comments: 0, reactions: 0 });
+            }
+            activityTracker.get(reaction.from.id).reactions++;
+          }
+        }
+      }
+    }
+    
+    // Update member records with activity counts
+    for (const [memberId, counts] of activityTracker.entries()) {
+      const memberRequest = memberStore.get(memberId);
+      
+      memberRequest.onsuccess = (event) => {
+        const member = event.target.result;
+        if (member) {
+          member.lastActivity = new Date().toISOString();
+          member.activityCount = (member.activityCount || 0) + counts.posts + counts.comments + counts.reactions;
+          member.postCount = (member.postCount || 0) + counts.posts;
+          member.commentCount = (member.commentCount || 0) + counts.comments;
+          member.reactionCount = (member.reactionCount || 0) + counts.reactions;
+          memberStore.put(member);
+        }
+      };
+    }
+    
+    return new Promise((resolve) => {
+      transaction.oncomplete = () => {
+        console.log('Activity processing complete');
+        this.showLoading(false);
+        resolve();
+      };
+    });
+  }
+  
+  // Clean up old data beyond retention period
+  async cleanupOldData() {
+    const cutoffDate = new Date();
+    cutoffDate.setDate(cutoffDate.getDate() - this.config.dataRetentionDays);
+    const cutoffTimestamp = cutoffDate.toISOString();
+    
+    const transaction = this.db.transaction(['activities'], 'readwrite');
+    const activityStore = transaction.objectStore('activities');
+    const timeIndex = activityStore.index('timestamp');
+    
+    const range = IDBKeyRange.upperBound(cutoffTimestamp);
+    const request = timeIndex.openCursor(range);
+    
+    request.onsuccess = (event) => {
+      const cursor = event.target.result;
+      if (cursor) {
+        activityStore.delete(cursor.primaryKey);
+        cursor.continue();
+      }
+    };
+    
+    return new Promise((resolve) => {
+      transaction.oncomplete = () => {
+        console.log('Old data cleanup complete');
+        resolve();
+      };
+    });
+  }
+  
+  // Generate activity report
+  async generateReport() {
+    try {
+      const transaction = this.db.transaction(['members', 'activities'], 'readonly');
+      const memberStore = transaction.objectStore('members');
+      const activityStore = transaction.objectStore('activities');
+      
+      // Get all members
+      const members = await new Promise((resolve) => {
+        const memberList = [];
+        memberStore.openCursor().onsuccess = (event) => {
+          const cursor = event.target.result;
+          if (cursor) {
+            memberList.push(cursor.value);
+            cursor.continue();
+          } else {
+            resolve(memberList);
+          }
+        };
+      });
+      
+      // Calculate cutoff date for current period (last 7 days)
+      const currentPeriodCutoff = new Date();
+      currentPeriodCutoff.setDate(currentPeriodCutoff.getDate() - 7);
+      const currentPeriodTimestamp = currentPeriodCutoff.toISOString();
+      
+      // Get all activities
+      const allActivities = await new Promise((resolve) => {
+        const activities = [];
+        activityStore.openCursor().onsuccess = (event) => {
+          const cursor = event.target.result;
+          if (cursor) {
+            activities.push(cursor.value);
+            cursor.continue();
+          } else {
+            resolve(activities);
+          }
+        };
+      });
+      
+      // Get current period activities
+      const currentActivities = allActivities.filter(
+        activity => activity.timestamp >= currentPeriodTimestamp
+      );
+      
+      // Count activities by member
+      const memberActivityMap = new Map();
+      currentActivities.forEach(activity => {
+        if (!memberActivityMap.has(activity.memberId)) {
+          memberActivityMap.set(activity.memberId, {
+            id: activity.memberId,
+            name: activity.memberName,
+            totalActivity: 0,
+            posts: 0,
+            comments: 0,
+            reactions: 0,
+            commentsOnOwnPosts: 0,
+            commentsOnOthersPosts: 0
+          });
+        }
+        
+        const memberStats = memberActivityMap.get(activity.memberId);
+        memberStats.totalActivity++;
+        
+        switch (activity.type) {
+          case 'post':
+            memberStats.posts++;
+            break;
+          case 'comment':
+            memberStats.comments++;
+            // Track if comment is on own post or others' posts
+            if (activity.postAuthorId === activity.memberId) {
+              memberStats.commentsOnOwnPosts++;
+            } else {
+              memberStats.commentsOnOthersPosts++;
+            }
+            break;
+          case 'reaction':
+            memberStats.reactions++;
+            break;
+        }
+      });
+      
+      // Convert to array and add activity status
+      const memberActivityList = Array.from(memberActivityMap.values());
+      
+      // Process all members including inactive ones
+      const completeActivityList = members.map(member => {
+        const activityData = memberActivityMap.get(member.id);
+        if (activityData) {
+          return {
+            ...member,
+            ...activityData
+          };
+        } else {
+          return {
+            ...member,
+            totalActivity: 0,
+            posts: 0,
+            comments: 0,
+            reactions: 0,
+            commentsOnOwnPosts: 0,
+            commentsOnOthersPosts: 0
+          };
+        }
+      });
+      
+      // Calculate additional metrics
+      completeActivityList.forEach(member => {
+        // Calculate days since last activity
+        if (member.lastActivity) {
+          const lastActivityDate = new Date(member.lastActivity);
+          const currentDate = new Date();
+          const diffTime = Math.abs(currentDate - lastActivityDate);
+          member.daysSinceLastActivity = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        } else {
+          member.daysSinceLastActivity = null;
+        }
+        
+        // Calculate comment percentages
+        if (member.comments > 0) {
+          member.commentsOnOwnPostsPercent = Math.round((member.commentsOnOwnPosts / member.comments) * 100);
+          member.commentsOnOthersPostsPercent = Math.round((member.commentsOnOthersPosts / member.comments) * 100);
+        } else {
+          member.commentsOnOwnPostsPercent = 0;
+          member.commentsOnOthersPostsPercent = 0;
+        }
+        
+        // Calculate engagement metrics
+        member.avgCommentsPerPost = member.posts > 0 
+          ? Math.round((member.comments / member.posts) * 10) / 10 
+          : 0;
+        member.avgReactionsPerPost = member.posts > 0 
+          ? Math.round((member.reactions / member.posts) * 10) / 10 
+          : 0;
+      });
+      
+      // Sort for different reports
+      const mostActive = [...completeActivityList].sort((a, b) => b.totalActivity - a.totalActivity);
+      const mostPosts = [...completeActivityList].sort((a, b) => b.posts - a.posts);
+      const mostComments = [...completeActivityList].sort((a, b) => b.comments - a.comments);
+      
+      // Create inactive members list (zero activity in current period)
+      const inactiveMembers = completeActivityList.filter(member => member.totalActivity === 0);
+      
+      // Weekly activity data for charts
+      const weeklyActivityData = this.calculateWeeklyActivity(allActivities);
+      
+      const report = {
+        generatedAt: new Date().toISOString(),
+        periodStart: currentPeriodTimestamp,
+        totalMembers: members.length,
+        activeMembers: memberActivityList.length,
+        inactiveMembers: inactiveMembers.length,
+        mostActive: mostActive.slice(0, 20),        // Top 20 most active
+        leastActive: [...mostActive].reverse().slice(0, 20),  // 20 least active (excluding completely inactive)
+        mostPosts: mostPosts.slice(0, 20),          // Top 20 posters
+        mostComments: mostComments.slice(0, 20),    // Top 20 commenters
+        completelyInactive: inactiveMembers.slice(0, 50), // First 50 inactive members
+        weeklyActivity: weeklyActivityData,
+        allMembers: completeActivityList
+      };
+      
+      this.currentReport = report;
+      return report;
+      
+    } catch (error) {
+      console.error('Error generating report:', error);
+      return null;
+    }
+  }
+  
+  // Calculate weekly activity data for charts
+  calculateWeeklyActivity(activities) {
+    const weeklyData = [];
+    const now = new Date();
+    
+    // Create a map for the last 12 weeks
+    for (let i = 0; i < 12; i++) {
+      const weekStart = new Date(now);
+      weekStart.setDate(now.getDate() - (7 * i) - now.getDay());
+      weekStart.setHours(0, 0, 0, 0);
+      
+      const weekEnd = new Date(weekStart);
+      weekEnd.setDate(weekStart.getDate() + 6);
+      weekEnd.setHours(23, 59, 59, 999);
+      
+      weeklyData.push({
+        weekStart: weekStart.toISOString(),
+        weekEnd: weekEnd.toISOString(),
+        weekLabel: `${weekStart.getMonth() + 1}/${weekStart.getDate()}`,
+        posts: 0,
+        comments: 0,
+        reactions: 0,
+        total: 0
+      });
+    }
+    
+    // Count activities by week
+    activities.forEach(activity => {
+      const activityDate = new Date(activity.timestamp);
+      
+      for (const week of weeklyData) {
+        const weekStart = new Date(week.weekStart);
+        const weekEnd = new Date(week.weekEnd);
+        
+        if (activityDate >= weekStart && activityDate <= weekEnd) {
+          switch (activity.type) {
+            case 'post':
+              week.posts++;
+              break;
+            case 'comment':
+              week.comments++;
+              break;
+            case 'reaction':
+              week.reactions++;
+              break;
+          }
+          
+          week.total++;
+          break;
+        }
+      }
+    });
+    
+    // Reverse so weeks are in chronological order
+    return weeklyData.reverse();
+  }
+  
+  // Main update function that runs periodically
+  async update() {
+    console.log('Starting group activity update...');
+    
+    try {
+      await this.fetchMembers();
+      const posts = await this.fetchPosts(this.config.dataRetentionDays);
+      await this.processActivities(posts);
+      await this.cleanupOldData();
+      
+      this.lastUpdate = new Date().toISOString();
+      console.log('Update completed successfully');
+      
+      // Save last update timestamp
+      localStorage.setItem('lastUpdate', this.lastUpdate);
+      
+      // Generate and display the dashboard
+      const report = await this.generateReport();
+      this.renderDashboard(report);
+      
+      // Schedule next update
+      this.scheduleNextUpdate();
+    } catch (error) {
+      console.error('Update failed:', error);
+    }
+  }
+  
+  // Schedule next update
+  scheduleNextUpdate() {
+    const nextUpdateTime = new Date();
+    nextUpdateTime.setTime(nextUpdateTime.getTime() + this.config.refreshInterval);
+    
+    localStorage.setItem('nextUpdate', nextUpdateTime.toISOString());
+    
+    // Update UI
+    const nextRefreshEl = document.getElementById('next-refresh');
+    if (nextRefreshEl) {
+      nextRefreshEl.textContent = nextUpdateTime.toLocaleString();
+    }
+  }
+  
+  // Render dashboard with enhanced visualizations
+  renderDashboard(report) {
+    if (!report) return;
+    
+    // Format date for display
+    const formatDate = (dateString) => {
+      if (!dateString) return 'Never';
+      const date = new Date(dateString);
+      return date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
+    };
+    
+    // Update last updated timestamp
+    const lastUpdatedEl = document.getElementById('last-updated');
+    if (lastUpdatedEl) {
+      lastUpdatedEl.textContent = `Last updated: ${formatDate(report.generatedAt)}`;
+    }
+    
+    // Update summary cards
+    document.getElementById('total-members').textContent = report.totalMembers;
+    document.getElementById('active-members-count').textContent = report.activeMembers;
+    document.getElementById('inactive-members-count').textContent = report.inactiveMembers;
+    
+    // Render section-specific content
+    this.renderActiveMembers(report);
+    this.renderInactiveMembers(report);
+    this.renderTopPosters(report);
+    this.renderTopCommenters(report);
+    
+    // Create overview charts
+    this.createActivityOverviewChart(report);
+    this.createWeeklyActivityChart(report.weeklyActivity);
+    
+    // Switch to the current section
+    this.switchSection(this.currentSection);
+  }
+  
+  // Render active members section
+  renderActiveMembers(report) {
+    if (!report.mostActive) return;
+    
+    const table = document.getElementById('most-active-table');
+    if (!table) return;
+    
+    table.innerHTML = '';
+    
+    report.mostActive.forEach((member, index) => {
+      const row = document.createElement('tr');
+      
+      // Determine status badge
+      let statusBadge = '';
+      if (member.totalActivity > 50) {
+        statusBadge = '<span class="badge badge-success">Very Active</span>';
+      } else if (member.totalActivity > 20) {
+        statusBadge = '<span class="badge badge-success">Active</span>';
+      } else if (member.totalActivity > 5) {
+        statusBadge = '<span class="badge badge-warning">Moderate</span>';
+      } else {
+        statusBadge = '<span class="badge badge-warning">Low</span>';
+      }
+      
+      row.innerHTML = `
+        <td>${index + 1}</td>
+        <td>${member.name}</td>
+        <td>${member.totalActivity}</td>
+        <td>${member.posts}</td>
+        <td>${member.comments}</td>
+        <td>${member.reactions}</td>
+        <td>${statusBadge}</td>
+      `;
+      
+      table.appendChild(row);
+    });
+    
+    // Create activity chart
+    this.createActivityChart('activeChart', report.mostActive.slice(0, 10).reverse());
+  }
+  
+  // Render inactive members section
+  renderInactiveMembers(report) {
+    if (!report.completelyInactive) return;
+    
+    const table = document.getElementById('inactive-members-table');
+    if (!table) return;
+    
+    table.innerHTML = '';
+    
+    report.completelyInactive.forEach((member, index) => {
+      const row = document.createElement('tr');
+      
+      row.innerHTML = `
+        <td>${index + 1}</td>
+        <td>${member.name}</td>
+        <td>${member.totalActivity}</td>
+        <td>${member.lastActivity ? new Date(member.lastActivity).toLocaleDateString() : 'Never'}</td>
+        <td>${member.daysSinceLastActivity || 'N/A'}</td>
+      `;
+      
+      table.appendChild(row);
+    });
+  }
+  
+  // Render top posters section
+  renderTopPosters(report) {
+    if (!report.mostPosts) return;
+    
+    const table = document.getElementById('top-posters-table');
+    if (!table) return;
+    
+    table.innerHTML = '';
+    
+    report.mostPosts.forEach((member, index) => {
+      const row = document.createElement('tr');
+      
+      row.innerHTML = `
+        <td>${index + 1}</td>
+        <td>${member.name}</td>
+        <td>${member.posts}</td>
+        <td>${member.avgCommentsPerPost.toFixed(1)}</td>
+        <td>${member.avgReactionsPerPost.toFixed(1)}</td>
+      `;
+      
+      table.appendChild(row);
+    });
+    
+    // Create posts chart
+    this.createSimpleChart('postsChart', report.mostPosts.slice(0, 10).reverse(), 'Posts');
+  }
+  
+  // Render top commenters section
+  renderTopCommenters(report) {
+    if (!report.mostComments) return;
+    
+    const table = document.getElementById('top-commenters-table');
+    if (!table) return;
+    
+    table.innerHTML = '';
+    
+    report.mostComments.forEach((member, index) => {
+      const row = document.createElement('tr');
+      
+      row.innerHTML = `
+        <td>${index + 1}</td>
+        <td>${member.name}</td>
+        <td>${member.comments}</td>
+        <td>${member.commentsOnOwnPostsPercent}%</td>
+        <td>${member.commentsOnOthersPostsPercent}%</td>
+      `;
+      
+      table.appendChild(row);
+    });
+    
+    // Create comments chart
+    this.createSimpleChart('commentsChart', report.mostComments.slice(0, 10).reverse(), 'Comments');
+  }
+  
+  // Create activity overview chart
+  createActivityOverviewChart(report) {
+    const ctx = document.getElementById('activityOverviewChart').getContext('2d');
+    
+    // Calculate activity by type
+    const activityTypes = {
+      posts: report.allMembers.reduce((total, member) => total + member.posts, 0),
+      comments: report.allMembers.reduce((total, member) => total + member.comments, 0),
+      reactions: report.allMembers.reduce((total, member) => total + member.reactions, 0)
+    };
+    
+    new Chart(ctx, {
+      type: 'doughnut',
+      data: {
+        labels: ['Posts', 'Comments', 'Reactions'],
+        datasets: [{
+          data: [activityTypes.posts, activityTypes.comments, activityTypes.reactions],
+          backgroundColor: ['#4267B2', '#36A2EB', '#42B72A']
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          title: {
+            display: true,
+            text: 'Activity Distribution'
+          },
+          legend: {
+            position: 'bottom'
+          }
+        }
+      }
+    });
+  }
+  
+  // Create weekly activity chart
+  createWeeklyActivityChart(weeklyData) {
+    const ctx = document.getElementById('weeklyActivityChart').getContext('2d');
+    
+    const labels = weeklyData.map(week => week.weekLabel);
+    const postsData = weeklyData.map(week => week.posts);
+    const commentsData = weeklyData.map(week => week.comments);
+    const reactionsData = weeklyData.map(week => week.reactions);
+    
+    new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: labels,
+        datasets: [
+          {
+            label: 'Posts',
+            data: postsData,
+            borderColor: '#4267B2',
+            backgroundColor: 'rgba(66, 103, 178, 0.1)',
+            fill: true,
+            tension: 0.3
+          },
+          {
+            label: 'Comments',
+            data: commentsData,
+            borderColor: '#36A2EB',
+            backgroundColor: 'rgba(54, 162, 235, 0.1)',
+            fill: true,
+            tension: 0.3
+          },
+          {
+            label: 'Reactions',
+            data: reactionsData,
+            borderColor: '#42B72A',
+            backgroundColor: 'rgba(66, 183, 42, 0.1)',
+            fill: true,
+            tension: 0.3
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          title: {
+            display: true,
+            text: 'Weekly Activity Trends'
+          },
+          tooltip: {
+            mode: 'index',
+            intersect: false
+          }
+        },
+        scales: {
+          x: {
+            title: {
+              display: true,
+              text: 'Week Starting'
+            }
+          },
+          y: {
+            title: {
+              display: true,
+              text: 'Activity Count'
+            },
+            beginAtZero: true
+          }
+        }
+      }
+    });
+  }
+  
+  // Create stacked bar chart for activity breakdown
+  createActivityChart(canvasId, data) {
+    const ctx = document.getElementById(canvasId).getContext('2d');
+    
+    const labels = data.map(item => item.name);
+    const postsData = data.map(item => item.posts);
+    const commentsData = data.map(item => item.comments);
+    const reactionsData = data.map(item => item.reactions);
+    
+    new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: labels,
+        datasets: [
+          {
+            label: 'Posts',
+            data: postsData,
+            backgroundColor: '#4267B2',
+          },
+          {
+            label: 'Comments',
+            data: commentsData,
+            backgroundColor: '#36A2EB',
+          },
+          {
+            label: 'Reactions',
+            data: reactionsData,
+            backgroundColor: '#42B72A',
+          }
+        ]
+      },
+      options: {
+        indexAxis: 'y',
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          title: {
+            display: true,
+            text: 'Member Activity Breakdown'
+          },
+        },
+        scales: {
+          x: {
+            stacked: true,
+            title: {
+              display: true,
+              text: 'Activity Count'
+            }
+          },
+          y: {
+            stacked: true
+          }
+        }
+      }
+    });
+  }
+  
+  // Create simple horizontal bar chart
+  createSimpleChart(canvasId, data, label) {
+    const ctx = document.getElementById(canvasId).getContext('2d');
+    
+    const labels = data.map(item => item.name);
+    const chartData = data.map(item => item[label.toLowerCase()]);
+    
+    new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: labels,
+        datasets: [
+          {
+            label: label,
+            data: chartData,
+            backgroundColor: label === 'Posts' ? '#4267B2' : '#36A2EB',
+          }
+        ]
+      },
+      options: {
+        indexAxis: 'y',
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          title: {
+            display: true,
+            text: `Top Member ${label}`
+          },
+        },
+        scales: {
+          x: {
+            title: {
+              display: true,
+              text: `Number of ${label}`
+            }
+          }
+        }
+      }
+    });
+  }
+  
+  // Export data to CSV format
+  exportToCsv(filename, data) {
+    // Create header row
+    const headers = Object.keys(data[0]).join(',');
+    
+    // Create CSV content
+    const csvContent = "data:text/csv;charset=utf-8," 
+      + headers + "\n"
+      + data.map(row => 
+          Object.values(row).map(value => {
+            // Handle strings with commas by wrapping in quotes
+            if (typeof value === 'string' && value.includes(',')) {
+              return `"${value}"`;
+            }
+            return value;
+          }).join(",")
+        ).join("\n");
+    
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", filename);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
+  
+  // Set up event listeners for UI interactions
+  setupEventListeners() {
+    // Set up navigation
+    document.querySelectorAll('.nav a').forEach(navLink => {
+      navLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        const sectionId = e.target.getAttribute('data-section');
+        this.switchSection(sectionId);
+      });
+    });
+    
+    // Setup form submission handling
+    const setupForm = document.getElementById('setup-form');
+    if (setupForm) {
+      setupForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        
+        const groupId = document.getElementById('group-id').value;
+        const accessToken = document.getElementById('access-token').value;
+        
+        if (groupId && accessToken) {
+          this.config.groupId = groupId;
+          this.config.accessToken = accessToken;
+          
+          // Save to localStorage for persistence
+          localStorage.setItem('fbTracker_groupId', groupId);
+          localStorage.setItem('fbTracker_accessToken', accessToken);
+          
+          // Save to the database
+          this.saveConfig();
+          
+          // Hide setup, show dashboard
+          document.getElementById('setup-screen').style.display = 'none';
+          document.getElementById('dashboard-screen').style.display = 'flex';
+          
+          // Start tracking
+          this.update();
+        }
+      });
+    }
+    
+    // Settings page event handlers
+    const updateSettingsBtn = document.getElementById('update-settings');
+    if (updateSettingsBtn) {
+      updateSettingsBtn.addEventListener('click', () => {
+        const dataRetention = parseInt(document.getElementById('data-retention').value, 10);
+        const refreshDays = parseInt(document.getElementById('refresh-interval').value, 10);
+        
+        this.config.dataRetentionDays = dataRetention;
+        this.config.refreshInterval = refreshDays * 24 * 60 * 60 * 1000;
+        
+        this.saveConfig();
+        this.scheduleNextUpdate();
+        
+        alert('Settings updated successfully');
+      });
+    }
+    
+    // API settings update
+    const updateApiSettingsBtn = document.getElementById('update-api-settings');
+    if (updateApiSettingsBtn) {
+      updateApiSettingsBtn.addEventListener('click', () => {
+        const groupId = document.getElementById('settings-group-id').value;
+        const accessToken = document.getElementById('settings-access-token').value;
+        
+        if (groupId && accessToken) {
+          this.config.groupId = groupId;
+          this.config.accessToken = accessToken;
+          
+          this.saveConfig();
+          
+          // Save to localStorage too
+          localStorage.setItem('fbTracker_groupId', groupId);
+          localStorage.setItem('fbTracker_accessToken', accessToken);
+          
+          alert('API settings updated successfully');
+        } else {
+          alert('Please enter both Group ID and Access Token');
+        }
+      });
+    }
+    
+    // Refresh data now button
+    const refreshNowBtn = document.getElementById('refresh-now');
+    if (refreshNowBtn) {
+      refreshNowBtn.addEventListener('click', () => {
+        this.update();
+      });
+    }
+    
+    // Export data buttons
+    const exportAllBtn = document.getElementById('export-all');
+    if (exportAllBtn) {
+      exportAllBtn.addEventListener('click', () => {
+        if (this.currentReport) {
+          this.exportToCsv('fb_group_all_members.csv', this.currentReport.allMembers);
+        }
+      });
+    }
+    
+    const exportActiveBtn = document.getElementById('export-active');
+    if (exportActiveBtn) {
+      exportActiveBtn.addEventListener('click', () => {
+        if (this.currentReport) {
+          this.exportToCsv('fb_group_active_members.csv', this.currentReport.mostActive);
+        }
+      });
+    }
+    
+    const exportInactiveBtn = document.getElementById('export-inactive');
+    if (exportInactiveBtn) {
+      exportInactiveBtn.addEventListener('click', () => {
+        if (this.currentReport) {
+          this.exportToCsv('fb_group_inactive_members.csv', this.currentReport.completelyInactive);
+        }
+      });
+    }
+    
+    const exportPostersBtn = document.getElementById('export-posters');
+    if (exportPostersBtn) {
+      exportPostersBtn.addEventListener('click', () => {
+        if (this.currentReport) {
+          this.exportToCsv('fb_group_top_posters.csv', this.currentReport.mostPosts);
+        }
+      });
+    }
+    
+    const exportCommentersBtn = document.getElementById('export-commenters');
+    if (exportCommentersBtn) {
+      exportCommentersBtn.addEventListener('click', () => {
+        if (this.currentReport) {
+          this.exportToCsv('fb_group_top_commenters.csv', this.currentReport.mostComments);
+        }
+      });
+    }
+  }
+  
+  // Update form fields with current settings
+  updateSettingsFields() {
+    const dataRetentionField = document.getElementById('data-retention');
+    if (dataRetentionField) {
+      dataRetentionField.value = this.config.dataRetentionDays;
+    }
+    
+    const refreshIntervalField = document.getElementById('refresh-interval');
+    if (refreshIntervalField) {
+      refreshIntervalField.value = Math.floor(this.config.refreshInterval / (24 * 60 * 60 * 1000));
+    }
+    
+    const groupIdField = document.getElementById('settings-group-id');
+    if (groupIdField) {
+      groupIdField.value = this.config.groupId;
+    }
+    
+    const accessTokenField = document.getElementById('settings-access-token');
+    if (accessTokenField) {
+      accessTokenField.value = this.config.accessToken;
+    }
+  }
+  
+  // Start the tracker
+  async start() {
+    try {
+      // Load configuration from database
+      await this.loadConfig();
+      
+      // Load from localStorage if needed
+      const savedGroupId = localStorage.getItem('fbTracker_groupId');
+      const savedAccessToken = localStorage.getItem('fbTracker_accessToken');
+      
+      if (savedGroupId && savedAccessToken) {
+        this.config.groupId = savedGroupId;
+        this.config.accessToken = savedAccessToken;
+        
+        // Save to the database
+        await this.saveConfig();
+        
+        // Show dashboard directly
+        document.getElementById('setup-screen').style.display = 'none';
+        document.getElementById('dashboard-screen').style.display = 'flex';
+        
+        // Set up event listeners
+        this.setupEventListeners();
+        
+        // Update settings fields
+        this.updateSettingsFields();
+        
+        // Check when we last updated
+        const lastUpdate = localStorage.getItem('lastUpdate');
+        if (lastUpdate) {
+          this.lastUpdate = lastUpdate;
+          
+          // Check if we need to update now
+          const lastUpdateTime = new Date(lastUpdate).getTime();
+          const currentTime = new Date().getTime();
+          
+          if (currentTime - lastUpdateTime > this.config.refreshInterval) {
+            // If it's been longer than our refresh interval, update now
+            this.update();
+          } else {
+            // Otherwise try to load existing report from the database
+            const report = await this.generateReport();
+            if (report) {
+              this.renderDashboard(report);
+            } else {
+              // If we couldn't generate a report, update now
+              this.update();
+            }
+          }
+          
+          // Update next refresh time
+          this.scheduleNextUpdate();
+        } else {
+          // No previous update, do an initial update
+          this.update();
+        }
+      } else {
+        // No saved credentials, show setup screen
+        document.getElementById('setup-screen').style.display = 'block';
+        document.getElementById('dashboard-screen').style.display = 'none';
+        
+        // Set up event listeners
+        this.setupEventListeners();
+      }
+    } catch (error) {
+      console.error('Error starting tracker:', error);
+      
+      // Show setup screen on error
+      document.getElementById('setup-screen').style.display = 'block';
+      document.getElementById('dashboard-screen').style.display = 'none';
+      
+      // Set up event listeners
+      this.setupEventListeners();
+    }
+  }
+}
+
+// Initialize the application when DOM is loaded
+document.addEventListener('DOMContentLoaded', async () => {
+  // Initialize tracker
+  const tracker = new FacebookGroupTracker(config);
+  await tracker.start();
+});// Facebook Group Activity Tracker
+// This application tracks member activity in a Facebook group
+
+// Configuration
+const config = {
+  apiVersion: 'v18.0',           // Facebook Graph API version (Latest stable version)
+  groupId: 'YOUR_GROUP_ID',      // The ID of your Facebook group (you'll need to add this)
+  accessToken: 'YOUR_ACCESS_TOKEN', // Your Facebook access token with appropriate permissions
+  dataRetentionDays: 90,         // Keep 90 days of historical data as requested
+  refreshInterval: 7 * 24 * 60 * 60 * 1000 // Weekly refresh as requested (in milliseconds)
+};
+
+// Main application class
+class FacebookGroupTracker {
+  constructor(config) {
+    this.config = config;
+    this.members = new Map(); // Map to store member data
+    this.activities = [];     // Array to store all activities
+    this.lastUpdate = null;   // Timestamp of last update
+    
+    // Initialize database
+    this.initDatabase();
+  }
+  
+  // Initialize database for storing member and activity data
+  async initDatabase() {
+    // Using IndexedDB for client-side storage
+    return new Promise((resolve, reject) => {
+      const request = indexedDB.open('FacebookGroupTracker', 1);
+      
+      request.onerror = (event) => {
+        console.error('Database error:', event.target.error);
+        reject(event.target.error);
+      };
+      
+      request.onupgradeneeded = (event) => {
+        const db = event.target.result;
+        
+        // Create object stores
+        if (!db.objectStoreNames.contains('members')) {
+          const memberStore = db.createObjectStore('members', { keyPath: 'id' });
+          memberStore.createIndex('name', 'name', { unique: false });
+        }
+        
+        if (!db.objectStoreNames.contains('activities')) {
+          const activityStore = db.createObjectStore('activities', { keyPath: 'id', autoIncrement: true });
+          activityStore.createIndex('memberId', 'memberId', { unique: false });
+          activityStore.createIndex('timestamp', 'timestamp', { unique: false });
+          activityStore.createIndex('type', 'type', { unique: false });
+        }
+      };
+      
+      request.onsuccess = (event) => {
+        this.db = event.target.result;
+        console.log('Database initialized successfully');
+        resolve();
+      };
+    });
+  }
+  
+  // Fetch group members
+  async fetchMembers() {
+    try {
+      const url = `https://graph.facebook.com/${this.config.apiVersion}/${this.config.groupId}/members?limit=100&access_token=${this.config.accessToken}`;
+      let nextUrl = url;
+      let members = [];
+      
+      // Paginate through all members
+      while (nextUrl) {
+        const response = await fetch(nextUrl);
+        const data = await response.json();
+        
+        if (data.error) {
+          console.error('API Error:', data.error);
+          break;
+        }
+        
+        members = members.concat(data.data);
+        
+        // Check if there are more pages
+        if (data.paging && data.paging.next) {
+          nextUrl = data.paging.next;
+        } else {
+          nextUrl = null;
+        }
+      }
+      
+      console.log(`Fetched ${members.length} members`);
+      
+      // Store members in database
+      const transaction = this.db.transaction(['members'], 'readwrite');
+      const memberStore = transaction.objectStore('members');
+      
+      members.forEach(member => {
+        memberStore.put({
+          id: member.id,
+          name: member.name,
+          joinedDate: new Date().toISOString(), // approximate with current date if not available
+          lastActivity: null,
+          activityCount: 0
+        });
+      });
+      
+      return members;
+    } catch (error) {
+      console.error('Error fetching members:', error);
+      return [];
+    }
+  }
+  
+  // Fetch group posts
+  async fetchPosts(daysBack = 90) {
+    try {
+      const since = new Date();
+      since.setDate(since.getDate() - daysBack);
+      
+      const sinceTimestamp = Math.floor(since.getTime() / 1000);
+      const url = `https://graph.facebook.com/${this.config.apiVersion}/${this.config.groupId}/feed?limit=100&fields=id,from,created_time,message,comments.limit(500){from,created_time,message},reactions.limit(500){type,from}&since=${sinceTimestamp}&access_token=${this.config.accessToken}`;
+      
+      let nextUrl = url;
+      let posts = [];
+      
+      // Paginate through all posts
+      while (nextUrl) {
+        const response = await fetch(nextUrl);
+        const data = await response.json();
+        
+        if (data.error) {
+          console.error('API Error:', data.error);
+          break;
+        }
+        
+        posts = posts.concat(data.data);
+        
+        // Check if there are more pages
+        if (data.paging && data.paging.next) {
+          nextUrl = data.paging.next;
+        } else {
+          nextUrl = null;
+        }
+      }
+      
+      console.log(`Fetched ${posts.length} posts`);
+      return posts;
+    } catch (error) {
+      console.error('Error fetching posts:', error);
+      return [];
+    }
+  }
+  
+  // Process posts and extract activities
+  async processActivities(posts) {
+    const transaction = this.db.transaction(['activities', 'members'], 'readwrite');
+    const activityStore = transaction.objectStore('activities');
+    const memberStore = transaction.objectStore('members');
+    
+    const activityTracker = new Map(); // Track activity counts by member
+    
+    // Process each post
+    for (const post of posts) {
+      // Record post creation
+      if (post.from) {
+        const postActivity = {
+          id: `post_${post.id}`,
+          memberId: post.from.id,
+          memberName: post.from.name,
+          type: 'post',
+          content: post.message || '',
+          timestamp: new Date(post.created_time).toISOString()
+        };
+        
+        activityStore.put(postActivity);
+        
+        // Update activity counter
+        if (!activityTracker.has(post.from.id)) {
+          activityTracker.set(post.from.id, { posts: 0, comments: 0, reactions: 0 });
+        }
+        activityTracker.get(post.from.id).posts++;
+      }
+      
+      // Process comments
+      if (post.comments && post.comments.data) {
+        for (const comment of post.comments.data) {
+          if (comment.from) {
+            const commentActivity = {
+              id: `comment_${comment.id}`,
+              memberId: comment.from.id,
+              memberName: comment.from.name,
+              type: 'comment',
+              content: comment.message || '',
+              postId: post.id,
+              timestamp: new Date(comment.created_time).toISOString()
+            };
+            
+            activityStore.put(commentActivity);
+            
+            // Update activity counter
+            if (!activityTracker.has(comment.from.id)) {
+              activityTracker.set(comment.from.id, { posts: 0, comments: 0, reactions: 0 });
+            }
+            activityTracker.get(comment.from.id).comments++;
+          }
+        }
+      }
+      
+      // Process reactions
+      if (post.reactions && post.reactions.data) {
+        for (const reaction of post.reactions.data) {
+          if (reaction.from) {
+            const reactionActivity = {
+              id: `reaction_${post.id}_${reaction.from.id}`,
+              memberId: reaction.from.id,
+              memberName: reaction.from.name,
+              type: 'reaction',
+              content: reaction.type || 'LIKE',
+              postId: post.id,
+              timestamp: new Date().toISOString() // Reactions don't have timestamps in API
+            };
+            
+            activityStore.put(reactionActivity);
+            
+            // Update activity counter
+            if (!activityTracker.has(reaction.from.id)) {
+              activityTracker.set(reaction.from.id, { posts: 0, comments: 0, reactions: 0 });
+            }
+            activityTracker.get(reaction.from.id).reactions++;
+          }
+        }
+      }
+    }
+    
+    // Update member records with activity counts
+    for (const [memberId, counts] of activityTracker.entries()) {
+      const memberRequest = memberStore.get(memberId);
+      
+      memberRequest.onsuccess = (event) => {
+        const member = event.target.result;
+        if (member) {
+          member.lastActivity = new Date().toISOString();
+          member.activityCount = (member.activityCount || 0) + counts.posts + counts.comments + counts.reactions;
+          member.postCount = (member.postCount || 0) + counts.posts;
+          member.commentCount = (member.commentCount || 0) + counts.comments;
+          member.reactionCount = (member.reactionCount || 0) + counts.reactions;
+          memberStore.put(member);
+        }
+      };
+    }
+    
+    return new Promise((resolve) => {
+      transaction.oncomplete = () => {
+        console.log('Activity processing complete');
+        resolve();
+      };
+    });
+  }
+  
+  // Clean up old data beyond retention period
+  async cleanupOldData() {
+    const cutoffDate = new Date();
+    cutoffDate.setDate(cutoffDate.getDate() - this.config.dataRetentionDays);
+    const cutoffTimestamp = cutoffDate.toISOString();
+    
+    const transaction = this.db.transaction(['activities'], 'readwrite');
+    const activityStore = transaction.objectStore('activities');
+    const timeIndex = activityStore.index('timestamp');
+    
+    const range = IDBKeyRange.upperBound(cutoffTimestamp);
+    const request = timeIndex.openCursor(range);
+    
+    request.onsuccess = (event) => {
+      const cursor = event.target.result;
+      if (cursor) {
+        activityStore.delete(cursor.primaryKey);
+        cursor.continue();
+      }
+    };
+    
+    return new Promise((resolve) => {
+      transaction.oncomplete = () => {
+        console.log('Old data cleanup complete');
+        resolve();
+      };
+    });
+  }
+  
+  // Generate activity report
+  async generateReport() {
+    try {
+      const transaction = this.db.transaction(['members', 'activities'], 'readonly');
+      const memberStore = transaction.objectStore('members');
+      const activityStore = transaction.objectStore('activities');
+      
+      // Get all members
+      const members = await new Promise((resolve) => {
+        const memberList = [];
+        memberStore.openCursor().onsuccess = (event) => {
+          const cursor = event.target.result;
+          if (cursor) {
+            memberList.push(cursor.value);
+            cursor.continue();
+          } else {
+            resolve(memberList);
+          }
+        };
+      });
+      
+      // Calculate cutoff date for current period (last 7 days)
+      const currentPeriodCutoff = new Date();
+      currentPeriodCutoff.setDate(currentPeriodCutoff.getDate() - 7);
+      const currentPeriodTimestamp = currentPeriodCutoff.toISOString();
+      
+      // Get current period activities
+      const currentActivities = await new Promise((resolve) => {
+        const activities = [];
+        const timeIndex = activityStore.index('timestamp');
+        const range = IDBKeyRange.lowerBound(currentPeriodTimestamp);
+        
+        timeIndex.openCursor(range).onsuccess = (event) => {
+          const cursor = event.target.result;
+          if (cursor) {
+            activities.push(cursor.value);
+            cursor.continue();
+          } else {
+            resolve(activities);
+          }
+        };
+      });
+      
+      // Count activities by member
+      const memberActivityMap = new Map();
+      currentActivities.forEach(activity => {
+        if (!memberActivityMap.has(activity.memberId)) {
+          memberActivityMap.set(activity.memberId, {
+            id: activity.memberId,
+            name: activity.memberName,
+            totalActivity: 0,
+            posts: 0,
+            comments: 0,
+            reactions: 0
+          });
+        }
+        
+        const memberStats = memberActivityMap.get(activity.memberId);
+        memberStats.totalActivity++;
+        
+        switch (activity.type) {
+          case 'post':
+            memberStats.posts++;
+            break;
+          case 'comment':
+            memberStats.comments++;
+            break;
+          case 'reaction':
+            memberStats.reactions++;
+            break;
+        }
+      });
+      
+      // Convert to array and add activity status
+      const memberActivityList = Array.from(memberActivityMap.values());
+      
+      // Process all members including inactive ones
+      const completeActivityList = members.map(member => {
+        const activityData = memberActivityMap.get(member.id);
+        if (activityData) {
+          return activityData;
+        } else {
+          return {
+            id: member.id,
+            name: member.name,
+            totalActivity: 0,
+            posts: 0,
+            comments: 0,
+            reactions: 0
+          };
+        }
+      });
+      
+      // Sort for different reports
+      const mostActive = [...completeActivityList].sort((a, b) => b.totalActivity - a.totalActivity);
+      const mostPosts = [...completeActivityList].sort((a, b) => b.posts - a.posts);
+      const mostComments = [...completeActivityList].sort((a, b) => b.comments - a.comments);
+      
+      // Create inactive members list (zero activity in current period)
+      const inactiveMembers = completeActivityList.filter(member => member.totalActivity === 0);
+      
+      return {
+        generatedAt: new Date().toISOString(),
+        periodStart: currentPeriodTimestamp,
+        totalMembers: members.length,
+        activeMembers: memberActivityList.length,
+        inactiveMembers: inactiveMembers.length,
+        mostActive: mostActive.slice(0, 20),        // Top 20 most active
+        leastActive: mostActive.reverse().slice(0, 20),  // 20 least active (excluding completely inactive)
+        mostPosts: mostPosts.slice(0, 20),          // Top 20 posters
+        mostComments: mostComments.slice(0, 20),    // Top 20 commenters
+        completelyInactive: inactiveMembers.slice(0, 50) // First 50 inactive members
+      };
+      
+    } catch (error) {
+      console.error('Error generating report:', error);
+      return null;
+    }
+  }
+  
+  // Main update function that runs periodically
+  async update() {
+    console.log('Starting group activity update...');
+    
+    try {
+      await this.fetchMembers();
+      const posts = await this.fetchPosts(this.config.dataRetentionDays);
+      await this.processActivities(posts);
+      await this.cleanupOldData();
+      
+      this.lastUpdate = new Date().toISOString();
+      console.log('Update completed successfully');
+      
+      // Generate and display the dashboard
+      const report = await this.generateReport();
+      this.renderDashboard(report);
+    } catch (error) {
+      console.error('Update failed:', error);
+    }
+  }
+  
+  // Render dashboard
+  renderDashboard(report) {
+    if (!report) return;
+    
+    const dashboard = document.getElementById('dashboard');
+    if (!dashboard) return;
+    
+    // Format date for display
+    const formatDate = (dateString) => {
+      const date = new Date(dateString);
+      return date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
+    };
+    
+    dashboard.innerHTML = `
+      <div class="dashboard-header">
+        <h1>Facebook Group Activity Dashboard</h1>
+        <p>Last updated: ${formatDate(report.generatedAt)}</p>
+        <p>Period start: ${formatDate(report.periodStart)}</p>
+        <div class="dashboard-summary">
+          <div class="summary-card">
+            <h3>Total Members</h3>
+            <p class="summary-value">${report.totalMembers}</p>
+          </div>
+          <div class="summary-card">
+            <h3>Active Members</h3>
+            <p class="summary-value">${report.activeMembers}</p>
+          </div>
+          <div class="summary-card">
+            <h3>Inactive Members</h3>
+            <p class="summary-value">${report.inactiveMembers}</p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="dashboard-content">
+        <div class="data-section">
+          <h2>Most Active Members</h2>
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Rank</th>
+                <th>Name</th>
+                <th>Total Activity</th>
+                <th>Posts</th>
+                <th>Comments</th>
+                <th>Reactions</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${report.mostActive.map((member, index) => `
+                <tr>
+                  <td>${index + 1}</td>
+                  <td>${member.name}</td>
+                  <td>${member.totalActivity}</td>
+                  <td>${member.posts}</td>
+                  <td>${member.comments}</td>
+                  <td>${member.reactions}</td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+        
+        <div class="data-section">
+          <h2>Least Active Members</h2>
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Rank</th>
+                <th>Name</th>
+                <th>Total Activity</th>
+                <th>Posts</th>
+                <th>Comments</th>
+                <th>Reactions</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${report.leastActive.map((member, index) => `
+                <tr>
+                  <td>${index + 1}</td>
+                  <td>${member.name}</td>
+                  <td>${member.totalActivity}</td>
+                  <td>${member.posts}</td>
+                  <td>${member.comments}</td>
+                  <td>${member.reactions}</td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+        
+        <div class="data-section">
+          <h2>Top Posters</h2>
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Rank</th>
+                <th>Name</th>
+                <th>Posts</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${report.mostPosts.map((member, index) => `
+                <tr>
+                  <td>${index + 1}</td>
+                  <td>${member.name}</td>
+                  <td>${member.posts}</td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+        
+        <div class="data-section">
+          <h2>Top Commenters</h2>
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Rank</th>
+                <th>Name</th>
+                <th>Comments</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${report.mostComments.map((member, index) => `
+                <tr>
+                  <td>${index + 1}</td>
+                  <td>${member.name}</td>
+                  <td>${member.comments}</td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+        
+        <div class="data-section">
+          <h2>Completely Inactive Members</h2>
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Name</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${report.completelyInactive.map((member, index) => `
+                <tr>
+                  <td>${index + 1}</td>
+                  <td>${member.name}</td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    `;
+  }
+  
+  // Start the tracker
+  start() {
+    // Initial update
+    this.update();
+    
+    // Set up periodic updates
+    setInterval(() => this.update(), this.config.refreshInterval);
+  }
+}
+
+// HTML Structure for the dashboard
+document.addEventListener('DOMContentLoaded', () => {
+  document.body.innerHTML = `
+    <div class="container">
+      <div class="sidebar">
+        <h2>FB Group Tracker</h2>
+        <ul class="nav">
+          <li class="active"><a href="#">Dashboard</a></li>
+          <li><a href="#">Settings</a></li>
+          <li><a href="#">Export Data</a></li>
+        </ul>
+      </div>
+      <div class="main-content">
+        <div id="dashboard">
+          <div class="loading">Loading dashboard data...</div>
+        </div>
+      </div>
+    </div>
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      }
+      
+      body {
+        background-color: #f0f2f5;
+        color: #1c1e21;
+      }
+      
+      .container {
+        display: flex;
+        min-height: 100vh;
+      }
+      
+      .sidebar {
+        width: 250px;
+        background-color: #ffffff;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        padding: 20px 0;
+      }
+      
+      .sidebar h2 {
+        padding: 0 20px 20px;
+        color: #1877f2;
+        border-bottom: 1px solid #e4e6eb;
+      }
+      
+      .nav {
+        list-style: none;
+        margin-top: 20px;
+      }
+      
+      .nav li {
+        padding: 10px 20px;
+      }
+      
+      .nav li.active {
+        background-color: #e7f3ff;
+        border-left: 4px solid #1877f2;
+      }
+      
+      .nav li a {
+        color: #050505;
+        text-decoration: none;
+        font-weight: 500;
+      }
+      
+      .main-content {
+        flex: 1;
+        padding: 30px;
+        overflow-y: auto;
+      }
+      
+      .dashboard-header {
+        margin-bottom: 30px;
+      }
+      
+      .dashboard-header h1 {
+        color: #1c1e21;
+        margin-bottom: 10px;
+      }
+      
+      .dashboard-summary {
+        display: flex;
+        gap: 20px;
+        margin-top: 20px;
+      }
+      
+      .summary-card {
+        background-color: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        flex: 1;
+      }
+      
+      .summary-card h3 {
+        color: #65676b;
+        font-size: 14px;
+        margin-bottom: 10px;
+      }
+      
+      .summary-value {
+        font-size: 28px;
+        font-weight: bold;
+        color: #1877f2;
+      }
+      
+      .data-section {
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        margin-bottom: 30px;
+      }
+      
+      .data-section h2 {
+        color: #1c1e21;
+        margin-bottom: 20px;
+        font-size: 18px;
+        border-bottom: 1px solid #e4e6eb;
+        padding-bottom: 10px;
+      }
+      
+      .data-table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      
+      .data-table th, .data-table td {
+        padding: 12px 15px;
+        text-align: left;
+        border-bottom: 1px solid #e4e6eb;
+      }
+      
+      .data-table th {
+        background-color: #f5f6f7;
+        font-weight: 600;
+        color: #65676b;
+      }
+      
+      .data-table tr:hover {
+        background-color: #f7f8fa;
+      }
+      
+      .loading {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 300px;
+        font-size: 18px;
+        color: #65676b;
+      }
+    </style>
+  `;
+});
+
+// Initialize and start the tracker
+const tracker = new FacebookGroupTracker(config);
+tracker.start();
+Made with
+
