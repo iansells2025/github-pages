@@ -1,0 +1,49 @@
+name: Sync Windsor.ai Marketing Data
+
+on:
+  schedule:
+    # Hourly. Adjust cron as needed.
+    - cron: '0 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Fetch and aggregate Windsor connectors
+        env:
+          # Add one secret per connector you use in Settings → Secrets and variables → Actions.
+          # The script ignores any that are unset, so wire them up incrementally.
+          WINDSOR_GA4_URL:          ${{ secrets.WINDSOR_GA4_URL }}
+          WINDSOR_GOOGLE_ADS_URL:   ${{ secrets.WINDSOR_GOOGLE_ADS_URL }}
+          WINDSOR_META_ADS_URL:     ${{ secrets.WINDSOR_META_ADS_URL }}
+          WINDSOR_STRIPE_URL:       ${{ secrets.WINDSOR_STRIPE_URL }}
+          WINDSOR_HUBSPOT_URL:      ${{ secrets.WINDSOR_HUBSPOT_URL }}
+          WINDSOR_MAILCHIMP_URL:    ${{ secrets.WINDSOR_MAILCHIMP_URL }}
+          WINDSOR_KLAVIYO_URL:      ${{ secrets.WINDSOR_KLAVIYO_URL }}
+          WINDSOR_INSTANTLY_URL:    ${{ secrets.WINDSOR_INSTANTLY_URL }}
+          WINDSOR_APOLLO_URL:       ${{ secrets.WINDSOR_APOLLO_URL }}
+          WINDSOR_SMARTLEAD_URL:    ${{ secrets.WINDSOR_SMARTLEAD_URL }}
+          WINDSOR_INTERNAL_URL:     ${{ secrets.WINDSOR_INTERNAL_URL }}
+        run: node scripts/sync-windsor.mjs
+
+      - name: Commit updated data
+        run: |
+          if [[ -n "$(git status --porcelain data/windsor.json)" ]]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add data/windsor.json
+            git commit -m "chore(data): refresh Windsor.ai sync"
+            git push
+          else
+            echo "No changes to commit."
+          fi

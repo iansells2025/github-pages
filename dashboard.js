@@ -1,6 +1,7 @@
 /* JB Marketing Dashboard */
-(() => {
+(async () => {
   const STORAGE_KEY = 'jb-marketing-dashboard-v1';
+  const WINDSOR_URL = 'data/windsor.json';
 
   const METRICS = [
     { key: 'organic',     label: 'Organic Traffic',        type: 'int' },
@@ -106,12 +107,46 @@
     localStorage.setItem(STORAGE_KEY, JSON.stringify(rows));
   }
 
-  let data = loadData();
+  // Manual entries (user-edited overrides). Saved to localStorage.
+  let manualData = loadData();
 
-  /* ---------- Seed sample data on first load ---------- */
+  // Windsor.ai feed (read-only baseline). Loaded from data/windsor.json.
+  let windsorData = [];
+  let windsorUpdatedAt = null;
+
+  async function loadWindsor() {
+    try {
+      const res = await fetch(WINDSOR_URL, { cache: 'no-store' });
+      if (!res.ok) return;
+      const json = await res.json();
+      windsorData = Array.isArray(json.weeks) ? json.weeks : [];
+      windsorUpdatedAt = json.updatedAt || null;
+    } catch { /* offline / file missing — fine */ }
+  }
+  await loadWindsor();
+
+  /* Effective dataset = Windsor baseline overlaid by manual values per metric. */
+  function buildEffectiveData() {
+    const byWeek = new Map();
+    for (const w of windsorData) byWeek.set(w.weekStart, { ...w });
+    for (const w of manualData) {
+      const base = byWeek.get(w.weekStart) || { weekStart: w.weekStart };
+      for (const [k, v] of Object.entries(w)) {
+        if (k === 'weekStart') continue;
+        if (v !== null && v !== undefined && v !== '') base[k] = v;
+      }
+      byWeek.set(w.weekStart, base);
+    }
+    return [...byWeek.values()];
+  }
+
+  let data = buildEffectiveData();
+
+  /* ---------- Seed sample data on first load (only if no data anywhere) ---------- */
   if (data.length === 0) {
-    data = buildSampleData();
-    saveData(data);
+    manualData = buildSampleData();
+    saveData(manualData);
+    data = buildEffectiveData();
   }
 
   function buildSampleData() {
@@ -381,9 +416,11 @@
       tr.addEventListener('click', (e) => {
         if (e.target.classList.contains('row-delete')) {
           e.stopPropagation();
-          if (confirm('Delete this week?')) {
-            data = data.filter(x => x.weekStart !== r.weekStart);
-            saveData(data); renderAll();
+          if (confirm('Remove your manual entry for this week? (Windsor data, if any, will remain.)')) {
+            manualData = manualData.filter(x => x.weekStart !== r.weekStart);
+            saveData(manualData);
+            data = buildEffectiveData();
+            renderAll();
           }
           return;
         }
@@ -434,9 +471,10 @@
       const v = raw[m.key];
       row[m.key] = v === '' || v === undefined ? 0 : (m.type === 'money' ? Number(v) : parseInt(v, 10) || 0);
     }
-    const idx = data.findIndex(r => r.weekStart === weekStart);
-    if (idx >= 0) data[idx] = row; else data.push(row);
-    saveData(data);
+    const idx = manualData.findIndex(r => r.weekStart === weekStart);
+    if (idx >= 0) manualData[idx] = row; else manualData.push(row);
+    saveData(manualData);
+    data = buildEffectiveData();
     closeModal();
     renderAll();
   });
@@ -444,9 +482,11 @@
   deleteBtn.addEventListener('click', () => {
     const ws = form.elements.weekStart.value;
     if (!ws) return;
-    if (!confirm('Delete this week?')) return;
-    data = data.filter(r => r.weekStart !== ws);
-    saveData(data); closeModal(); renderAll();
+    if (!confirm('Remove your manual entry for this week? (Windsor data, if any, will remain.)')) return;
+    manualData = manualData.filter(r => r.weekStart !== ws);
+    saveData(manualData);
+    data = buildEffectiveData();
+    closeModal(); renderAll();
   });
 
   document.getElementById('addWeekBtn').addEventListener('click', () => openModal(null));
@@ -484,8 +524,9 @@
       try {
         const parsed = JSON.parse(reader.result);
         if (!Array.isArray(parsed)) throw new Error('Invalid file');
-        data = parsed;
-        saveData(data);
+        manualData = parsed;
+        saveData(manualData);
+        data = buildEffectiveData();
         renderAll();
       } catch (err) {
         alert('Could not import: ' + err.message);
@@ -496,13 +537,28 @@
   });
 
   document.getElementById('clearBtn').addEventListener('click', () => {
-    if (!confirm('Reset all dashboard data? This clears everything in your browser.')) return;
-    data = [];
-    saveData(data);
+    if (!confirm('Reset your manual entries? (Windsor-synced data, if any, will remain.)')) return;
+    manualData = [];
+    saveData(manualData);
+    data = buildEffectiveData();
     renderAll();
   });
 
   rangeSelect.addEventListener('change', renderAll);
+
+  /* ---------- Freshness footer ---------- */
+  function renderFreshness() {
+    const foot = document.querySelector('.pagefoot');
+    if (!foot) return;
+    const wCount = windsorData.length;
+    if (windsorUpdatedAt) {
+      const when = new Date(windsorUpdatedAt).toLocaleString();
+      foot.textContent = `Windsor.ai sync: ${wCount} weeks · last updated ${when}. Manual entries override synced values per metric.`;
+    } else {
+      foot.textContent = 'Windsor.ai sync not yet running. Add connector secrets in repo Settings → Secrets and variables → Actions, then run the “Sync Windsor.ai Marketing Data” workflow. Manual entries are stored locally.';
+    }
+  }
+  renderFreshness();
 
   /* ---------- Initial render ---------- */
   renderAll();
