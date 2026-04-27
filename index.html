@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>JB Marketing Dashboard</title>
+<link rel="stylesheet" href="styles.css" />
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">
+    <div class="logo">JB</div>
+    <div>
+      <h1>JB Marketing Dashboard</h1>
+      <p class="subtitle">Weekly performance across traffic, sales, revenue, and growth</p>
+    </div>
+  </div>
+  <div class="actions">
+    <button id="addWeekBtn" class="btn primary">+ Add / Edit Week</button>
+    <button id="exportCsvBtn" class="btn">Export CSV</button>
+    <button id="exportJsonBtn" class="btn">Export JSON</button>
+    <label class="btn file-btn">
+      Import JSON
+      <input type="file" id="importJsonInput" accept="application/json" hidden />
+    </label>
+    <button id="clearBtn" class="btn danger">Reset</button>
+  </div>
+</header>
+
+<main>
+  <section class="kpis" id="kpis"></section>
+
+  <section class="filters">
+    <div class="filter-group">
+      <label for="rangeSelect">Range</label>
+      <select id="rangeSelect">
+        <option value="4">Last 4 weeks</option>
+        <option value="8">Last 8 weeks</option>
+        <option value="13" selected>Last 13 weeks</option>
+        <option value="26">Last 26 weeks</option>
+        <option value="52">Last 52 weeks</option>
+        <option value="all">All weeks</option>
+      </select>
+    </div>
+  </section>
+
+  <section class="charts-grid">
+    <div class="card">
+      <h3>Traffic</h3>
+      <canvas id="trafficChart"></canvas>
+    </div>
+    <div class="card">
+      <h3>Revenue &amp; Deposits</h3>
+      <canvas id="revenueChart"></canvas>
+    </div>
+    <div class="card">
+      <h3>Costs vs Revenue</h3>
+      <canvas id="costRevenueChart"></canvas>
+    </div>
+    <div class="card">
+      <h3>MRR (Brands &amp; Creators)</h3>
+      <canvas id="mrrChart"></canvas>
+    </div>
+    <div class="card">
+      <h3>Marketing Email Funnel</h3>
+      <canvas id="emailChart"></canvas>
+    </div>
+    <div class="card">
+      <h3>Cold Email Performance</h3>
+      <canvas id="coldEmailChart"></canvas>
+    </div>
+    <div class="card">
+      <h3>Landing Pages</h3>
+      <canvas id="landingChart"></canvas>
+    </div>
+    <div class="card">
+      <h3>Sales Activity</h3>
+      <canvas id="salesChart"></canvas>
+    </div>
+    <div class="card">
+      <h3>Signups (Creators &amp; Brands)</h3>
+      <canvas id="signupsChart"></canvas>
+    </div>
+    <div class="card">
+      <h3>Creator GMV</h3>
+      <canvas id="gmvChart"></canvas>
+    </div>
+    <div class="card">
+      <h3>New Campaigns &gt; $1k</h3>
+      <canvas id="campaignsChart"></canvas>
+    </div>
+    <div class="card">
+      <h3>Shop Videos Produced</h3>
+      <canvas id="videosChart"></canvas>
+    </div>
+  </section>
+
+  <section class="card table-card">
+    <div class="table-header">
+      <h3>Weekly Data</h3>
+      <span class="hint">Click any row to edit. Weeks are ISO week (Mon–Sun).</span>
+    </div>
+    <div class="table-wrap">
+      <table id="weeksTable">
+        <thead>
+          <tr>
+            <th>Week</th>
+            <th>Organic</th>
+            <th>Paid</th>
+            <th>Costs</th>
+            <th>Sales Calls</th>
+            <th>New Clients</th>
+            <th>Mktg Sent</th>
+            <th>Mktg Viewed</th>
+            <th>Mktg Clicked</th>
+            <th>LP Views</th>
+            <th>LP Subs</th>
+            <th>Cold Sent</th>
+            <th>Cold Resp</th>
+            <th>Deposits</th>
+            <th>Revenue</th>
+            <th>Creators</th>
+            <th>Brands</th>
+            <th>Camp &gt;$1k</th>
+            <th>MRR Brands</th>
+            <th>MRR Creators</th>
+            <th>GMV</th>
+            <th>Videos</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="weeksBody"></tbody>
+      </table>
+    </div>
+  </section>
+</main>
+
+<div id="modal" class="modal hidden">
+  <div class="modal-card">
+    <header>
+      <h3 id="modalTitle">Add Week</h3>
+      <button id="closeModal" class="icon-btn" aria-label="Close">&times;</button>
+    </header>
+    <form id="weekForm">
+      <div class="form-grid">
+        <label>Week Starting (Monday)
+          <input type="date" name="weekStart" required />
+        </label>
+        <label>Organic Traffic
+          <input type="number" name="organic" min="0" step="1" />
+        </label>
+        <label>Paid Traffic
+          <input type="number" name="paid" min="0" step="1" />
+        </label>
+        <label>Costs ($)
+          <input type="number" name="costs" min="0" step="0.01" />
+        </label>
+        <label>Sales Calls
+          <input type="number" name="salesCalls" min="0" step="1" />
+        </label>
+        <label>Clients with First-Time Spend
+          <input type="number" name="newClients" min="0" step="1" />
+        </label>
+        <label>Marketing Emails Sent
+          <input type="number" name="mktgSent" min="0" step="1" />
+        </label>
+        <label>Marketing Emails Viewed
+          <input type="number" name="mktgViewed" min="0" step="1" />
+        </label>
+        <label>Marketing Emails Clicked
+          <input type="number" name="mktgClicked" min="0" step="1" />
+        </label>
+        <label>Landing Page Views
+          <input type="number" name="lpViews" min="0" step="1" />
+        </label>
+        <label>Landing Page Submissions
+          <input type="number" name="lpSubs" min="0" step="1" />
+        </label>
+        <label>Cold Emails Sent
+          <input type="number" name="coldSent" min="0" step="1" />
+        </label>
+        <label>Cold Email Responses
+          <input type="number" name="coldResp" min="0" step="1" />
+        </label>
+        <label>Daily Deposits (weekly total $)
+          <input type="number" name="deposits" min="0" step="0.01" />
+        </label>
+        <label>Daily Revenue (weekly total $)
+          <input type="number" name="revenue" min="0" step="0.01" />
+        </label>
+        <label>Creators Signed Up
+          <input type="number" name="creators" min="0" step="1" />
+        </label>
+        <label>Brands Signed Up
+          <input type="number" name="brands" min="0" step="1" />
+        </label>
+        <label>New Campaigns &gt; $1k
+          <input type="number" name="campaigns" min="0" step="1" />
+        </label>
+        <label>MRR for Brands ($)
+          <input type="number" name="mrrBrands" min="0" step="0.01" />
+        </label>
+        <label>MRR for Creators ($)
+          <input type="number" name="mrrCreators" min="0" step="0.01" />
+        </label>
+        <label>Creator GMV ($)
+          <input type="number" name="gmv" min="0" step="0.01" />
+        </label>
+        <label>Shop Videos Produced (weekly total)
+          <input type="number" name="videos" min="0" step="1" />
+        </label>
+      </div>
+      <footer class="form-footer">
+        <button type="button" id="deleteWeekBtn" class="btn danger hidden">Delete Week</button>
+        <div class="spacer"></div>
+        <button type="button" id="cancelBtn" class="btn">Cancel</button>
+        <button type="submit" class="btn primary">Save Week</button>
+      </footer>
+    </form>
+  </div>
+</div>
+
+<footer class="pagefoot">
+  Data is stored locally in your browser. Export to JSON to back up or share between devices.
+</footer>
+
+<script src="dashboard.js"></script>
+</body>
+</html>
