@@ -18,6 +18,7 @@
   </div>
   <div class="actions">
     <button id="addWeekBtn" class="btn primary">+ Add / Edit Week</button>
+    <button id="manageRepsBtn" class="btn">Sales Reps</button>
     <button id="exportCsvBtn" class="btn">Export CSV</button>
     <button id="exportJsonBtn" class="btn">Export JSON</button>
     <label class="btn file-btn">
@@ -103,8 +104,12 @@
       <canvas id="landingChart"></canvas>
     </div>
     <div class="card">
-      <h3>Sales Activity</h3>
-      <canvas id="salesChart"></canvas>
+      <h3>Sales Calls by Rep</h3>
+      <canvas id="salesCallsChart"></canvas>
+    </div>
+    <div class="card">
+      <h3>New Clients by Rep</h3>
+      <canvas id="newClientsChart"></canvas>
     </div>
     <div class="card">
       <h3>Signups (Creators &amp; Brands)</h3>
@@ -239,6 +244,16 @@
           <input type="number" name="videos" min="0" step="1" />
         </label>
       </div>
+
+      <section class="rep-breakdown">
+        <header class="rep-breakdown-header">
+          <h4>Per-Rep Sales Breakdown</h4>
+          <span id="repBreakdownHint" class="hint">Configure your reps via the “Sales Reps” button.</span>
+        </header>
+        <div id="repInputsContainer" class="rep-inputs-grid"></div>
+        <div id="repTotals" class="rep-totals"></div>
+      </section>
+
       <footer class="form-footer">
         <button type="button" id="deleteWeekBtn" class="btn danger hidden">Delete Week</button>
         <div class="spacer"></div>
@@ -246,6 +261,27 @@
         <button type="submit" class="btn primary">Save Week</button>
       </footer>
     </form>
+  </div>
+</div>
+
+<div id="repsModal" class="modal hidden">
+  <div class="modal-card narrow">
+    <header>
+      <h3>Manage Sales Reps</h3>
+      <button id="closeRepsModal" class="icon-btn" aria-label="Close">&times;</button>
+    </header>
+    <div class="reps-body">
+      <p class="hint">Add the sales reps you want to track. Per-rep numbers entered for each week will roll up to the totals on the dashboard.</p>
+      <ul id="repsList" class="reps-list"></ul>
+      <div class="reps-add-row">
+        <input type="text" id="newRepName" placeholder="Rep name (e.g., Alex Chen)" />
+        <button type="button" id="addRepBtn" class="btn primary">Add Rep</button>
+      </div>
+    </div>
+    <footer class="form-footer">
+      <div class="spacer"></div>
+      <button type="button" id="closeRepsModalBtn" class="btn">Done</button>
+    </footer>
   </div>
 </div>
 

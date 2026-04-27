@@ -1,7 +1,32 @@
 /* JB Marketing Dashboard */
 (async () => {
   const STORAGE_KEY = 'jb-marketing-dashboard-v1';
+  const REPS_KEY    = 'jb-marketing-dashboard-reps-v1';
   const WINDSOR_URL = 'data/windsor.json';
+
+  const REP_PALETTE = ['#5b8dff','#2dd4bf','#f59e0b','#f472b6','#a78bfa','#facc15','#34d399','#60a5fa','#fb7185','#22d3ee'];
+
+  function loadReps() {
+    try {
+      const raw = localStorage.getItem(REPS_KEY);
+      if (!raw) return null;
+      const parsed = JSON.parse(raw);
+      return Array.isArray(parsed) ? parsed : null;
+    } catch { return null; }
+  }
+  function saveReps(reps) { localStorage.setItem(REPS_KEY, JSON.stringify(reps)); }
+  function newRepId() { return 'r_' + Math.random().toString(36).slice(2, 9); }
+
+  let reps = loadReps();
+  if (!reps) {
+    reps = [
+      { id: newRepId(), name: 'Alex Chen',   color: REP_PALETTE[0] },
+      { id: newRepId(), name: 'Sam Patel',   color: REP_PALETTE[1] },
+      { id: newRepId(), name: 'Jordan Liu',  color: REP_PALETTE[2] },
+    ];
+    saveReps(reps);
+  }
+  function repColor(rep, idx) { return rep.color || REP_PALETTE[idx % REP_PALETTE.length]; }
 
   const METRICS = [
     { key: 'organic',     label: 'Organic Traffic',        type: 'int' },
@@ -156,13 +181,29 @@
       const d = new Date(today);
       d.setDate(d.getDate() - i * 7);
       const base = 13 - i;
+      const totalCalls = 18 + base * 2 + rand(-3, 3);
+      const totalNew = 3 + Math.floor(base / 2) + rand(0, 2);
+      const callsByRep = {};
+      const newByRep = {};
+      let assignedCalls = 0, assignedNew = 0;
+      reps.forEach((rep, idx) => {
+        const isLast = idx === reps.length - 1;
+        const c = isLast ? Math.max(0, totalCalls - assignedCalls)
+                         : Math.max(0, Math.floor(totalCalls / reps.length) + rand(-2, 2));
+        const n = isLast ? Math.max(0, totalNew - assignedNew)
+                         : Math.max(0, Math.floor(totalNew / reps.length) + rand(0, 1));
+        callsByRep[rep.id] = c; assignedCalls += c;
+        newByRep[rep.id]   = n; assignedNew   += n;
+      });
       rows.push({
         weekStart: fmtDate(d),
         organic: 1200 + base * 140 + rand(-80, 80),
         paid: 800 + base * 90 + rand(-60, 60),
         costs: 3500 + base * 220 + rand(-200, 200),
-        salesCalls: 18 + base * 2 + rand(-3, 3),
-        newClients: 3 + Math.floor(base / 2) + rand(0, 2),
+        salesCalls: totalCalls,
+        newClients: totalNew,
+        salesCallsByRep: callsByRep,
+        newClientsByRep: newByRep,
         mktgSent: 4000 + base * 220,
         mktgViewed: 1600 + base * 100,
         mktgClicked: 280 + base * 24,
@@ -488,13 +529,44 @@
       options: baseOptions(),
     });
 
+    const coldResponseRate = mainRows.map(r => {
+      const sent = Number(r.coldSent) || 0;
+      const resp = Number(r.coldResp) || 0;
+      return sent > 0 ? +(100 * resp / sent).toFixed(2) : null;
+    });
     makeChart('coldEmailChart', {
-      type: 'bar',
       data: { labels, datasets: [
-        bar('Sent', 'coldSent', col(4)),
-        bar('Responses', 'coldResp', col(1)),
+        { ...bar('Sent', 'coldSent', col(4)), yAxisID: 'y' },
+        { ...bar('Responses', 'coldResp', col(1)), yAxisID: 'y' },
+        {
+          type: 'line',
+          label: 'Response Rate %',
+          data: coldResponseRate,
+          borderColor: col(2),
+          backgroundColor: col(2) + '33',
+          tension: .3,
+          pointRadius: 3,
+          borderWidth: 2,
+          yAxisID: 'y1',
+          spanGaps: true,
+        },
       ]},
-      options: baseOptions(),
+      options: baseOptions({
+        scales: {
+          x: { ticks: { color: '#9aa3bf' }, grid: { color: 'rgba(255,255,255,.05)' } },
+          y: {
+            type: 'linear', position: 'left', beginAtZero: true,
+            ticks: { color: '#9aa3bf' }, grid: { color: 'rgba(255,255,255,.05)' },
+            title: { display: true, text: 'Volume', color: '#9aa3bf' },
+          },
+          y1: {
+            type: 'linear', position: 'right', beginAtZero: true,
+            grid: { drawOnChartArea: false },
+            ticks: { color: '#9aa3bf', callback: (v) => v + '%' },
+            title: { display: true, text: 'Response %', color: '#9aa3bf' },
+          },
+        },
+      }),
     });
 
     makeChart('landingChart', {
@@ -506,13 +578,46 @@
       options: baseOptions(),
     });
 
-    makeChart('salesChart', {
+    const stackedRepDatasets = (breakdownKey, totalKey) => {
+      const anyRepData = mainRows.some(r => {
+        const m = r[breakdownKey];
+        return m && Object.values(m).some(v => Number(v) > 0);
+      });
+      if (!anyRepData || reps.length === 0) {
+        return [{
+          label: 'Total (no rep breakdown)',
+          data: mainRows.map(r => Number(r[totalKey]) || 0),
+          backgroundColor: '#5b8dff',
+          borderColor: '#5b8dff',
+          stack: 'rep',
+        }];
+      }
+      return reps.map((rep, idx) => ({
+        label: rep.name,
+        data: mainRows.map(r => {
+          const m = r[breakdownKey] || {};
+          return Number(m[rep.id]) || 0;
+        }),
+        backgroundColor: repColor(rep, idx),
+        borderColor: repColor(rep, idx),
+        stack: 'rep',
+      }));
+    };
+    const stackedOpts = baseOptions({
+      scales: {
+        x: { stacked: true, ticks: { color: '#9aa3bf' }, grid: { color: 'rgba(255,255,255,.05)' } },
+        y: { stacked: true, beginAtZero: true, ticks: { color: '#9aa3bf' }, grid: { color: 'rgba(255,255,255,.05)' } },
+      },
+    });
+    makeChart('salesCallsChart', {
       type: 'bar',
-      data: { labels, datasets: [
-        bar('Sales Calls', 'salesCalls', col(0)),
-        bar('New Clients', 'newClients', col(1)),
-      ]},
-      options: baseOptions(),
+      data: { labels, datasets: stackedRepDatasets('salesCallsByRep', 'salesCalls') },
+      options: stackedOpts,
+    });
+    makeChart('newClientsChart', {
+      type: 'bar',
+      data: { labels, datasets: stackedRepDatasets('newClientsByRep', 'newClients') },
+      options: stackedOpts,
     });
 
     makeChart('signupsChart', {
@@ -619,6 +724,78 @@
   const form = document.getElementById('weekForm');
   const modalTitle = document.getElementById('modalTitle');
   const deleteBtn = document.getElementById('deleteWeekBtn');
+  const repInputsContainer = document.getElementById('repInputsContainer');
+  const repTotalsEl = document.getElementById('repTotals');
+
+  function renderRepInputs(existing) {
+    repInputsContainer.innerHTML = '';
+    if (reps.length === 0) {
+      repInputsContainer.innerHTML = '<div class="rep-empty">No sales reps configured. Click <b>Sales Reps</b> in the top bar to add some.</div>';
+      updateRepTotals();
+      return;
+    }
+    const headers = document.createElement('div');
+    headers.className = 'rep-row-header';
+    headers.style.gridColumn = '1 / 2';
+    headers.textContent = 'Rep';
+    const h2 = document.createElement('div');
+    h2.className = 'rep-row-header';
+    h2.textContent = 'Calls';
+    const h3 = document.createElement('div');
+    h3.className = 'rep-row-header';
+    h3.textContent = 'New Clients';
+    repInputsContainer.append(headers, h2, h3);
+
+    reps.forEach((rep, idx) => {
+      const callsVal = (existing?.salesCallsByRep && existing.salesCallsByRep[rep.id]) ?? '';
+      const newVal   = (existing?.newClientsByRep && existing.newClientsByRep[rep.id]) ?? '';
+      const nameDiv = document.createElement('div');
+      nameDiv.className = 'rep-name';
+      nameDiv.innerHTML = `<span class="swatch" style="background:${repColor(rep, idx)}"></span>${rep.name}`;
+      const callsInput = document.createElement('input');
+      callsInput.type = 'number'; callsInput.min = '0'; callsInput.step = '1';
+      callsInput.dataset.rep = rep.id; callsInput.dataset.kind = 'calls';
+      callsInput.value = callsVal;
+      callsInput.addEventListener('input', updateRepTotals);
+      const newInput = document.createElement('input');
+      newInput.type = 'number'; newInput.min = '0'; newInput.step = '1';
+      newInput.dataset.rep = rep.id; newInput.dataset.kind = 'new';
+      newInput.value = newVal;
+      newInput.addEventListener('input', updateRepTotals);
+      repInputsContainer.append(nameDiv, callsInput, newInput);
+    });
+    updateRepTotals();
+  }
+
+  function readRepInputs() {
+    const calls = {}, news = {};
+    let callsSum = 0, newsSum = 0;
+    repInputsContainer.querySelectorAll('input[data-rep]').forEach(input => {
+      const v = parseInt(input.value, 10);
+      if (Number.isNaN(v) || v <= 0) return;
+      if (input.dataset.kind === 'calls') { calls[input.dataset.rep] = v; callsSum += v; }
+      else { news[input.dataset.rep] = v; newsSum += v; }
+    });
+    return { calls, news, callsSum, newsSum };
+  }
+
+  function updateRepTotals() {
+    if (!repTotalsEl) return;
+    if (reps.length === 0) { repTotalsEl.innerHTML = ''; return; }
+    const { callsSum, newsSum } = readRepInputs();
+    const totalCalls = parseInt(form.elements.salesCalls?.value, 10) || 0;
+    const totalNew   = parseInt(form.elements.newClients?.value, 10) || 0;
+    const callMatch  = totalCalls === 0 || callsSum === totalCalls;
+    const newMatch   = totalNew === 0 || newsSum === totalNew;
+    repTotalsEl.innerHTML = `
+      <span>Rep calls sum: <b>${callsSum}</b> ${totalCalls > 0 ? `<span class="${callMatch ? 'ok' : 'mismatch'}">(total: ${totalCalls})</span>` : ''}</span>
+      <span>Rep new clients sum: <b>${newsSum}</b> ${totalNew > 0 ? `<span class="${newMatch ? 'ok' : 'mismatch'}">(total: ${totalNew})</span>` : ''}</span>
+    `;
+  }
+  // Recalc totals row when the global totals fields change too.
+  ['salesCalls','newClients'].forEach(name => {
+    form.elements[name]?.addEventListener('input', updateRepTotals);
+  });
 
   function openModal(weekStart) {
     form.reset();
@@ -631,13 +808,14 @@
       modalTitle.textContent = 'Edit Week';
       deleteBtn.classList.remove('hidden');
       Object.entries(existing).forEach(([k,v]) => {
-        if (form.elements[k]) form.elements[k].value = v;
+        if (form.elements[k] && typeof v !== 'object') form.elements[k].value = v;
       });
     } else {
       modalTitle.textContent = 'Add Week';
       deleteBtn.classList.add('hidden');
       form.elements.weekStart.value = fmtDate(today);
     }
+    renderRepInputs(existing);
     modal.classList.remove('hidden');
   }
   function closeModal() { modal.classList.add('hidden'); }
@@ -652,6 +830,15 @@
     for (const m of METRICS) {
       const v = raw[m.key];
       row[m.key] = v === '' || v === undefined ? 0 : (m.type === 'money' ? Number(v) : parseInt(v, 10) || 0);
+    }
+    const { calls, news, callsSum, newsSum } = readRepInputs();
+    if (Object.keys(calls).length) {
+      row.salesCallsByRep = calls;
+      if (!row.salesCalls) row.salesCalls = callsSum;
+    }
+    if (Object.keys(news).length) {
+      row.newClientsByRep = news;
+      if (!row.newClients) row.newClients = newsSum;
     }
     const idx = manualData.findIndex(r => r.weekStart === weekStart);
     if (idx >= 0) manualData[idx] = row; else manualData.push(row);
@@ -676,6 +863,86 @@
   document.getElementById('cancelBtn').addEventListener('click', closeModal);
   modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
 
+  /* ---------- Reps modal ---------- */
+  const repsModal       = document.getElementById('repsModal');
+  const repsListEl      = document.getElementById('repsList');
+  const newRepNameInput = document.getElementById('newRepName');
+
+  function renderRepsList() {
+    repsListEl.innerHTML = '';
+    if (reps.length === 0) {
+      const li = document.createElement('li');
+      li.innerHTML = '<span class="hint">No reps yet — add one below.</span>';
+      repsListEl.appendChild(li);
+      return;
+    }
+    reps.forEach((rep, idx) => {
+      const li = document.createElement('li');
+      const swatch = document.createElement('input');
+      swatch.type = 'color';
+      swatch.value = repColor(rep, idx);
+      swatch.title = 'Color';
+      swatch.style.width = '32px';
+      swatch.style.padding = '0';
+      swatch.style.border = '0';
+      swatch.style.background = 'transparent';
+      swatch.addEventListener('input', () => {
+        rep.color = swatch.value;
+        saveReps(reps);
+        renderAll();
+      });
+      const nameInput = document.createElement('input');
+      nameInput.type = 'text';
+      nameInput.value = rep.name;
+      nameInput.addEventListener('change', () => {
+        const v = nameInput.value.trim();
+        if (!v) return;
+        rep.name = v;
+        saveReps(reps);
+        renderAll();
+      });
+      const del = document.createElement('button');
+      del.type = 'button';
+      del.className = 'icon-btn';
+      del.innerHTML = '&times;';
+      del.title = 'Remove rep';
+      del.addEventListener('click', () => {
+        if (!confirm(`Remove ${rep.name}? Their historical per-rep data will remain in saved weeks but won't show in the chart.`)) return;
+        reps = reps.filter(r => r.id !== rep.id);
+        saveReps(reps);
+        renderRepsList();
+        renderAll();
+      });
+      li.append(swatch, nameInput, del);
+      repsListEl.appendChild(li);
+    });
+  }
+
+  function openRepsModal() {
+    renderRepsList();
+    repsModal.classList.remove('hidden');
+  }
+  function closeRepsModal() { repsModal.classList.add('hidden'); }
+
+  document.getElementById('manageRepsBtn').addEventListener('click', openRepsModal);
+  document.getElementById('closeRepsModal').addEventListener('click', closeRepsModal);
+  document.getElementById('closeRepsModalBtn').addEventListener('click', closeRepsModal);
+  repsModal.addEventListener('click', (e) => { if (e.target === repsModal) closeRepsModal(); });
+
+  document.getElementById('addRepBtn').addEventListener('click', () => {
+    const name = newRepNameInput.value.trim();
+    if (!name) return;
+    const color = REP_PALETTE[reps.length % REP_PALETTE.length];
+    reps.push({ id: newRepId(), name, color });
+    saveReps(reps);
+    newRepNameInput.value = '';
+    renderRepsList();
+    renderAll();
+  });
+  newRepNameInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') { e.preventDefault(); document.getElementById('addRepBtn').click(); }
+  });
+
   /* ---------- Export / Import ---------- */
   function download(filename, content, mime) {
     const blob = new Blob([content], { type: mime });
@@ -692,10 +959,18 @@
   });
 
   document.getElementById('exportCsvBtn').addEventListener('click', () => {
-    const cols = ['weekStart', ...METRICS.map(m => m.key)];
+    const baseCols = ['weekStart', ...METRICS.map(m => m.key)];
+    const repCallCols = reps.map(r => `calls__${r.name}`);
+    const repNewCols  = reps.map(r => `newClients__${r.name}`);
+    const cols = [...baseCols, ...repCallCols, ...repNewCols];
     const head = cols.join(',');
     const rows = [...data].sort((a,b) => a.weekStart.localeCompare(b.weekStart))
-      .map(r => cols.map(c => JSON.stringify(r[c] ?? '')).join(','));
+      .map(r => {
+        const baseVals = baseCols.map(c => JSON.stringify(r[c] ?? ''));
+        const callsVals = reps.map(rep => JSON.stringify((r.salesCallsByRep && r.salesCallsByRep[rep.id]) ?? ''));
+        const newsVals  = reps.map(rep => JSON.stringify((r.newClientsByRep  && r.newClientsByRep[rep.id])  ?? ''));
+        return [...baseVals, ...callsVals, ...newsVals].join(',');
+      });
     download('jb-marketing-dashboard.csv', [head, ...rows].join('\n'), 'text/csv');
   });
 
