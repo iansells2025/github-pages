@@ -1,5 +1,42 @@
 {
-  "updatedAt": "2026-04-27T22:45:46.624Z",
+  "updatedAt": "2026-04-27T23:14:46.129Z",
   "source": "windsor.ai",
-  "weeks": []
+  "endpoint": "blended",
+  "weeks": [
+    {
+      "weekStart": "2026-04-20",
+      "costs": 2756.13
+    }
+  ],
+  "weeksBySource": {
+    "2026-04-20": {
+      "facebook": {
+        "costs": 2756.13
+      }
+    }
+  },
+  "sourcesDiscovered": [
+    "facebook",
+    "google_ads",
+    "intercom"
+  ],
+  "sourcesMapped": [
+    "facebook"
+  ],
+  "sourcesUnmapped": [
+    "google_ads",
+    "intercom"
+  ],
+  "sampleRowKeys": [
+    "account_name",
+    "datasource",
+    "date",
+    "followers_count",
+    "source",
+    "campaign",
+    "spend",
+    "email"
+  ],
+  "rowCount": 6432,
+  "usableRowCount": 73
 }
