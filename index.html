@@ -33,15 +33,43 @@
 
   <section class="filters">
     <div class="filter-group">
-      <label for="rangeSelect">Range</label>
-      <select id="rangeSelect">
+      <label for="presetSelect">Range</label>
+      <select id="presetSelect">
         <option value="4">Last 4 weeks</option>
         <option value="8">Last 8 weeks</option>
         <option value="13" selected>Last 13 weeks</option>
         <option value="26">Last 26 weeks</option>
         <option value="52">Last 52 weeks</option>
-        <option value="all">All weeks</option>
+        <option value="ytd">Year to date</option>
+        <option value="qtd">Quarter to date</option>
+        <option value="mtd">Month to date</option>
+        <option value="all">All time</option>
+        <option value="custom">Custom…</option>
       </select>
+    </div>
+    <div class="filter-group" id="customRangeGroup" hidden>
+      <label for="rangeStart">From</label>
+      <input type="date" id="rangeStart" />
+      <label for="rangeEnd">To</label>
+      <input type="date" id="rangeEnd" />
+    </div>
+    <div class="filter-group">
+      <label for="compareSelect">Compare</label>
+      <select id="compareSelect">
+        <option value="none">No comparison</option>
+        <option value="prev" selected>Previous period</option>
+        <option value="year">Previous year</option>
+        <option value="custom">Custom…</option>
+      </select>
+    </div>
+    <div class="filter-group" id="customCompareGroup" hidden>
+      <label for="compareStart">From</label>
+      <input type="date" id="compareStart" />
+      <label for="compareEnd">To</label>
+      <input type="date" id="compareEnd" />
+    </div>
+    <div class="filter-group range-summary">
+      <span id="rangeLabel" class="range-label"></span>
     </div>
   </section>
 

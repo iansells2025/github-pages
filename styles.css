@@ -110,12 +110,30 @@ main { padding: 24px 28px 48px; }
 
 .filters {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 12px;
+  gap: 14px 18px;
   margin-bottom: 14px;
+  padding: 12px 14px;
+  background: linear-gradient(180deg, var(--panel), var(--panel-2));
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  box-shadow: var(--shadow);
 }
-.filter-group { display: flex; align-items: center; gap: 8px; }
-.filter-group label { color: var(--muted); font-size: 13px; }
+.filter-group { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.filter-group label { color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: .5px; }
+.filter-group[hidden] { display: none; }
+.range-summary { margin-left: auto; }
+.range-label {
+  color: var(--muted);
+  font-size: 12.5px;
+  background: rgba(91,141,255,.08);
+  border: 1px solid rgba(91,141,255,.25);
+  padding: 6px 10px;
+  border-radius: 999px;
+}
+.range-label .vs { color: #cfd6ec; margin: 0 6px; }
+.range-label .compare { color: var(--accent); }
 select, input[type="date"], input[type="number"] {
   background: var(--panel-2);
   color: var(--text);

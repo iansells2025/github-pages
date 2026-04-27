@@ -187,14 +187,124 @@
 
   /* ---------- Rendering ---------- */
   const charts = {};
-  const rangeSelect = document.getElementById('rangeSelect');
 
-  function getVisibleRows() {
-    const sorted = [...data].sort((a,b) => a.weekStart.localeCompare(b.weekStart));
-    const v = rangeSelect.value;
-    if (v === 'all') return sorted;
-    const n = parseInt(v, 10);
-    return sorted.slice(-n);
+  const presetSelect    = document.getElementById('presetSelect');
+  const compareSelect   = document.getElementById('compareSelect');
+  const rangeStartInput = document.getElementById('rangeStart');
+  const rangeEndInput   = document.getElementById('rangeEnd');
+  const compareStartInput = document.getElementById('compareStart');
+  const compareEndInput   = document.getElementById('compareEnd');
+  const customRangeGroup  = document.getElementById('customRangeGroup');
+  const customCompareGroup= document.getElementById('customCompareGroup');
+  const rangeLabelEl      = document.getElementById('rangeLabel');
+
+  const ONE_WEEK_MS = 7 * 86400000;
+
+  function snapMonday(input) {
+    if (!input) return null;
+    const d = new Date(input + 'T00:00:00');
+    if (Number.isNaN(d.getTime())) return null;
+    return fmtDate(toMonday(d));
+  }
+
+  function weeksBetween(startISO, endISO) {
+    return Math.round((new Date(endISO) - new Date(startISO)) / ONE_WEEK_MS) + 1;
+  }
+
+  function shiftWeekISO(iso, weeks) {
+    const d = new Date(iso);
+    d.setDate(d.getDate() + weeks * 7);
+    return fmtDate(d);
+  }
+
+  function dataBoundsISO() {
+    const sorted = [...data].sort((a, b) => a.weekStart.localeCompare(b.weekStart));
+    if (sorted.length === 0) {
+      const today = fmtDate(toMonday(new Date()));
+      return { first: today, last: today };
+    }
+    return { first: sorted[0].weekStart, last: sorted[sorted.length - 1].weekStart };
+  }
+
+  function resolveMainRange() {
+    const { first, last } = dataBoundsISO();
+    const preset = presetSelect.value;
+
+    if (preset === 'custom') {
+      const s = snapMonday(rangeStartInput.value);
+      const e = snapMonday(rangeEndInput.value);
+      if (s && e && s <= e) return { start: s, end: e, mode: 'custom' };
+      return { start: first, end: last, mode: 'all' };
+    }
+    if (preset === 'all') return { start: first, end: last, mode: 'all' };
+    if (preset === 'ytd') {
+      const y = new Date().getFullYear();
+      return { start: fmtDate(toMonday(new Date(y, 0, 4))), end: last, mode: 'ytd' };
+    }
+    if (preset === 'qtd') {
+      const now = new Date();
+      const q = Math.floor(now.getMonth() / 3) * 3;
+      return { start: fmtDate(toMonday(new Date(now.getFullYear(), q, 1))), end: last, mode: 'qtd' };
+    }
+    if (preset === 'mtd') {
+      const now = new Date();
+      return { start: fmtDate(toMonday(new Date(now.getFullYear(), now.getMonth(), 1))), end: last, mode: 'mtd' };
+    }
+    const n = parseInt(preset, 10);
+    const start = shiftWeekISO(last, -(n - 1));
+    return { start, end: last, mode: `last-${n}` };
+  }
+
+  function resolveCompareRange(main) {
+    const mode = compareSelect.value;
+    if (mode === 'none' || !main.start) return { start: null, end: null, mode };
+
+    if (mode === 'custom') {
+      const s = snapMonday(compareStartInput.value);
+      const e = snapMonday(compareEndInput.value);
+      if (s && e && s <= e) return { start: s, end: e, mode };
+      return { start: null, end: null, mode };
+    }
+    if (mode === 'year') {
+      return { start: shiftWeekISO(main.start, -52), end: shiftWeekISO(main.end, -52), mode };
+    }
+    // 'prev' (immediately preceding period of equal length)
+    const len = weeksBetween(main.start, main.end);
+    const end = shiftWeekISO(main.start, -1);
+    const start = shiftWeekISO(end, -(len - 1));
+    return { start, end, mode };
+  }
+
+  function rowsInRange(range) {
+    if (!range.start || !range.end) return [];
+    return [...data]
+      .filter(r => r.weekStart >= range.start && r.weekStart <= range.end)
+      .sort((a, b) => a.weekStart.localeCompare(b.weekStart));
+  }
+
+  function rangeReadable(range) {
+    if (!range.start) return '—';
+    const fmtD = (iso) => {
+      const d = new Date(iso);
+      return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
+    };
+    const w = weeksBetween(range.start, range.end);
+    return `${fmtD(range.start)} – ${fmtD(range.end)} (${w} wk${w === 1 ? '' : 's'})`;
+  }
+
+  function syncRangeInputsFromState() {
+    const main = resolveMainRange();
+    if (presetSelect.value !== 'custom') {
+      rangeStartInput.value = main.start;
+      rangeEndInput.value = main.end;
+    }
+    const cmp = resolveCompareRange(main);
+    if (compareSelect.value !== 'custom' && cmp.start) {
+      compareStartInput.value = cmp.start;
+      compareEndInput.value = cmp.end;
+    }
+    customRangeGroup.hidden = presetSelect.value !== 'custom';
+    customCompareGroup.hidden = compareSelect.value !== 'custom';
   }
 
   function sumKey(rows, key) {
@@ -207,31 +317,29 @@
     return 0;
   }
 
-  function renderKpis() {
-    const rows = getVisibleRows();
-    const prevRows = (() => {
-      const sorted = [...data].sort((a,b) => a.weekStart.localeCompare(b.weekStart));
-      if (rangeSelect.value === 'all') return [];
-      const n = parseInt(rangeSelect.value, 10);
-      return sorted.slice(-n * 2, -n);
-    })();
-
+  function renderKpis(mainRows, compareRows, compareMode) {
     const wrap = document.getElementById('kpis');
     wrap.innerHTML = '';
 
     KPI_LIST.forEach(kpi => {
-      const current = kpi.latest ? latestKey(rows, kpi.key) : sumKey(rows, kpi.key);
-      const previous = kpi.latest ? latestKey(prevRows, kpi.key) : sumKey(prevRows, kpi.key);
+      const current  = kpi.latest ? latestKey(mainRows, kpi.key)    : sumKey(mainRows, kpi.key);
+      const previous = kpi.latest ? latestKey(compareRows, kpi.key) : sumKey(compareRows, kpi.key);
+
       let deltaPct = null;
-      if (previous > 0) deltaPct = ((current - previous) / previous) * 100;
+      if (compareMode !== 'none' && previous > 0) deltaPct = ((current - previous) / previous) * 100;
 
       const div = document.createElement('div');
       div.className = 'kpi';
       const isGood = kpi.invert ? (deltaPct !== null && deltaPct < 0) : (deltaPct !== null && deltaPct > 0);
-      const isBad = kpi.invert ? (deltaPct !== null && deltaPct > 0) : (deltaPct !== null && deltaPct < 0);
+      const isBad  = kpi.invert ? (deltaPct !== null && deltaPct > 0) : (deltaPct !== null && deltaPct < 0);
       const deltaClass = deltaPct === null ? 'flat' : (isGood ? 'up' : (isBad ? 'down' : 'flat'));
-      const deltaText = deltaPct === null ? 'vs prior —' :
-        `${deltaPct >= 0 ? '▲' : '▼'} ${Math.abs(deltaPct).toFixed(1)}% vs prior period`;
+      const compareLabelMap = { prev: 'previous period', year: 'previous year', custom: 'custom range' };
+      const compareLabel = compareLabelMap[compareMode] || 'comparison';
+      const deltaText = compareMode === 'none'
+        ? 'no comparison'
+        : deltaPct === null
+          ? `vs ${compareLabel} —`
+          : `${deltaPct >= 0 ? '▲' : '▼'} ${Math.abs(deltaPct).toFixed(1)}% vs ${compareLabel}`;
 
       div.innerHTML = `
         <div class="label">${kpi.label}${kpi.latest ? ' (latest)' : ''}</div>
@@ -274,31 +382,85 @@
     charts[id] = new Chart(ctx, config);
   }
 
-  function renderCharts() {
-    const rows = getVisibleRows();
-    const labels = rows.map(r => shortWeekLabel(r.weekStart));
+  function renderCharts(mainRows, compareRows, compareMode) {
+    const labels = mainRows.map(r => shortWeekLabel(r.weekStart));
     const col = (i) => chartColors[i % chartColors.length];
+
+    // Align compare values to main labels by index (compare period plotted onto current x-axis)
+    const compareDates = compareRows.map(r => r.weekStart);
+    const compareValAt = (i, key) => {
+      const r = compareRows[i];
+      return r ? (Number(r[key]) || 0) : null;
+    };
+    const compareLabelTag = compareMode === 'year' ? 'prior yr'
+                          : compareMode === 'custom' ? 'compare'
+                          : 'prior';
+
     const line = (label, key, color) => ({
-      label, data: rows.map(r => Number(r[key]) || 0),
+      label, data: mainRows.map(r => Number(r[key]) || 0),
       borderColor: color, backgroundColor: color + '33',
       tension: .3, fill: false, pointRadius: 2, borderWidth: 2,
     });
+    const compareLine = (label, key, color) => ({
+      label: `${label} (${compareLabelTag})`,
+      data: labels.map((_, i) => compareValAt(i, key)),
+      borderColor: color,
+      backgroundColor: 'transparent',
+      borderDash: [6, 4],
+      borderWidth: 1.5,
+      tension: .3,
+      fill: false,
+      pointRadius: 1,
+      pointHoverRadius: 3,
+      spanGaps: true,
+    });
     const bar = (label, key, color) => ({
-      label, data: rows.map(r => Number(r[key]) || 0),
+      label, data: mainRows.map(r => Number(r[key]) || 0),
       backgroundColor: color, borderColor: color, borderWidth: 1,
     });
 
-    makeChart('trafficChart', {
-      type: 'line',
-      data: { labels, datasets: [ line('Organic', 'organic', col(0)), line('Paid', 'paid', col(1)) ] },
-      options: baseOptions(),
+    const compareTooltipFooter = (items) => {
+      if (compareMode === 'none' || !items.length) return '';
+      const i = items[0].dataIndex;
+      const cd = compareDates[i];
+      return cd ? `Compared to week of ${cd}` : '';
+    };
+    const optsLine = baseOptions({
+      plugins: {
+        legend: { labels: { color: '#cfd6ec', boxWidth: 10, boxHeight: 10 } },
+        tooltip: {
+          backgroundColor: '#111732', borderColor: '#2a355b', borderWidth: 1,
+          titleColor: '#e7ecf7', bodyColor: '#cfd6ec',
+          callbacks: { footer: compareTooltipFooter },
+        },
+      },
     });
 
-    makeChart('revenueChart', {
+    const lineChart = (id, datasets) => makeChart(id, {
       type: 'line',
-      data: { labels, datasets: [ line('Revenue', 'revenue', col(0)), line('Deposits', 'deposits', col(2)) ] },
-      options: baseOptions(),
+      data: { labels, datasets },
+      options: optsLine,
     });
+
+    const trafficSets = [
+      line('Organic', 'organic', col(0)),
+      line('Paid', 'paid', col(1)),
+    ];
+    if (compareMode !== 'none' && compareRows.length) {
+      trafficSets.push(compareLine('Organic', 'organic', col(0)));
+      trafficSets.push(compareLine('Paid', 'paid', col(1)));
+    }
+    lineChart('trafficChart', trafficSets);
+
+    const revenueSets = [
+      line('Revenue', 'revenue', col(0)),
+      line('Deposits', 'deposits', col(2)),
+    ];
+    if (compareMode !== 'none' && compareRows.length) {
+      revenueSets.push(compareLine('Revenue', 'revenue', col(0)));
+      revenueSets.push(compareLine('Deposits', 'deposits', col(2)));
+    }
+    lineChart('revenueChart', revenueSets);
 
     makeChart('costRevenueChart', {
       type: 'bar',
@@ -306,11 +468,15 @@
       options: baseOptions(),
     });
 
-    makeChart('mrrChart', {
-      type: 'line',
-      data: { labels, datasets: [ line('MRR Brands', 'mrrBrands', col(0)), line('MRR Creators', 'mrrCreators', col(4)) ] },
-      options: baseOptions(),
-    });
+    const mrrSets = [
+      line('MRR Brands', 'mrrBrands', col(0)),
+      line('MRR Creators', 'mrrCreators', col(4)),
+    ];
+    if (compareMode !== 'none' && compareRows.length) {
+      mrrSets.push(compareLine('MRR Brands', 'mrrBrands', col(0)));
+      mrrSets.push(compareLine('MRR Creators', 'mrrCreators', col(4)));
+    }
+    lineChart('mrrChart', mrrSets);
 
     makeChart('emailChart', {
       type: 'bar',
@@ -358,11 +524,11 @@
       options: baseOptions(),
     });
 
-    makeChart('gmvChart', {
-      type: 'line',
-      data: { labels, datasets: [ line('Creator GMV', 'gmv', col(1)) ] },
-      options: baseOptions(),
-    });
+    const gmvSets = [ line('Creator GMV', 'gmv', col(1)) ];
+    if (compareMode !== 'none' && compareRows.length) {
+      gmvSets.push(compareLine('Creator GMV', 'gmv', col(1)));
+    }
+    lineChart('gmvChart', gmvSets);
 
     makeChart('campaignsChart', {
       type: 'bar',
@@ -377,12 +543,12 @@
     });
   }
 
-  function renderTable() {
+  function renderTable(mainRows) {
     const tbody = document.getElementById('weeksBody');
-    const rows = [...data].sort((a,b) => b.weekStart.localeCompare(a.weekStart));
+    const rows = [...mainRows].sort((a,b) => b.weekStart.localeCompare(a.weekStart));
     tbody.innerHTML = '';
     if (rows.length === 0) {
-      tbody.innerHTML = `<tr class="empty-row"><td colspan="23">No weekly data yet. Click <b>Add / Edit Week</b> to get started.</td></tr>`;
+      tbody.innerHTML = `<tr class="empty-row"><td colspan="23">No weeks in this range. Pick a wider range or click <b>Add / Edit Week</b>.</td></tr>`;
       return;
     }
     for (const r of rows) {
@@ -430,7 +596,23 @@
     }
   }
 
-  function renderAll() { renderKpis(); renderCharts(); renderTable(); }
+  function renderAll() {
+    syncRangeInputsFromState();
+    const main = resolveMainRange();
+    const compare = resolveCompareRange(main);
+    const mainRows = rowsInRange(main);
+    const compareRows = rowsInRange(compare);
+
+    renderKpis(mainRows, compareRows, compare.mode);
+    renderCharts(mainRows, compareRows, compare.mode);
+    renderTable(mainRows);
+
+    if (rangeLabelEl) {
+      const cmpText = compare.mode === 'none' ? '' :
+        ` <span class="vs">vs</span> <span class="compare">${rangeReadable(compare)}</span>`;
+      rangeLabelEl.innerHTML = `${rangeReadable(main)}${cmpText}`;
+    }
+  }
 
   /* ---------- Modal ---------- */
   const modal = document.getElementById('modal');
@@ -544,7 +726,24 @@
     renderAll();
   });
 
-  rangeSelect.addEventListener('change', renderAll);
+  presetSelect.addEventListener('change', () => {
+    customRangeGroup.hidden = presetSelect.value !== 'custom';
+    renderAll();
+  });
+  compareSelect.addEventListener('change', () => {
+    customCompareGroup.hidden = compareSelect.value !== 'custom';
+    renderAll();
+  });
+  [rangeStartInput, rangeEndInput].forEach(el => el.addEventListener('change', () => {
+    if (presetSelect.value !== 'custom') presetSelect.value = 'custom';
+    customRangeGroup.hidden = false;
+    renderAll();
+  }));
+  [compareStartInput, compareEndInput].forEach(el => el.addEventListener('change', () => {
+    if (compareSelect.value !== 'custom') compareSelect.value = 'custom';
+    customCompareGroup.hidden = false;
+    renderAll();
+  }));
 
   /* ---------- Freshness footer ---------- */
   function renderFreshness() {
