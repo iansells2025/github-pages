@@ -1,7 +1,32 @@
 /* JB Marketing Dashboard */
 (async () => {
   const STORAGE_KEY = 'jb-marketing-dashboard-v1';
+  const REPS_KEY    = 'jb-marketing-dashboard-reps-v1';
   const WINDSOR_URL = 'data/windsor.json';
+
+  const REP_PALETTE = ['#5b8dff','#2dd4bf','#f59e0b','#f472b6','#a78bfa','#facc15','#34d399','#60a5fa','#fb7185','#22d3ee'];
+
+  function loadReps() {
+    try {
+      const raw = localStorage.getItem(REPS_KEY);
+      if (!raw) return null;
+      const parsed = JSON.parse(raw);
+      return Array.isArray(parsed) ? parsed : null;
+    } catch { return null; }
+  }
+  function saveReps(reps) { localStorage.setItem(REPS_KEY, JSON.stringify(reps)); }
+  function newRepId() { return 'r_' + Math.random().toString(36).slice(2, 9); }
+
+  let reps = loadReps();
+  if (!reps) {
+    reps = [
+      { id: newRepId(), name: 'Alex Chen',   color: REP_PALETTE[0] },
+      { id: newRepId(), name: 'Sam Patel',   color: REP_PALETTE[1] },
+      { id: newRepId(), name: 'Jordan Liu',  color: REP_PALETTE[2] },
+    ];
+    saveReps(reps);
+  }
+  function repColor(rep, idx) { return rep.color || REP_PALETTE[idx % REP_PALETTE.length]; }
 
   const METRICS = [
     { key: 'organic',     label: 'Organic Traffic',        type: 'int' },
@@ -156,13 +181,29 @@
       const d = new Date(today);
       d.setDate(d.getDate() - i * 7);
       const base = 13 - i;
+      const totalCalls = 18 + base * 2 + rand(-3, 3);
+      const totalNew = 3 + Math.floor(base / 2) + rand(0, 2);
+      const callsByRep = {};
+      const newByRep = {};
+      let assignedCalls = 0, assignedNew = 0;
+      reps.forEach((rep, idx) => {
+        const isLast = idx === reps.length - 1;
+        const c = isLast ? Math.max(0, totalCalls - assignedCalls)
+                         : Math.max(0, Math.floor(totalCalls / reps.length) + rand(-2, 2));
+        const n = isLast ? Math.max(0, totalNew - assignedNew)
+                         : Math.max(0, Math.floor(totalNew / reps.length) + rand(0, 1));
+        callsByRep[rep.id] = c; assignedCalls += c;
+        newByRep[rep.id]   = n; assignedNew   += n;
+      });
       rows.push({
         weekStart: fmtDate(d),
         organic: 1200 + base * 140 + rand(-80, 80),
         paid: 800 + base * 90 + rand(-60, 60),
         costs: 3500 + base * 220 + rand(-200, 200),
-        salesCalls: 18 + base * 2 + rand(-3, 3),
-        newClients: 3 + Math.floor(base / 2) + rand(0, 2),
+        salesCalls: totalCalls,
+        newClients: totalNew,
+        salesCallsByRep: callsByRep,
+        newClientsByRep: newByRep,
         mktgSent: 4000 + base * 220,
         mktgViewed: 1600 + base * 100,
         mktgClicked: 280 + base * 24,
@@ -187,14 +228,124 @@
 
   /* ---------- Rendering ---------- */
   const charts = {};
-  const rangeSelect = document.getElementById('rangeSelect');
 
-  function getVisibleRows() {
-    const sorted = [...data].sort((a,b) => a.weekStart.localeCompare(b.weekStart));
-    const v = rangeSelect.value;
-    if (v === 'all') return sorted;
-    const n = parseInt(v, 10);
-    return sorted.slice(-n);
+  const presetSelect    = document.getElementById('presetSelect');
+  const compareSelect   = document.getElementById('compareSelect');
+  const rangeStartInput = document.getElementById('rangeStart');
+  const rangeEndInput   = document.getElementById('rangeEnd');
+  const compareStartInput = document.getElementById('compareStart');
+  const compareEndInput   = document.getElementById('compareEnd');
+  const customRangeGroup  = document.getElementById('customRangeGroup');
+  const customCompareGroup= document.getElementById('customCompareGroup');
+  const rangeLabelEl      = document.getElementById('rangeLabel');
+
+  const ONE_WEEK_MS = 7 * 86400000;
+
+  function snapMonday(input) {
+    if (!input) return null;
+    const d = new Date(input + 'T00:00:00');
+    if (Number.isNaN(d.getTime())) return null;
+    return fmtDate(toMonday(d));
+  }
+
+  function weeksBetween(startISO, endISO) {
+    return Math.round((new Date(endISO) - new Date(startISO)) / ONE_WEEK_MS) + 1;
+  }
+
+  function shiftWeekISO(iso, weeks) {
+    const d = new Date(iso);
+    d.setDate(d.getDate() + weeks * 7);
+    return fmtDate(d);
+  }
+
+  function dataBoundsISO() {
+    const sorted = [...data].sort((a, b) => a.weekStart.localeCompare(b.weekStart));
+    if (sorted.length === 0) {
+      const today = fmtDate(toMonday(new Date()));
+      return { first: today, last: today };
+    }
+    return { first: sorted[0].weekStart, last: sorted[sorted.length - 1].weekStart };
+  }
+
+  function resolveMainRange() {
+    const { first, last } = dataBoundsISO();
+    const preset = presetSelect.value;
+
+    if (preset === 'custom') {
+      const s = snapMonday(rangeStartInput.value);
+      const e = snapMonday(rangeEndInput.value);
+      if (s && e && s <= e) return { start: s, end: e, mode: 'custom' };
+      return { start: first, end: last, mode: 'all' };
+    }
+    if (preset === 'all') return { start: first, end: last, mode: 'all' };
+    if (preset === 'ytd') {
+      const y = new Date().getFullYear();
+      return { start: fmtDate(toMonday(new Date(y, 0, 4))), end: last, mode: 'ytd' };
+    }
+    if (preset === 'qtd') {
+      const now = new Date();
+      const q = Math.floor(now.getMonth() / 3) * 3;
+      return { start: fmtDate(toMonday(new Date(now.getFullYear(), q, 1))), end: last, mode: 'qtd' };
+    }
+    if (preset === 'mtd') {
+      const now = new Date();
+      return { start: fmtDate(toMonday(new Date(now.getFullYear(), now.getMonth(), 1))), end: last, mode: 'mtd' };
+    }
+    const n = parseInt(preset, 10);
+    const start = shiftWeekISO(last, -(n - 1));
+    return { start, end: last, mode: `last-${n}` };
+  }
+
+  function resolveCompareRange(main) {
+    const mode = compareSelect.value;
+    if (mode === 'none' || !main.start) return { start: null, end: null, mode };
+
+    if (mode === 'custom') {
+      const s = snapMonday(compareStartInput.value);
+      const e = snapMonday(compareEndInput.value);
+      if (s && e && s <= e) return { start: s, end: e, mode };
+      return { start: null, end: null, mode };
+    }
+    if (mode === 'year') {
+      return { start: shiftWeekISO(main.start, -52), end: shiftWeekISO(main.end, -52), mode };
+    }
+    // 'prev' (immediately preceding period of equal length)
+    const len = weeksBetween(main.start, main.end);
+    const end = shiftWeekISO(main.start, -1);
+    const start = shiftWeekISO(end, -(len - 1));
+    return { start, end, mode };
+  }
+
+  function rowsInRange(range) {
+    if (!range.start || !range.end) return [];
+    return [...data]
+      .filter(r => r.weekStart >= range.start && r.weekStart <= range.end)
+      .sort((a, b) => a.weekStart.localeCompare(b.weekStart));
+  }
+
+  function rangeReadable(range) {
+    if (!range.start) return '—';
+    const fmtD = (iso) => {
+      const d = new Date(iso);
+      return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
+    };
+    const w = weeksBetween(range.start, range.end);
+    return `${fmtD(range.start)} – ${fmtD(range.end)} (${w} wk${w === 1 ? '' : 's'})`;
+  }
+
+  function syncRangeInputsFromState() {
+    const main = resolveMainRange();
+    if (presetSelect.value !== 'custom') {
+      rangeStartInput.value = main.start;
+      rangeEndInput.value = main.end;
+    }
+    const cmp = resolveCompareRange(main);
+    if (compareSelect.value !== 'custom' && cmp.start) {
+      compareStartInput.value = cmp.start;
+      compareEndInput.value = cmp.end;
+    }
+    customRangeGroup.hidden = presetSelect.value !== 'custom';
+    customCompareGroup.hidden = compareSelect.value !== 'custom';
   }
 
   function sumKey(rows, key) {
@@ -207,31 +358,29 @@
     return 0;
   }
 
-  function renderKpis() {
-    const rows = getVisibleRows();
-    const prevRows = (() => {
-      const sorted = [...data].sort((a,b) => a.weekStart.localeCompare(b.weekStart));
-      if (rangeSelect.value === 'all') return [];
-      const n = parseInt(rangeSelect.value, 10);
-      return sorted.slice(-n * 2, -n);
-    })();
-
+  function renderKpis(mainRows, compareRows, compareMode) {
     const wrap = document.getElementById('kpis');
     wrap.innerHTML = '';
 
     KPI_LIST.forEach(kpi => {
-      const current = kpi.latest ? latestKey(rows, kpi.key) : sumKey(rows, kpi.key);
-      const previous = kpi.latest ? latestKey(prevRows, kpi.key) : sumKey(prevRows, kpi.key);
+      const current  = kpi.latest ? latestKey(mainRows, kpi.key)    : sumKey(mainRows, kpi.key);
+      const previous = kpi.latest ? latestKey(compareRows, kpi.key) : sumKey(compareRows, kpi.key);
+
       let deltaPct = null;
-      if (previous > 0) deltaPct = ((current - previous) / previous) * 100;
+      if (compareMode !== 'none' && previous > 0) deltaPct = ((current - previous) / previous) * 100;
 
       const div = document.createElement('div');
       div.className = 'kpi';
       const isGood = kpi.invert ? (deltaPct !== null && deltaPct < 0) : (deltaPct !== null && deltaPct > 0);
-      const isBad = kpi.invert ? (deltaPct !== null && deltaPct > 0) : (deltaPct !== null && deltaPct < 0);
+      const isBad  = kpi.invert ? (deltaPct !== null && deltaPct > 0) : (deltaPct !== null && deltaPct < 0);
       const deltaClass = deltaPct === null ? 'flat' : (isGood ? 'up' : (isBad ? 'down' : 'flat'));
-      const deltaText = deltaPct === null ? 'vs prior —' :
-        `${deltaPct >= 0 ? '▲' : '▼'} ${Math.abs(deltaPct).toFixed(1)}% vs prior period`;
+      const compareLabelMap = { prev: 'previous period', year: 'previous year', custom: 'custom range' };
+      const compareLabel = compareLabelMap[compareMode] || 'comparison';
+      const deltaText = compareMode === 'none'
+        ? 'no comparison'
+        : deltaPct === null
+          ? `vs ${compareLabel} —`
+          : `${deltaPct >= 0 ? '▲' : '▼'} ${Math.abs(deltaPct).toFixed(1)}% vs ${compareLabel}`;
 
       div.innerHTML = `
         <div class="label">${kpi.label}${kpi.latest ? ' (latest)' : ''}</div>
@@ -274,31 +423,85 @@
     charts[id] = new Chart(ctx, config);
   }
 
-  function renderCharts() {
-    const rows = getVisibleRows();
-    const labels = rows.map(r => shortWeekLabel(r.weekStart));
+  function renderCharts(mainRows, compareRows, compareMode) {
+    const labels = mainRows.map(r => shortWeekLabel(r.weekStart));
     const col = (i) => chartColors[i % chartColors.length];
+
+    // Align compare values to main labels by index (compare period plotted onto current x-axis)
+    const compareDates = compareRows.map(r => r.weekStart);
+    const compareValAt = (i, key) => {
+      const r = compareRows[i];
+      return r ? (Number(r[key]) || 0) : null;
+    };
+    const compareLabelTag = compareMode === 'year' ? 'prior yr'
+                          : compareMode === 'custom' ? 'compare'
+                          : 'prior';
+
     const line = (label, key, color) => ({
-      label, data: rows.map(r => Number(r[key]) || 0),
+      label, data: mainRows.map(r => Number(r[key]) || 0),
       borderColor: color, backgroundColor: color + '33',
       tension: .3, fill: false, pointRadius: 2, borderWidth: 2,
     });
+    const compareLine = (label, key, color) => ({
+      label: `${label} (${compareLabelTag})`,
+      data: labels.map((_, i) => compareValAt(i, key)),
+      borderColor: color,
+      backgroundColor: 'transparent',
+      borderDash: [6, 4],
+      borderWidth: 1.5,
+      tension: .3,
+      fill: false,
+      pointRadius: 1,
+      pointHoverRadius: 3,
+      spanGaps: true,
+    });
     const bar = (label, key, color) => ({
-      label, data: rows.map(r => Number(r[key]) || 0),
+      label, data: mainRows.map(r => Number(r[key]) || 0),
       backgroundColor: color, borderColor: color, borderWidth: 1,
     });
 
-    makeChart('trafficChart', {
-      type: 'line',
-      data: { labels, datasets: [ line('Organic', 'organic', col(0)), line('Paid', 'paid', col(1)) ] },
-      options: baseOptions(),
+    const compareTooltipFooter = (items) => {
+      if (compareMode === 'none' || !items.length) return '';
+      const i = items[0].dataIndex;
+      const cd = compareDates[i];
+      return cd ? `Compared to week of ${cd}` : '';
+    };
+    const optsLine = baseOptions({
+      plugins: {
+        legend: { labels: { color: '#cfd6ec', boxWidth: 10, boxHeight: 10 } },
+        tooltip: {
+          backgroundColor: '#111732', borderColor: '#2a355b', borderWidth: 1,
+          titleColor: '#e7ecf7', bodyColor: '#cfd6ec',
+          callbacks: { footer: compareTooltipFooter },
+        },
+      },
     });
 
-    makeChart('revenueChart', {
+    const lineChart = (id, datasets) => makeChart(id, {
       type: 'line',
-      data: { labels, datasets: [ line('Revenue', 'revenue', col(0)), line('Deposits', 'deposits', col(2)) ] },
-      options: baseOptions(),
+      data: { labels, datasets },
+      options: optsLine,
     });
+
+    const trafficSets = [
+      line('Organic', 'organic', col(0)),
+      line('Paid', 'paid', col(1)),
+    ];
+    if (compareMode !== 'none' && compareRows.length) {
+      trafficSets.push(compareLine('Organic', 'organic', col(0)));
+      trafficSets.push(compareLine('Paid', 'paid', col(1)));
+    }
+    lineChart('trafficChart', trafficSets);
+
+    const revenueSets = [
+      line('Revenue', 'revenue', col(0)),
+      line('Deposits', 'deposits', col(2)),
+    ];
+    if (compareMode !== 'none' && compareRows.length) {
+      revenueSets.push(compareLine('Revenue', 'revenue', col(0)));
+      revenueSets.push(compareLine('Deposits', 'deposits', col(2)));
+    }
+    lineChart('revenueChart', revenueSets);
 
     makeChart('costRevenueChart', {
       type: 'bar',
@@ -306,11 +509,15 @@
       options: baseOptions(),
     });
 
-    makeChart('mrrChart', {
-      type: 'line',
-      data: { labels, datasets: [ line('MRR Brands', 'mrrBrands', col(0)), line('MRR Creators', 'mrrCreators', col(4)) ] },
-      options: baseOptions(),
-    });
+    const mrrSets = [
+      line('MRR Brands', 'mrrBrands', col(0)),
+      line('MRR Creators', 'mrrCreators', col(4)),
+    ];
+    if (compareMode !== 'none' && compareRows.length) {
+      mrrSets.push(compareLine('MRR Brands', 'mrrBrands', col(0)));
+      mrrSets.push(compareLine('MRR Creators', 'mrrCreators', col(4)));
+    }
+    lineChart('mrrChart', mrrSets);
 
     makeChart('emailChart', {
       type: 'bar',
@@ -322,13 +529,44 @@
       options: baseOptions(),
     });
 
+    const coldResponseRate = mainRows.map(r => {
+      const sent = Number(r.coldSent) || 0;
+      const resp = Number(r.coldResp) || 0;
+      return sent > 0 ? +(100 * resp / sent).toFixed(2) : null;
+    });
     makeChart('coldEmailChart', {
-      type: 'bar',
       data: { labels, datasets: [
-        bar('Sent', 'coldSent', col(4)),
-        bar('Responses', 'coldResp', col(1)),
+        { ...bar('Sent', 'coldSent', col(4)), yAxisID: 'y' },
+        { ...bar('Responses', 'coldResp', col(1)), yAxisID: 'y' },
+        {
+          type: 'line',
+          label: 'Response Rate %',
+          data: coldResponseRate,
+          borderColor: col(2),
+          backgroundColor: col(2) + '33',
+          tension: .3,
+          pointRadius: 3,
+          borderWidth: 2,
+          yAxisID: 'y1',
+          spanGaps: true,
+        },
       ]},
-      options: baseOptions(),
+      options: baseOptions({
+        scales: {
+          x: { ticks: { color: '#9aa3bf' }, grid: { color: 'rgba(255,255,255,.05)' } },
+          y: {
+            type: 'linear', position: 'left', beginAtZero: true,
+            ticks: { color: '#9aa3bf' }, grid: { color: 'rgba(255,255,255,.05)' },
+            title: { display: true, text: 'Volume', color: '#9aa3bf' },
+          },
+          y1: {
+            type: 'linear', position: 'right', beginAtZero: true,
+            grid: { drawOnChartArea: false },
+            ticks: { color: '#9aa3bf', callback: (v) => v + '%' },
+            title: { display: true, text: 'Response %', color: '#9aa3bf' },
+          },
+        },
+      }),
     });
 
     makeChart('landingChart', {
@@ -340,13 +578,46 @@
       options: baseOptions(),
     });
 
-    makeChart('salesChart', {
+    const stackedRepDatasets = (breakdownKey, totalKey) => {
+      const anyRepData = mainRows.some(r => {
+        const m = r[breakdownKey];
+        return m && Object.values(m).some(v => Number(v) > 0);
+      });
+      if (!anyRepData || reps.length === 0) {
+        return [{
+          label: 'Total (no rep breakdown)',
+          data: mainRows.map(r => Number(r[totalKey]) || 0),
+          backgroundColor: '#5b8dff',
+          borderColor: '#5b8dff',
+          stack: 'rep',
+        }];
+      }
+      return reps.map((rep, idx) => ({
+        label: rep.name,
+        data: mainRows.map(r => {
+          const m = r[breakdownKey] || {};
+          return Number(m[rep.id]) || 0;
+        }),
+        backgroundColor: repColor(rep, idx),
+        borderColor: repColor(rep, idx),
+        stack: 'rep',
+      }));
+    };
+    const stackedOpts = baseOptions({
+      scales: {
+        x: { stacked: true, ticks: { color: '#9aa3bf' }, grid: { color: 'rgba(255,255,255,.05)' } },
+        y: { stacked: true, beginAtZero: true, ticks: { color: '#9aa3bf' }, grid: { color: 'rgba(255,255,255,.05)' } },
+      },
+    });
+    makeChart('salesCallsChart', {
       type: 'bar',
-      data: { labels, datasets: [
-        bar('Sales Calls', 'salesCalls', col(0)),
-        bar('New Clients', 'newClients', col(1)),
-      ]},
-      options: baseOptions(),
+      data: { labels, datasets: stackedRepDatasets('salesCallsByRep', 'salesCalls') },
+      options: stackedOpts,
+    });
+    makeChart('newClientsChart', {
+      type: 'bar',
+      data: { labels, datasets: stackedRepDatasets('newClientsByRep', 'newClients') },
+      options: stackedOpts,
     });
 
     makeChart('signupsChart', {
@@ -358,11 +629,11 @@
       options: baseOptions(),
     });
 
-    makeChart('gmvChart', {
-      type: 'line',
-      data: { labels, datasets: [ line('Creator GMV', 'gmv', col(1)) ] },
-      options: baseOptions(),
-    });
+    const gmvSets = [ line('Creator GMV', 'gmv', col(1)) ];
+    if (compareMode !== 'none' && compareRows.length) {
+      gmvSets.push(compareLine('Creator GMV', 'gmv', col(1)));
+    }
+    lineChart('gmvChart', gmvSets);
 
     makeChart('campaignsChart', {
       type: 'bar',
@@ -377,12 +648,12 @@
     });
   }
 
-  function renderTable() {
+  function renderTable(mainRows) {
     const tbody = document.getElementById('weeksBody');
-    const rows = [...data].sort((a,b) => b.weekStart.localeCompare(a.weekStart));
+    const rows = [...mainRows].sort((a,b) => b.weekStart.localeCompare(a.weekStart));
     tbody.innerHTML = '';
     if (rows.length === 0) {
-      tbody.innerHTML = `<tr class="empty-row"><td colspan="23">No weekly data yet. Click <b>Add / Edit Week</b> to get started.</td></tr>`;
+      tbody.innerHTML = `<tr class="empty-row"><td colspan="23">No weeks in this range. Pick a wider range or click <b>Add / Edit Week</b>.</td></tr>`;
       return;
     }
     for (const r of rows) {
@@ -430,13 +701,101 @@
     }
   }
 
-  function renderAll() { renderKpis(); renderCharts(); renderTable(); }
+  function renderAll() {
+    syncRangeInputsFromState();
+    const main = resolveMainRange();
+    const compare = resolveCompareRange(main);
+    const mainRows = rowsInRange(main);
+    const compareRows = rowsInRange(compare);
+
+    renderKpis(mainRows, compareRows, compare.mode);
+    renderCharts(mainRows, compareRows, compare.mode);
+    renderTable(mainRows);
+
+    if (rangeLabelEl) {
+      const cmpText = compare.mode === 'none' ? '' :
+        ` <span class="vs">vs</span> <span class="compare">${rangeReadable(compare)}</span>`;
+      rangeLabelEl.innerHTML = `${rangeReadable(main)}${cmpText}`;
+    }
+  }
 
   /* ---------- Modal ---------- */
   const modal = document.getElementById('modal');
   const form = document.getElementById('weekForm');
   const modalTitle = document.getElementById('modalTitle');
   const deleteBtn = document.getElementById('deleteWeekBtn');
+  const repInputsContainer = document.getElementById('repInputsContainer');
+  const repTotalsEl = document.getElementById('repTotals');
+
+  function renderRepInputs(existing) {
+    repInputsContainer.innerHTML = '';
+    if (reps.length === 0) {
+      repInputsContainer.innerHTML = '<div class="rep-empty">No sales reps configured. Click <b>Sales Reps</b> in the top bar to add some.</div>';
+      updateRepTotals();
+      return;
+    }
+    const headers = document.createElement('div');
+    headers.className = 'rep-row-header';
+    headers.style.gridColumn = '1 / 2';
+    headers.textContent = 'Rep';
+    const h2 = document.createElement('div');
+    h2.className = 'rep-row-header';
+    h2.textContent = 'Calls';
+    const h3 = document.createElement('div');
+    h3.className = 'rep-row-header';
+    h3.textContent = 'New Clients';
+    repInputsContainer.append(headers, h2, h3);
+
+    reps.forEach((rep, idx) => {
+      const callsVal = (existing?.salesCallsByRep && existing.salesCallsByRep[rep.id]) ?? '';
+      const newVal   = (existing?.newClientsByRep && existing.newClientsByRep[rep.id]) ?? '';
+      const nameDiv = document.createElement('div');
+      nameDiv.className = 'rep-name';
+      nameDiv.innerHTML = `<span class="swatch" style="background:${repColor(rep, idx)}"></span>${rep.name}`;
+      const callsInput = document.createElement('input');
+      callsInput.type = 'number'; callsInput.min = '0'; callsInput.step = '1';
+      callsInput.dataset.rep = rep.id; callsInput.dataset.kind = 'calls';
+      callsInput.value = callsVal;
+      callsInput.addEventListener('input', updateRepTotals);
+      const newInput = document.createElement('input');
+      newInput.type = 'number'; newInput.min = '0'; newInput.step = '1';
+      newInput.dataset.rep = rep.id; newInput.dataset.kind = 'new';
+      newInput.value = newVal;
+      newInput.addEventListener('input', updateRepTotals);
+      repInputsContainer.append(nameDiv, callsInput, newInput);
+    });
+    updateRepTotals();
+  }
+
+  function readRepInputs() {
+    const calls = {}, news = {};
+    let callsSum = 0, newsSum = 0;
+    repInputsContainer.querySelectorAll('input[data-rep]').forEach(input => {
+      const v = parseInt(input.value, 10);
+      if (Number.isNaN(v) || v <= 0) return;
+      if (input.dataset.kind === 'calls') { calls[input.dataset.rep] = v; callsSum += v; }
+      else { news[input.dataset.rep] = v; newsSum += v; }
+    });
+    return { calls, news, callsSum, newsSum };
+  }
+
+  function updateRepTotals() {
+    if (!repTotalsEl) return;
+    if (reps.length === 0) { repTotalsEl.innerHTML = ''; return; }
+    const { callsSum, newsSum } = readRepInputs();
+    const totalCalls = parseInt(form.elements.salesCalls?.value, 10) || 0;
+    const totalNew   = parseInt(form.elements.newClients?.value, 10) || 0;
+    const callMatch  = totalCalls === 0 || callsSum === totalCalls;
+    const newMatch   = totalNew === 0 || newsSum === totalNew;
+    repTotalsEl.innerHTML = `
+      <span>Rep calls sum: <b>${callsSum}</b> ${totalCalls > 0 ? `<span class="${callMatch ? 'ok' : 'mismatch'}">(total: ${totalCalls})</span>` : ''}</span>
+      <span>Rep new clients sum: <b>${newsSum}</b> ${totalNew > 0 ? `<span class="${newMatch ? 'ok' : 'mismatch'}">(total: ${totalNew})</span>` : ''}</span>
+    `;
+  }
+  // Recalc totals row when the global totals fields change too.
+  ['salesCalls','newClients'].forEach(name => {
+    form.elements[name]?.addEventListener('input', updateRepTotals);
+  });
 
   function openModal(weekStart) {
     form.reset();
@@ -449,13 +808,14 @@
       modalTitle.textContent = 'Edit Week';
       deleteBtn.classList.remove('hidden');
       Object.entries(existing).forEach(([k,v]) => {
-        if (form.elements[k]) form.elements[k].value = v;
+        if (form.elements[k] && typeof v !== 'object') form.elements[k].value = v;
       });
     } else {
       modalTitle.textContent = 'Add Week';
       deleteBtn.classList.add('hidden');
       form.elements.weekStart.value = fmtDate(today);
     }
+    renderRepInputs(existing);
     modal.classList.remove('hidden');
   }
   function closeModal() { modal.classList.add('hidden'); }
@@ -470,6 +830,15 @@
     for (const m of METRICS) {
       const v = raw[m.key];
       row[m.key] = v === '' || v === undefined ? 0 : (m.type === 'money' ? Number(v) : parseInt(v, 10) || 0);
+    }
+    const { calls, news, callsSum, newsSum } = readRepInputs();
+    if (Object.keys(calls).length) {
+      row.salesCallsByRep = calls;
+      if (!row.salesCalls) row.salesCalls = callsSum;
+    }
+    if (Object.keys(news).length) {
+      row.newClientsByRep = news;
+      if (!row.newClients) row.newClients = newsSum;
     }
     const idx = manualData.findIndex(r => r.weekStart === weekStart);
     if (idx >= 0) manualData[idx] = row; else manualData.push(row);
@@ -494,6 +863,86 @@
   document.getElementById('cancelBtn').addEventListener('click', closeModal);
   modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
 
+  /* ---------- Reps modal ---------- */
+  const repsModal       = document.getElementById('repsModal');
+  const repsListEl      = document.getElementById('repsList');
+  const newRepNameInput = document.getElementById('newRepName');
+
+  function renderRepsList() {
+    repsListEl.innerHTML = '';
+    if (reps.length === 0) {
+      const li = document.createElement('li');
+      li.innerHTML = '<span class="hint">No reps yet — add one below.</span>';
+      repsListEl.appendChild(li);
+      return;
+    }
+    reps.forEach((rep, idx) => {
+      const li = document.createElement('li');
+      const swatch = document.createElement('input');
+      swatch.type = 'color';
+      swatch.value = repColor(rep, idx);
+      swatch.title = 'Color';
+      swatch.style.width = '32px';
+      swatch.style.padding = '0';
+      swatch.style.border = '0';
+      swatch.style.background = 'transparent';
+      swatch.addEventListener('input', () => {
+        rep.color = swatch.value;
+        saveReps(reps);
+        renderAll();
+      });
+      const nameInput = document.createElement('input');
+      nameInput.type = 'text';
+      nameInput.value = rep.name;
+      nameInput.addEventListener('change', () => {
+        const v = nameInput.value.trim();
+        if (!v) return;
+        rep.name = v;
+        saveReps(reps);
+        renderAll();
+      });
+      const del = document.createElement('button');
+      del.type = 'button';
+      del.className = 'icon-btn';
+      del.innerHTML = '&times;';
+      del.title = 'Remove rep';
+      del.addEventListener('click', () => {
+        if (!confirm(`Remove ${rep.name}? Their historical per-rep data will remain in saved weeks but won't show in the chart.`)) return;
+        reps = reps.filter(r => r.id !== rep.id);
+        saveReps(reps);
+        renderRepsList();
+        renderAll();
+      });
+      li.append(swatch, nameInput, del);
+      repsListEl.appendChild(li);
+    });
+  }
+
+  function openRepsModal() {
+    renderRepsList();
+    repsModal.classList.remove('hidden');
+  }
+  function closeRepsModal() { repsModal.classList.add('hidden'); }
+
+  document.getElementById('manageRepsBtn').addEventListener('click', openRepsModal);
+  document.getElementById('closeRepsModal').addEventListener('click', closeRepsModal);
+  document.getElementById('closeRepsModalBtn').addEventListener('click', closeRepsModal);
+  repsModal.addEventListener('click', (e) => { if (e.target === repsModal) closeRepsModal(); });
+
+  document.getElementById('addRepBtn').addEventListener('click', () => {
+    const name = newRepNameInput.value.trim();
+    if (!name) return;
+    const color = REP_PALETTE[reps.length % REP_PALETTE.length];
+    reps.push({ id: newRepId(), name, color });
+    saveReps(reps);
+    newRepNameInput.value = '';
+    renderRepsList();
+    renderAll();
+  });
+  newRepNameInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') { e.preventDefault(); document.getElementById('addRepBtn').click(); }
+  });
+
   /* ---------- Export / Import ---------- */
   function download(filename, content, mime) {
     const blob = new Blob([content], { type: mime });
@@ -510,10 +959,18 @@
   });
 
   document.getElementById('exportCsvBtn').addEventListener('click', () => {
-    const cols = ['weekStart', ...METRICS.map(m => m.key)];
+    const baseCols = ['weekStart', ...METRICS.map(m => m.key)];
+    const repCallCols = reps.map(r => `calls__${r.name}`);
+    const repNewCols  = reps.map(r => `newClients__${r.name}`);
+    const cols = [...baseCols, ...repCallCols, ...repNewCols];
     const head = cols.join(',');
     const rows = [...data].sort((a,b) => a.weekStart.localeCompare(b.weekStart))
-      .map(r => cols.map(c => JSON.stringify(r[c] ?? '')).join(','));
+      .map(r => {
+        const baseVals = baseCols.map(c => JSON.stringify(r[c] ?? ''));
+        const callsVals = reps.map(rep => JSON.stringify((r.salesCallsByRep && r.salesCallsByRep[rep.id]) ?? ''));
+        const newsVals  = reps.map(rep => JSON.stringify((r.newClientsByRep  && r.newClientsByRep[rep.id])  ?? ''));
+        return [...baseVals, ...callsVals, ...newsVals].join(',');
+      });
     download('jb-marketing-dashboard.csv', [head, ...rows].join('\n'), 'text/csv');
   });
 
@@ -544,7 +1001,24 @@
     renderAll();
   });
 
-  rangeSelect.addEventListener('change', renderAll);
+  presetSelect.addEventListener('change', () => {
+    customRangeGroup.hidden = presetSelect.value !== 'custom';
+    renderAll();
+  });
+  compareSelect.addEventListener('change', () => {
+    customCompareGroup.hidden = compareSelect.value !== 'custom';
+    renderAll();
+  });
+  [rangeStartInput, rangeEndInput].forEach(el => el.addEventListener('change', () => {
+    if (presetSelect.value !== 'custom') presetSelect.value = 'custom';
+    customRangeGroup.hidden = false;
+    renderAll();
+  }));
+  [compareStartInput, compareEndInput].forEach(el => el.addEventListener('change', () => {
+    if (compareSelect.value !== 'custom') compareSelect.value = 'custom';
+    customCompareGroup.hidden = false;
+    renderAll();
+  }));
 
   /* ---------- Freshness footer ---------- */
   function renderFreshness() {
