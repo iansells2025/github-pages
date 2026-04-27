@@ -19,21 +19,11 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Fetch and aggregate Windsor connectors
+      - name: Fetch and aggregate Windsor blended endpoint
         env:
-          # Add one secret per connector you use in Settings → Secrets and variables → Actions.
-          # The script ignores any that are unset, so wire them up incrementally.
-          WINDSOR_GA4_URL:          ${{ secrets.WINDSOR_GA4_URL }}
-          WINDSOR_GOOGLE_ADS_URL:   ${{ secrets.WINDSOR_GOOGLE_ADS_URL }}
-          WINDSOR_META_ADS_URL:     ${{ secrets.WINDSOR_META_ADS_URL }}
-          WINDSOR_STRIPE_URL:       ${{ secrets.WINDSOR_STRIPE_URL }}
-          WINDSOR_HUBSPOT_URL:      ${{ secrets.WINDSOR_HUBSPOT_URL }}
-          WINDSOR_MAILCHIMP_URL:    ${{ secrets.WINDSOR_MAILCHIMP_URL }}
-          WINDSOR_KLAVIYO_URL:      ${{ secrets.WINDSOR_KLAVIYO_URL }}
-          WINDSOR_INSTANTLY_URL:    ${{ secrets.WINDSOR_INSTANTLY_URL }}
-          WINDSOR_APOLLO_URL:       ${{ secrets.WINDSOR_APOLLO_URL }}
-          WINDSOR_SMARTLEAD_URL:    ${{ secrets.WINDSOR_SMARTLEAD_URL }}
-          WINDSOR_INTERNAL_URL:     ${{ secrets.WINDSOR_INTERNAL_URL }}
+          # Single Windsor blended URL covering all connected data sources.
+          # Add it as a repository secret: Settings → Secrets and variables → Actions.
+          WINDSOR_BLENDED_URL: ${{ secrets.WINDSOR_BLENDED_URL }}
         run: node scripts/sync-windsor.mjs
 
       - name: Commit updated data
