@@ -535,6 +535,7 @@
       return sent > 0 ? +(100 * resp / sent).toFixed(2) : null;
     });
     makeChart('coldEmailChart', {
+      type: 'bar',
       data: { labels, datasets: [
         { ...bar('Sent', 'coldSent', col(4)), yAxisID: 'y' },
         { ...bar('Responses', 'coldResp', col(1)), yAxisID: 'y' },
