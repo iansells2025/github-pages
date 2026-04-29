@@ -15,6 +15,17 @@ import { BLENDED_SOURCES, DATE_FIELD, SOURCE_FIELD } from './windsor-config.mjs'
 
 const OUT_PATH = path.resolve('data/windsor.json');
 
+// Normalize source identifiers so `google_ads`, `googleads`, `Google Ads`,
+// and `GOOGLE_ADS` all match the same config entry.
+function normalizeSourceKey(s) {
+  return String(s ?? '').trim().toLowerCase().replace(/[^a-z0-9]/g, '');
+}
+
+const SOURCES_BY_NORMALIZED_KEY = {};
+for (const [key, cfg] of Object.entries(BLENDED_SOURCES)) {
+  SOURCES_BY_NORMALIZED_KEY[normalizeSourceKey(key)] = cfg;
+}
+
 function toMondayISO(dateStr) {
   if (dateStr === null || dateStr === undefined || dateStr === '') return null;
   const d = new Date(dateStr);
@@ -75,17 +86,19 @@ async function main() {
     console.log('Sample row keys:', Object.keys(rows[0]).join(', '));
   }
 
-  // Tally distinct Data Source values and which are mapped.
+  // Tally distinct Data Source values (raw, before normalization) and
+  // which are mapped via the normalized key.
   const sourcesSeen = new Map();
   for (const row of rows) {
-    const src = String(getField(row, SOURCE_FIELD) ?? '').trim().toLowerCase();
-    if (!src) continue;
-    sourcesSeen.set(src, (sourcesSeen.get(src) || 0) + 1);
+    const raw = String(getField(row, SOURCE_FIELD) ?? '').trim();
+    if (!raw) continue;
+    sourcesSeen.set(raw, (sourcesSeen.get(raw) || 0) + 1);
   }
-  console.log('Distinct Data Sources:');
-  for (const [src, count] of [...sourcesSeen].sort((a, b) => b[1] - a[1])) {
-    const mapped = BLENDED_SOURCES[src] ? '✓ mapped' : '⚠ no mapping (skipped)';
-    console.log(`  ${src.padEnd(20)} ${String(count).padStart(6)} rows  ${mapped}`);
+  console.log('Distinct Data Sources (raw value → normalized key):');
+  for (const [raw, count] of [...sourcesSeen].sort((a, b) => b[1] - a[1])) {
+    const norm = normalizeSourceKey(raw);
+    const mapped = SOURCES_BY_NORMALIZED_KEY[norm] ? '✓ mapped' : '⚠ no mapping (skipped)';
+    console.log(`  ${raw.padEnd(20)} → ${norm.padEnd(20)} ${String(count).padStart(6)} rows  ${mapped}`);
   }
 
   // Bucket per week → per source → per metric.
@@ -97,9 +110,10 @@ async function main() {
   let droppedNoDate = 0;
 
   for (const row of rows) {
-    const src = String(getField(row, SOURCE_FIELD) ?? '').trim().toLowerCase();
-    if (!src) { droppedNoSource++; continue; }
-    const cfg = BLENDED_SOURCES[src];
+    const rawSrc = String(getField(row, SOURCE_FIELD) ?? '').trim();
+    if (!rawSrc) { droppedNoSource++; continue; }
+    const src = normalizeSourceKey(rawSrc);
+    const cfg = SOURCES_BY_NORMALIZED_KEY[src];
     if (!cfg) { droppedUnmapped++; continue; }
     const weekStart = toMondayISO(getField(row, DATE_FIELD));
     if (!weekStart) { droppedNoDate++; continue; }
@@ -134,7 +148,7 @@ async function main() {
   for (const [weekStart, sources] of Object.entries(buckets)) {
     weeksBySource[weekStart] = {};
     for (const [src, metrics] of Object.entries(sources)) {
-      const cfg = BLENDED_SOURCES[src];
+      const cfg = SOURCES_BY_NORMALIZED_KEY[src];
       const out = {};
       for (const [metricKey, slot] of Object.entries(metrics)) {
         const def = cfg.metrics[metricKey];
@@ -184,8 +198,10 @@ async function main() {
     })
     .sort((a, b) => a.weekStart.localeCompare(b.weekStart));
 
-  const sourcesDiscovered = [...sourcesSeen.keys()].sort();
-  const sourcesUnmapped = sourcesDiscovered.filter(s => !BLENDED_SOURCES[s]);
+  const sourcesDiscoveredRaw = [...sourcesSeen.keys()].sort();
+  const sourcesDiscoveredNormalized = [...new Set(sourcesDiscoveredRaw.map(normalizeSourceKey))].sort();
+  const sourcesMapped = sourcesDiscoveredNormalized.filter(s => SOURCES_BY_NORMALIZED_KEY[s]);
+  const sourcesUnmapped = sourcesDiscoveredNormalized.filter(s => !SOURCES_BY_NORMALIZED_KEY[s]);
 
   const payload = {
     updatedAt: new Date().toISOString(),
@@ -193,8 +209,9 @@ async function main() {
     endpoint: 'blended',
     weeks,
     weeksBySource,
-    sourcesDiscovered,
-    sourcesMapped: sourcesDiscovered.filter(s => BLENDED_SOURCES[s]),
+    sourcesDiscovered: sourcesDiscoveredRaw,
+    sourcesNormalized: sourcesDiscoveredNormalized,
+    sourcesMapped,
     sourcesUnmapped,
     sampleRowKeys: rows.length > 0 ? Object.keys(rows[0]) : [],
     rowCount: rows.length,

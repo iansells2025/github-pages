@@ -64,6 +64,13 @@ export const BLENDED_SOURCES = {
       costs: { field: 'spend',  agg: 'sum' },
     },
   },
+  instagram: {
+    label: 'Instagram (Ads or organic — verify with user)',
+    metrics: {
+      paid:  { field: 'clicks', agg: 'sum' },
+      costs: { field: 'spend',  agg: 'sum' },
+    },
+  },
   tiktokads: {
     label: 'TikTok Ads',
     metrics: {
