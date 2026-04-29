@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-04-29T22:05:00.619Z",
+  "updatedAt": "2026-04-29T23:51:35.653Z",
   "source": "windsor.ai",
   "endpoint": "blended",
   "weeks": [
@@ -9,7 +9,7 @@
     },
     {
       "weekStart": "2026-04-27",
-      "costs": 3366.43
+      "costs": 3366.95
     }
   ],
   "weeksBySource": {
@@ -23,26 +23,30 @@
     },
     "2026-04-27": {
       "googleads": {
-        "costs": 2363.365
+        "costs": 2363.3593
       },
       "facebook": {
-        "costs": 1003.07
-      }
+        "costs": 1003.59
+      },
+      "instagram": {}
     }
   },
   "sourcesDiscovered": [
     "facebook",
     "google_ads",
+    "instagram",
     "intercom"
   ],
   "sourcesNormalized": [
     "facebook",
     "googleads",
+    "instagram",
     "intercom"
   ],
   "sourcesMapped": [
     "facebook",
-    "googleads"
+    "googleads",
+    "instagram"
   ],
   "sourcesUnmapped": [
     "intercom"
@@ -57,6 +61,6 @@
     "spend",
     "email"
   ],
-  "rowCount": 6034,
+  "rowCount": 6229,
   "usableRowCount": 176
 }
