@@ -54,7 +54,15 @@ async function listAll(path, params = {}) {
   for (let page = 0; page < 100; page++) {
     const url = new URL(`${STRIPE_BASE}${path}`);
     url.searchParams.set('limit', '100');
-    for (const [k, v] of Object.entries(params)) url.searchParams.set(k, String(v));
+    for (const [k, v] of Object.entries(params)) {
+      // Stripe expects array params using `key[]=value` notation. Pass an
+      // array for any param that should serialize that way (e.g. `expand`).
+      if (Array.isArray(v)) {
+        for (const item of v) url.searchParams.append(`${k}[]`, String(item));
+      } else {
+        url.searchParams.set(k, String(v));
+      }
+    }
     if (startingAfter) url.searchParams.set('starting_after', startingAfter);
     const res = await fetch(url, { headers: { Authorization: authHeader() } });
     if (!res.ok) {
@@ -92,7 +100,8 @@ async function fetchPayouts() {
 
 async function fetchActiveSubscriptions() {
   // MRR is a current snapshot — doesn't matter that lookback doesn't apply.
-  return listAll('/subscriptions', { status: 'active', expand: 'data.items.data.price' });
+  // SubscriptionItem.price is included by default, so no `expand` needed.
+  return listAll('/subscriptions', { status: 'active' });
 }
 
 function chargeAmountUSD(charge) {
@@ -144,11 +153,20 @@ function splitMrrBy(subscriptions) {
 
 export async function fetchWeeklyMetrics() {
   console.log('[stripe] fetching charges, payouts, subscriptions…');
-  const [charges, payouts, subs] = await Promise.all([
+  // Settle each call independently so a failure in one (e.g. a key missing
+  // a single permission) doesn't sink the others.
+  const [chargesR, payoutsR, subsR] = await Promise.allSettled([
     fetchCharges(),
     fetchPayouts(),
     fetchActiveSubscriptions(),
   ]);
+  const charges = chargesR.status === 'fulfilled' ? chargesR.value : [];
+  const payouts = payoutsR.status === 'fulfilled' ? payoutsR.value : [];
+  const subs    = subsR.status    === 'fulfilled' ? subsR.value    : [];
+  const callErrors = {};
+  if (chargesR.status === 'rejected') { console.error(`[stripe] charges failed: ${chargesR.reason.message}`); callErrors.charges = chargesR.reason.message; }
+  if (payoutsR.status === 'rejected') { console.error(`[stripe] payouts failed: ${payoutsR.reason.message}`); callErrors.payouts = payoutsR.reason.message; }
+  if (subsR.status    === 'rejected') { console.error(`[stripe] subscriptions failed: ${subsR.reason.message}`); callErrors.subscriptions = subsR.reason.message; }
   console.log(`[stripe] charges=${charges.length} payouts=${payouts.length} subs=${subs.length}`);
 
   const byWeek = new Map();
@@ -202,6 +220,7 @@ export async function fetchWeeklyMetrics() {
       mrrBrands: +mrr.brands.toFixed(2),
       mrrCreators: +mrr.creators.toFixed(2),
       mrrUnclassified: +mrr.other.toFixed(2),
+      callErrors: Object.keys(callErrors).length ? callErrors : undefined,
     },
   };
 }
