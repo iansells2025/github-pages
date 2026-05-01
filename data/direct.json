@@ -1,25 +1,67 @@
 {
-  "updatedAt": "2026-05-01T20:58:38.151Z",
+  "updatedAt": "2026-05-01T21:11:59.867Z",
   "sources": {
     "stripe": {
       "ok": true,
       "weekCount": 13,
       "diagnostics": {
-        "chargeCount": 0,
+        "chargeCount": 8982,
         "payoutCount": 64,
         "activeSubscriptionCount": 358,
         "mrrTotal": 61412.05,
         "mrrBrands": 0,
         "mrrCreators": 0,
-        "mrrUnclassified": 61412.05,
-        "callErrors": {
-          "charges": "Stripe /charges HTTP 403: {\n  \"error\": {\n    \"message\": \"The provided key 'rk_live_*********************************************************************************************gGrgwq' does not have the required permissions for this endpoint on account 'acct_1K6O62Id7iEY4ezO'. Having the 'rak_charge_read' permission would all"
-        }
+        "mrrUnclassified": 61412.05
       }
     },
     "hubspot": {
-      "ok": false,
-      "error": "HubSpot /marketing/v3/emails/ HTTP 400: {\"correlationId\":\"019de556-18a4-78f5-b1f1-6d2dc27c0897\",\"message\":\"Filter violation: Filtering by \\\"published_at lte\\\" is not allowed\",\"status\":\"error\"}"
+      "ok": true,
+      "weekCount": 6,
+      "diagnostics": {
+        "emailsTotal": 85,
+        "emailsInLookback": 44,
+        "emailsWithStats": 14,
+        "sampleEmailKeys": [
+          "activeDomain",
+          "allEmailCampaignIds",
+          "archived",
+          "businessUnitId",
+          "clonedFrom",
+          "content",
+          "createdAt",
+          "createdById",
+          "emailCampaignGroupId",
+          "emailTemplateMode",
+          "from",
+          "id",
+          "isAb",
+          "isPublished",
+          "isTransactional",
+          "jitterSendTime",
+          "language",
+          "name",
+          "previewKey",
+          "primaryEmailCampaignId"
+        ],
+        "sampleStatKeys": [
+          "sent",
+          "open",
+          "delivered",
+          "bounce",
+          "unsubscribed",
+          "click",
+          "reply",
+          "dropped",
+          "selected",
+          "spamreport",
+          "suppressed",
+          "hardbounced",
+          "softbounced",
+          "pending",
+          "contactslost",
+          "notsent"
+        ]
+      }
     }
   },
   "weeks": [
@@ -31,12 +73,18 @@
     {
       "weekStart": "2026-02-09",
       "revenue": 0,
-      "deposits": 262184.89
+      "deposits": 262184.89,
+      "mktgSent": 359,
+      "mktgViewed": 118,
+      "mktgClicked": 4
     },
     {
       "weekStart": "2026-02-16",
       "revenue": 0,
-      "deposits": 219576.27
+      "deposits": 219576.27,
+      "mktgSent": 22,
+      "mktgViewed": 13,
+      "mktgClicked": 0
     },
     {
       "weekStart": "2026-02-23",
@@ -46,7 +94,10 @@
     {
       "weekStart": "2026-03-02",
       "revenue": 0,
-      "deposits": 251141.36
+      "deposits": 251141.36,
+      "mktgSent": 28,
+      "mktgViewed": 8,
+      "mktgClicked": 3
     },
     {
       "weekStart": "2026-03-09",
@@ -56,36 +107,45 @@
     {
       "weekStart": "2026-03-16",
       "revenue": 0,
-      "deposits": 222216.35
+      "deposits": 222216.35,
+      "mktgSent": 114,
+      "mktgViewed": 45,
+      "mktgClicked": 8
     },
     {
       "weekStart": "2026-03-23",
       "revenue": 0,
-      "deposits": 276155.57
+      "deposits": 276155.57,
+      "mktgSent": 195,
+      "mktgViewed": 84,
+      "mktgClicked": 29
     },
     {
       "weekStart": "2026-03-30",
-      "revenue": 0,
-      "deposits": 179028.83
+      "revenue": 150.5,
+      "deposits": 179028.83,
+      "mktgSent": 30,
+      "mktgViewed": 2,
+      "mktgClicked": 0
     },
     {
       "weekStart": "2026-04-06",
-      "revenue": 0,
+      "revenue": 253571.52,
       "deposits": 246857.81
     },
     {
       "weekStart": "2026-04-13",
-      "revenue": 0,
+      "revenue": 275051.6,
       "deposits": 236761.17
     },
     {
       "weekStart": "2026-04-20",
-      "revenue": 0,
+      "revenue": 261572.71,
       "deposits": 244390.07
     },
     {
       "weekStart": "2026-04-27",
-      "revenue": 0,
+      "revenue": 239397.38,
       "deposits": 245494.27,
       "mrrBrands": 61412.05,
       "mrrCreators": 0
@@ -102,12 +162,22 @@
       "stripe": {
         "revenue": 0,
         "deposits": 262184.89
+      },
+      "hubspot": {
+        "mktgSent": 359,
+        "mktgViewed": 118,
+        "mktgClicked": 4
       }
     },
     "2026-02-16": {
       "stripe": {
         "revenue": 0,
         "deposits": 219576.27
+      },
+      "hubspot": {
+        "mktgSent": 22,
+        "mktgViewed": 13,
+        "mktgClicked": 0
       }
     },
     "2026-02-23": {
@@ -120,6 +190,11 @@
       "stripe": {
         "revenue": 0,
         "deposits": 251141.36
+      },
+      "hubspot": {
+        "mktgSent": 28,
+        "mktgViewed": 8,
+        "mktgClicked": 3
       }
     },
     "2026-03-09": {
@@ -132,41 +207,56 @@
       "stripe": {
         "revenue": 0,
         "deposits": 222216.35
+      },
+      "hubspot": {
+        "mktgSent": 114,
+        "mktgViewed": 45,
+        "mktgClicked": 8
       }
     },
     "2026-03-23": {
       "stripe": {
         "revenue": 0,
         "deposits": 276155.57
+      },
+      "hubspot": {
+        "mktgSent": 195,
+        "mktgViewed": 84,
+        "mktgClicked": 29
       }
     },
     "2026-03-30": {
       "stripe": {
-        "revenue": 0,
+        "revenue": 150.5,
         "deposits": 179028.83
+      },
+      "hubspot": {
+        "mktgSent": 30,
+        "mktgViewed": 2,
+        "mktgClicked": 0
       }
     },
     "2026-04-06": {
       "stripe": {
-        "revenue": 0,
+        "revenue": 253571.52,
         "deposits": 246857.81
       }
     },
     "2026-04-13": {
       "stripe": {
-        "revenue": 0,
+        "revenue": 275051.6,
         "deposits": 236761.17
       }
     },
     "2026-04-20": {
       "stripe": {
-        "revenue": 0,
+        "revenue": 261572.71,
         "deposits": 244390.07
       }
     },
     "2026-04-27": {
       "stripe": {
-        "revenue": 0,
+        "revenue": 239397.38,
         "deposits": 245494.27,
         "mrrBrands": 61412.05,
         "mrrCreators": 0
