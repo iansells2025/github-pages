@@ -89,16 +89,36 @@ async function main() {
   // Tally distinct Data Source values (raw, before normalization) and
   // which are mapped via the normalized key.
   const sourcesSeen = new Map();
+  // Per-source: union of all field keys + a sample non-null value per field.
+  // Lets us see what each source actually exposes (vs. what rows[0] alone shows).
+  const fieldsBySource = {};
   for (const row of rows) {
     const raw = String(getField(row, SOURCE_FIELD) ?? '').trim();
     if (!raw) continue;
     sourcesSeen.set(raw, (sourcesSeen.get(raw) || 0) + 1);
+    const norm = normalizeSourceKey(raw);
+    if (!fieldsBySource[norm]) fieldsBySource[norm] = {};
+    for (const [k, v] of Object.entries(row)) {
+      if (v === null || v === undefined || v === '') continue;
+      if (fieldsBySource[norm][k] === undefined) {
+        fieldsBySource[norm][k] = v;
+      }
+    }
   }
   console.log('Distinct Data Sources (raw value → normalized key):');
   for (const [raw, count] of [...sourcesSeen].sort((a, b) => b[1] - a[1])) {
     const norm = normalizeSourceKey(raw);
     const mapped = SOURCES_BY_NORMALIZED_KEY[norm] ? '✓ mapped' : '⚠ no mapping (skipped)';
     console.log(`  ${raw.padEnd(20)} → ${norm.padEnd(20)} ${String(count).padStart(6)} rows  ${mapped}`);
+  }
+  console.log('\nFields available per source (with sample values):');
+  for (const [src, fields] of Object.entries(fieldsBySource)) {
+    const fieldList = Object.keys(fields).sort();
+    console.log(`  ${src}: ${fieldList.length} fields`);
+    for (const f of fieldList) {
+      const sample = String(fields[f]).slice(0, 40);
+      console.log(`    - ${f.padEnd(28)} eg. ${sample}`);
+    }
   }
 
   // Bucket per week → per source → per metric.
@@ -213,6 +233,7 @@ async function main() {
     sourcesNormalized: sourcesDiscoveredNormalized,
     sourcesMapped,
     sourcesUnmapped,
+    fieldsBySource,
     sampleRowKeys: rows.length > 0 ? Object.keys(rows[0]) : [],
     rowCount: rows.length,
     usableRowCount: usableRows,
