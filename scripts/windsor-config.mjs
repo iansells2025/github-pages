@@ -65,10 +65,12 @@ export const BLENDED_SOURCES = {
     },
   },
   instagram: {
-    label: 'Instagram (Ads or organic — verify with user)',
+    label: 'Instagram (organic — followers count)',
     metrics: {
-      paid:  { field: 'clicks', agg: 'sum' },
-      costs: { field: 'spend',  agg: 'sum' },
+      // Tracked but not currently surfaced on the dashboard. Add a new
+      // metric like `igFollowers` here + a chart card if needed.
+      // followers_count is a snapshot, not a daily delta — use 'last'.
+      // Left empty for now so Instagram rows don't pollute paid/costs.
     },
   },
   tiktokads: {
