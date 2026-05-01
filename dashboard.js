@@ -3,6 +3,7 @@
   const STORAGE_KEY = 'jb-marketing-dashboard-v1';
   const REPS_KEY    = 'jb-marketing-dashboard-reps-v1';
   const WINDSOR_URL = 'data/windsor.json';
+  const DIRECT_URL  = 'data/direct.json';
 
   const REP_PALETTE = ['#5b8dff','#2dd4bf','#f59e0b','#f472b6','#a78bfa','#facc15','#34d399','#60a5fa','#fb7185','#22d3ee'];
 
@@ -138,30 +139,47 @@
   // Windsor.ai feed (read-only baseline). Loaded from data/windsor.json.
   let windsorData = [];
   let windsorUpdatedAt = null;
+  // Direct-API feed (Stripe, HubSpot, etc.). Loaded from data/direct.json.
+  let directData = [];
+  let directUpdatedAt = null;
 
-  async function loadWindsor() {
+  async function loadJsonFeed(url) {
     try {
-      const res = await fetch(WINDSOR_URL, { cache: 'no-store' });
-      if (!res.ok) return;
-      const json = await res.json();
-      windsorData = Array.isArray(json.weeks) ? json.weeks : [];
-      windsorUpdatedAt = json.updatedAt || null;
-    } catch { /* offline / file missing — fine */ }
+      const res = await fetch(url, { cache: 'no-store' });
+      if (!res.ok) return null;
+      return await res.json();
+    } catch { return null; }
   }
-  await loadWindsor();
 
-  /* Effective dataset = Windsor baseline overlaid by manual values per metric. */
+  const windsorJson = await loadJsonFeed(WINDSOR_URL);
+  if (windsorJson) {
+    windsorData = Array.isArray(windsorJson.weeks) ? windsorJson.weeks : [];
+    windsorUpdatedAt = windsorJson.updatedAt || null;
+  }
+  const directJson = await loadJsonFeed(DIRECT_URL);
+  if (directJson) {
+    directData = Array.isArray(directJson.weeks) ? directJson.weeks : [];
+    directUpdatedAt = directJson.updatedAt || null;
+  }
+
+  /* Effective dataset, with priority: manual > direct API > Windsor baseline,
+   * applied per metric (so any layer can fill in metrics the lower layer
+   * lacks, but a higher layer's value wins for the same metric). */
   function buildEffectiveData() {
     const byWeek = new Map();
-    for (const w of windsorData) byWeek.set(w.weekStart, { ...w });
-    for (const w of manualData) {
-      const base = byWeek.get(w.weekStart) || { weekStart: w.weekStart };
-      for (const [k, v] of Object.entries(w)) {
-        if (k === 'weekStart') continue;
-        if (v !== null && v !== undefined && v !== '') base[k] = v;
+    function overlay(rows) {
+      for (const w of rows) {
+        const base = byWeek.get(w.weekStart) || { weekStart: w.weekStart };
+        for (const [k, v] of Object.entries(w)) {
+          if (k === 'weekStart') continue;
+          if (v !== null && v !== undefined && v !== '') base[k] = v;
+        }
+        byWeek.set(w.weekStart, base);
       }
-      byWeek.set(w.weekStart, base);
     }
+    overlay(windsorData);
+    overlay(directData);
+    overlay(manualData);
     return [...byWeek.values()];
   }
 
@@ -1025,12 +1043,17 @@
   function renderFreshness() {
     const foot = document.querySelector('.pagefoot');
     if (!foot) return;
-    const wCount = windsorData.length;
+    const parts = [];
     if (windsorUpdatedAt) {
-      const when = new Date(windsorUpdatedAt).toLocaleString();
-      foot.textContent = `Windsor.ai sync: ${wCount} weeks · last updated ${when}. Manual entries override synced values per metric.`;
+      parts.push(`Windsor: ${windsorData.length} wk · ${new Date(windsorUpdatedAt).toLocaleString()}`);
+    }
+    if (directUpdatedAt) {
+      parts.push(`Direct API: ${directData.length} wk · ${new Date(directUpdatedAt).toLocaleString()}`);
+    }
+    if (parts.length === 0) {
+      foot.textContent = 'No synced data yet. Configure secrets in Settings → Secrets and variables → Actions, then trigger the sync workflows. Manual entries are stored locally.';
     } else {
-      foot.textContent = 'Windsor.ai sync not yet running. Add connector secrets in repo Settings → Secrets and variables → Actions, then run the “Sync Windsor.ai Marketing Data” workflow. Manual entries are stored locally.';
+      foot.textContent = `${parts.join(' · ')}. Priority: manual entries > direct API > Windsor.`;
     }
   }
   renderFreshness();

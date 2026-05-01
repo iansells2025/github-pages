@@ -1,3 +1,74 @@
+# Sync Pipelines
+
+The dashboard is fed by two parallel sync pipelines, both running hourly via
+GitHub Actions:
+
+1. **Windsor.ai blended sync** (`sync-windsor.mjs`) — one URL covering ad
+   platforms, search console, and other connected sources.
+2. **Direct-API sync** (`sync-direct.mjs`) — per-source fetchers that hit each
+   platform's REST API directly, bypassing middleware. Best for sources
+   where Windsor's schema is awkward (Stripe revenue/MRR, HubSpot email
+   stats, GA4 segments, etc.).
+
+The dashboard merges both feeds with the priority:
+**manual entries > direct API > Windsor**, applied per metric per week.
+
+---
+
+# Direct API Sync
+
+Per-source fetchers under `scripts/sources/`. Each module exports
+`fetchWeeklyMetrics()` returning `{ weeks: [...], diagnostics: {...} }`.
+Sources without a configured secret are skipped.
+
+## Configured sources
+
+### Stripe (`scripts/sources/stripe.mjs`)
+
+- **Secret name:** `STRIPE_API_KEY`
+- **Type:** Restricted API key (Developers → API keys → Create restricted key)
+- **Required permissions (read-only):** `Charges`, `Balance`, `Customers`,
+  `Subscriptions`. Use `rk_live_…` (or `rk_test_…` for testing) — never the
+  full secret key.
+- **Metrics produced:**
+  - `revenue` — sum of successful, non-refunded charges per week (gross
+    volume, USD).
+  - `deposits` — sum of paid payouts per week (by `arrival_date`).
+  - `mrrBrands` / `mrrCreators` — current MRR snapshot, attached to the
+    latest week. Split is based on
+    `subscription.metadata.account_type === 'brand' | 'creator'`. If you
+    don't tag subscriptions, all MRR rolls into `mrrBrands` (look for
+    `mrrUnclassified` in the diagnostics to see how much is unclassified).
+
+### HubSpot (`scripts/sources/hubspot.mjs`)
+
+- **Secret name:** `HUBSPOT_PRIVATE_APP_TOKEN`
+- **Type:** Private App access token (Settings → Integrations → Private Apps
+  → Create private app)
+- **Required scopes (read-only):** `content` (covers marketing emails on
+  most accounts) and/or `marketing-email` (newer scope name — tick if
+  available).
+- **Metrics produced:**
+  - `mktgSent` — emails delivered, summed across all marketing emails per
+    week (by `publishDate`).
+  - `mktgViewed` — opens.
+  - `mktgClicked` — clicks.
+
+## Adding a new source
+
+1. Create `scripts/sources/<name>.mjs` exporting
+   `async function fetchWeeklyMetrics()`. Return
+   `{ weeks: [{ weekStart: 'YYYY-MM-DD', metricA: …, metricB: … }],
+     diagnostics: {…} }`.
+2. Add an entry to the `SOURCES` array in `scripts/sync-direct.mjs`.
+3. Add the secret env var to `.github/workflows/sync-direct.yml`.
+4. Add the secret in repo settings.
+
+The coordinator skips any source whose env var is unset, so you can wire
+up sources incrementally.
+
+---
+
 # Windsor.ai Sync
 
 Auto-pulls weekly metrics from Windsor.ai into the dashboard via a single
