@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-05-01T20:45:16.950Z",
+  "updatedAt": "2026-05-01T21:49:34.662Z",
   "source": "windsor.ai",
   "endpoint": "blended",
   "weeks": [
@@ -9,7 +9,7 @@
     },
     {
       "weekStart": "2026-04-27",
-      "costs": 5909.42
+      "costs": 5909.53
     }
   ],
   "weeksBySource": {
@@ -26,23 +26,27 @@
         "costs": 4102.2777
       },
       "facebook": {
-        "costs": 1807.14
-      }
+        "costs": 1807.25
+      },
+      "instagram": {}
     }
   },
   "sourcesDiscovered": [
     "facebook",
     "google_ads",
+    "instagram",
     "intercom"
   ],
   "sourcesNormalized": [
     "facebook",
     "googleads",
+    "instagram",
     "intercom"
   ],
   "sourcesMapped": [
     "facebook",
-    "googleads"
+    "googleads",
+    "instagram"
   ],
   "sourcesUnmapped": [
     "intercom"
@@ -70,6 +74,13 @@
       "date": "2026-04-24",
       "source": "intercom",
       "email": "sehornelizabeth@gmail.com"
+    },
+    "instagram": {
+      "account_name": "joinbrands_creators",
+      "datasource": "instagram",
+      "date": "2026-05-01",
+      "followers_count": 48730,
+      "source": "instagram"
     }
   },
   "sampleRowKeys": [
@@ -82,6 +93,6 @@
     "spend",
     "email"
   ],
-  "rowCount": 5520,
+  "rowCount": 5705,
   "usableRowCount": 189
 }
