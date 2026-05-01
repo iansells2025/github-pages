@@ -1,15 +1,176 @@
 {
-  "updatedAt": "2026-05-01T20:47:20.157Z",
+  "updatedAt": "2026-05-01T20:58:38.151Z",
   "sources": {
     "stripe": {
-      "ok": false,
-      "error": "Stripe /subscriptions HTTP 400: {\n  \"error\": {\n    \"message\": \"Invalid array\",\n    \"param\": \"expand\",\n    \"request_log_url\": \"https://dashboard.stripe.com/acct_1K6O62Id7iEY4ezO/workbench/logs?object=req_AIgfIvVNqGlGGj\",\n    \"type\": \"invalid_request_error\"\n  }\n}\n"
+      "ok": true,
+      "weekCount": 13,
+      "diagnostics": {
+        "chargeCount": 0,
+        "payoutCount": 64,
+        "activeSubscriptionCount": 358,
+        "mrrTotal": 61412.05,
+        "mrrBrands": 0,
+        "mrrCreators": 0,
+        "mrrUnclassified": 61412.05,
+        "callErrors": {
+          "charges": "Stripe /charges HTTP 403: {\n  \"error\": {\n    \"message\": \"The provided key 'rk_live_*********************************************************************************************gGrgwq' does not have the required permissions for this endpoint on account 'acct_1K6O62Id7iEY4ezO'. Having the 'rak_charge_read' permission would all"
+        }
+      }
     },
     "hubspot": {
       "ok": false,
-      "error": "HubSpot /marketing/v3/emails/ HTTP 401: {\"category\":\"INVALID_AUTHENTICATION\",\"correlationId\":\"019de54b-c02d-7f53-9d77-0ba7093d1e1c\",\"message\":\"Authentication credentials not found. This API supports OAuth 2.0 authentication and you can find more details at https://developers.hubspot.com/docs/methods/auth/oauth-overview\",\"status\":\"error\"}"
+      "error": "HubSpot /marketing/v3/emails/ HTTP 400: {\"correlationId\":\"019de556-18a4-78f5-b1f1-6d2dc27c0897\",\"message\":\"Filter violation: Filtering by \\\"published_at lte\\\" is not allowed\",\"status\":\"error\"}"
     }
   },
-  "weeks": [],
-  "weeksBySource": {}
+  "weeks": [
+    {
+      "weekStart": "2026-02-02",
+      "revenue": 0,
+      "deposits": 225314.9
+    },
+    {
+      "weekStart": "2026-02-09",
+      "revenue": 0,
+      "deposits": 262184.89
+    },
+    {
+      "weekStart": "2026-02-16",
+      "revenue": 0,
+      "deposits": 219576.27
+    },
+    {
+      "weekStart": "2026-02-23",
+      "revenue": 0,
+      "deposits": 228763.43
+    },
+    {
+      "weekStart": "2026-03-02",
+      "revenue": 0,
+      "deposits": 251141.36
+    },
+    {
+      "weekStart": "2026-03-09",
+      "revenue": 0,
+      "deposits": 242307.47
+    },
+    {
+      "weekStart": "2026-03-16",
+      "revenue": 0,
+      "deposits": 222216.35
+    },
+    {
+      "weekStart": "2026-03-23",
+      "revenue": 0,
+      "deposits": 276155.57
+    },
+    {
+      "weekStart": "2026-03-30",
+      "revenue": 0,
+      "deposits": 179028.83
+    },
+    {
+      "weekStart": "2026-04-06",
+      "revenue": 0,
+      "deposits": 246857.81
+    },
+    {
+      "weekStart": "2026-04-13",
+      "revenue": 0,
+      "deposits": 236761.17
+    },
+    {
+      "weekStart": "2026-04-20",
+      "revenue": 0,
+      "deposits": 244390.07
+    },
+    {
+      "weekStart": "2026-04-27",
+      "revenue": 0,
+      "deposits": 245494.27,
+      "mrrBrands": 61412.05,
+      "mrrCreators": 0
+    }
+  ],
+  "weeksBySource": {
+    "2026-02-02": {
+      "stripe": {
+        "revenue": 0,
+        "deposits": 225314.9
+      }
+    },
+    "2026-02-09": {
+      "stripe": {
+        "revenue": 0,
+        "deposits": 262184.89
+      }
+    },
+    "2026-02-16": {
+      "stripe": {
+        "revenue": 0,
+        "deposits": 219576.27
+      }
+    },
+    "2026-02-23": {
+      "stripe": {
+        "revenue": 0,
+        "deposits": 228763.43
+      }
+    },
+    "2026-03-02": {
+      "stripe": {
+        "revenue": 0,
+        "deposits": 251141.36
+      }
+    },
+    "2026-03-09": {
+      "stripe": {
+        "revenue": 0,
+        "deposits": 242307.47
+      }
+    },
+    "2026-03-16": {
+      "stripe": {
+        "revenue": 0,
+        "deposits": 222216.35
+      }
+    },
+    "2026-03-23": {
+      "stripe": {
+        "revenue": 0,
+        "deposits": 276155.57
+      }
+    },
+    "2026-03-30": {
+      "stripe": {
+        "revenue": 0,
+        "deposits": 179028.83
+      }
+    },
+    "2026-04-06": {
+      "stripe": {
+        "revenue": 0,
+        "deposits": 246857.81
+      }
+    },
+    "2026-04-13": {
+      "stripe": {
+        "revenue": 0,
+        "deposits": 236761.17
+      }
+    },
+    "2026-04-20": {
+      "stripe": {
+        "revenue": 0,
+        "deposits": 244390.07
+      }
+    },
+    "2026-04-27": {
+      "stripe": {
+        "revenue": 0,
+        "deposits": 245494.27,
+        "mrrBrands": 61412.05,
+        "mrrCreators": 0
+      }
+    }
+  }
 }
