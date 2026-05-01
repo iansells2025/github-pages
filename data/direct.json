@@ -1,6 +1,15 @@
 {
-  "updatedAt": null,
-  "sources": {},
+  "updatedAt": "2026-05-01T20:47:20.157Z",
+  "sources": {
+    "stripe": {
+      "ok": false,
+      "error": "Stripe /subscriptions HTTP 400: {\n  \"error\": {\n    \"message\": \"Invalid array\",\n    \"param\": \"expand\",\n    \"request_log_url\": \"https://dashboard.stripe.com/acct_1K6O62Id7iEY4ezO/workbench/logs?object=req_AIgfIvVNqGlGGj\",\n    \"type\": \"invalid_request_error\"\n  }\n}\n"
+    },
+    "hubspot": {
+      "ok": false,
+      "error": "HubSpot /marketing/v3/emails/ HTTP 401: {\"category\":\"INVALID_AUTHENTICATION\",\"correlationId\":\"019de54b-c02d-7f53-9d77-0ba7093d1e1c\",\"message\":\"Authentication credentials not found. This API supports OAuth 2.0 authentication and you can find more details at https://developers.hubspot.com/docs/methods/auth/oauth-overview\",\"status\":\"error\"}"
+    }
+  },
   "weeks": [],
   "weeksBySource": {}
 }
