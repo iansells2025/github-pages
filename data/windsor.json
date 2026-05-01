@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-05-01T14:51:20.658Z",
+  "updatedAt": "2026-05-01T15:05:51.310Z",
   "source": "windsor.ai",
   "endpoint": "blended",
   "weeks": [
@@ -51,6 +51,38 @@
   "sourcesUnmapped": [
     "intercom"
   ],
+  "fieldsBySource": {
+    "googleads": {
+      "account_name": "Join Brands - MA",
+      "datasource": "google_ads",
+      "date": "2026-04-24",
+      "source": "google",
+      "campaign": "TDD_Search_Brand_US",
+      "spend": 333.7194
+    },
+    "facebook": {
+      "account_name": "JoinBrands",
+      "datasource": "facebook",
+      "date": "2026-04-24",
+      "source": "facebook",
+      "campaign": "TDD - Remarketing - US - Onboarding Leads",
+      "spend": 24.93
+    },
+    "intercom": {
+      "account_name": "windsor",
+      "datasource": "intercom",
+      "date": "2026-04-24",
+      "source": "intercom",
+      "email": "sehornelizabeth@gmail.com"
+    },
+    "instagram": {
+      "account_name": "joinbrands_creators",
+      "datasource": "instagram",
+      "date": "2026-05-01",
+      "followers_count": 48644,
+      "source": "instagram"
+    }
+  },
   "sampleRowKeys": [
     "account_name",
     "datasource",
