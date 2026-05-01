@@ -54,19 +54,19 @@ async function hubspotGet(path, params = {}) {
   return res.json();
 }
 
-/* List marketing emails published in the lookback window. v3 API returns
-   summary stats inline when `includeStats=true` is requested. */
+/* List marketing emails. HubSpot's /marketing/v3/emails/ GET endpoint
+   doesn't allow filtering by `publishedAt`, so we list all (paginated)
+   and filter by date in JS. Capped at 50 pages (5000 emails) to avoid
+   runaway requests on accounts with very long history. */
 async function listMarketingEmails() {
-  const { startISO, endISO } = lookbackBoundsISO();
   const all = [];
   let after = null;
   for (let page = 0; page < 50; page++) {
     const params = {
       limit: 100,
       includeStats: true,
-      // Filter by publish/send window. HubSpot accepts ISO8601.
-      publishedAt__gte: startISO,
-      publishedAt__lte: endISO,
+      // Newer emails first if HubSpot honors sort here.
+      sort: '-publishDate',
     };
     if (after) params.after = after;
     const json = await hubspotGet('/marketing/v3/emails/', params);
@@ -75,6 +75,16 @@ async function listMarketingEmails() {
     if (!after) break;
   }
   return all;
+}
+
+function isInLookback(email) {
+  const ts = emailSendDate(email);
+  if (!ts) return false;
+  const d = new Date(ts);
+  if (Number.isNaN(d.getTime())) return false;
+  const cutoff = new Date();
+  cutoff.setUTCDate(cutoff.getUTCDate() - LOOKBACK_WEEKS * 7);
+  return d >= cutoff;
 }
 
 function emailStats(email) {
@@ -97,8 +107,9 @@ function emailSendDate(email) {
 
 export async function fetchWeeklyMetrics() {
   console.log('[hubspot] listing marketing emails…');
-  const emails = await listMarketingEmails();
-  console.log(`[hubspot] found ${emails.length} emails in lookback window`);
+  const emailsAll = await listMarketingEmails();
+  const emails = emailsAll.filter(isInLookback);
+  console.log(`[hubspot] fetched ${emailsAll.length} emails total · ${emails.length} in last ${LOOKBACK_WEEKS} weeks`);
 
   const byWeek = new Map();
   function bucket(weekStart) {
@@ -127,10 +138,11 @@ export async function fetchWeeklyMetrics() {
   return {
     weeks,
     diagnostics: {
-      emailsListed: emails.length,
+      emailsTotal: emailsAll.length,
+      emailsInLookback: emails.length,
       emailsWithStats: withStats,
-      sampleEmailKeys: emails.length > 0 ? Object.keys(emails[0]).slice(0, 20) : [],
-      sampleStatKeys: emails.length > 0 ? Object.keys(emails[0].stats?.counters || emails[0].stats || {}).slice(0, 20) : [],
+      sampleEmailKeys: emailsAll.length > 0 ? Object.keys(emailsAll[0]).slice(0, 20) : [],
+      sampleStatKeys: emailsAll.length > 0 ? Object.keys(emailsAll[0].stats?.counters || emailsAll[0].stats || {}).slice(0, 20) : [],
     },
   };
 }
