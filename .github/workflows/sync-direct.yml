@@ -1,0 +1,40 @@
+name: Sync Direct API Marketing Data
+
+on:
+  schedule:
+    # Hourly. Adjust cron as needed.
+    - cron: '15 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Fetch direct-API sources
+        env:
+          # Add a secret per source you want enabled. Sources without a
+          # secret set are skipped silently — wire them up incrementally.
+          STRIPE_API_KEY:               ${{ secrets.STRIPE_API_KEY }}
+          HUBSPOT_PRIVATE_APP_TOKEN:    ${{ secrets.HUBSPOT_PRIVATE_APP_TOKEN }}
+        run: node scripts/sync-direct.mjs
+
+      - name: Commit updated data
+        run: |
+          if [[ -n "$(git status --porcelain data/direct.json)" ]]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add data/direct.json
+            git commit -m "chore(data): refresh direct-API sync"
+            git push
+          else
+            echo "No changes to commit."
+          fi
