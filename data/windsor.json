@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-05-02T10:45:58.484Z",
+  "updatedAt": "2026-05-02T11:41:07.013Z",
   "source": "windsor.ai",
   "endpoint": "blended",
   "weeks": [
@@ -9,7 +9,7 @@
     },
     {
       "weekStart": "2026-04-27",
-      "costs": 7157.71
+      "costs": 7172.98
     }
   ],
   "weeksBySource": {
@@ -26,7 +26,7 @@
         "costs": 5059.521
       },
       "facebook": {
-        "costs": 2098.19
+        "costs": 2113.46
       },
       "instagram": {}
     }
@@ -76,10 +76,10 @@
       "email": "talia.burns0889@gmail.com"
     },
     "instagram": {
-      "account_name": "joinbrands_creators",
+      "account_name": "joinbrands_brands",
       "datasource": "instagram",
       "date": "2026-05-02",
-      "followers_count": 48779,
+      "followers_count": 1687,
       "source": "instagram"
     }
   },
@@ -93,6 +93,6 @@
     "spend",
     "email"
   ],
-  "rowCount": 5845,
+  "rowCount": 5654,
   "usableRowCount": 191
 }
