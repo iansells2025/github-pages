@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-05-02T10:17:07.008Z",
+  "updatedAt": "2026-05-02T11:13:29.692Z",
   "sources": {
     "stripe": {
       "ok": true,
@@ -130,7 +130,7 @@
     },
     {
       "weekStart": "2026-04-06",
-      "revenue": 236049.34,
+      "revenue": 235596.87,
       "deposits": 246857.81
     },
     {
@@ -145,7 +145,7 @@
     },
     {
       "weekStart": "2026-04-27",
-      "revenue": 250236.22,
+      "revenue": 250341.18,
       "deposits": 245494.27,
       "mrrBrands": 61313.05,
       "mrrCreators": 0
@@ -238,7 +238,7 @@
     },
     "2026-04-06": {
       "stripe": {
-        "revenue": 236049.34,
+        "revenue": 235596.87,
         "deposits": 246857.81
       }
     },
@@ -256,7 +256,7 @@
     },
     "2026-04-27": {
       "stripe": {
-        "revenue": 250236.22,
+        "revenue": 250341.18,
         "deposits": 245494.27,
         "mrrBrands": 61313.05,
         "mrrCreators": 0
