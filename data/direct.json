@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-05-02T08:51:24.187Z",
+  "updatedAt": "2026-05-02T10:17:07.008Z",
   "sources": {
     "stripe": {
       "ok": true,
@@ -74,7 +74,7 @@
       "weekStart": "2026-02-09",
       "revenue": 0,
       "deposits": 262184.89,
-      "mktgSent": 361,
+      "mktgSent": 362,
       "mktgViewed": 118,
       "mktgClicked": 4
     },
@@ -130,7 +130,7 @@
     },
     {
       "weekStart": "2026-04-06",
-      "revenue": 236240.64,
+      "revenue": 236049.34,
       "deposits": 246857.81
     },
     {
@@ -145,7 +145,7 @@
     },
     {
       "weekStart": "2026-04-27",
-      "revenue": 250061.33,
+      "revenue": 250236.22,
       "deposits": 245494.27,
       "mrrBrands": 61313.05,
       "mrrCreators": 0
@@ -164,7 +164,7 @@
         "deposits": 262184.89
       },
       "hubspot": {
-        "mktgSent": 361,
+        "mktgSent": 362,
         "mktgViewed": 118,
         "mktgClicked": 4
       }
@@ -238,7 +238,7 @@
     },
     "2026-04-06": {
       "stripe": {
-        "revenue": 236240.64,
+        "revenue": 236049.34,
         "deposits": 246857.81
       }
     },
@@ -256,7 +256,7 @@
     },
     "2026-04-27": {
       "stripe": {
-        "revenue": 250061.33,
+        "revenue": 250236.22,
         "deposits": 245494.27,
         "mrrBrands": 61313.05,
         "mrrCreators": 0
