@@ -78,15 +78,34 @@ async function listAll(path, params = {}) {
   return items;
 }
 
+/* Brand product IDs from Stripe. Only subscriptions whose first item's
+   product matches one of these are counted as brand MRR. Tier label is
+   used in the per-tier breakdown. */
+const BRAND_PRODUCTS = {
+  'prod_OkN8oh6d0Ar6dr': 'startup',
+  'prod_OkN8HHhf1oN6yq': 'pro',
+  'prod_OkN830ANJxavsd': 'max',
+};
+
 async function fetchCharges() {
-  const { startTs, endTs } = lookbackBoundsUnix();
-  // Stripe filters: charges created in window
-  const charges = await listAll('/charges', {
-    'created[gte]': startTs,
-    'created[lte]': endTs,
-  });
+  // Stripe pagination caps at 10k items per query. With high-volume
+  // accounts we'd silently lose old data, so loop in weekly windows
+  // (the dashboard's natural granularity) and concatenate results.
+  const allCharges = [];
+  const now = new Date();
+  for (let weeksAgo = LOOKBACK_WEEKS; weeksAgo > 0; weeksAgo--) {
+    const windowEnd = new Date(now);
+    windowEnd.setUTCDate(windowEnd.getUTCDate() - (weeksAgo - 1) * 7);
+    const windowStart = new Date(windowEnd);
+    windowStart.setUTCDate(windowStart.getUTCDate() - 7);
+    const charges = await listAll('/charges', {
+      'created[gte]': unixTimestamp(windowStart),
+      'created[lt]':  unixTimestamp(windowEnd),
+    });
+    allCharges.push(...charges);
+  }
   // Filter to successful, non-refunded
-  return charges.filter(c => c.status === 'succeeded' && !c.refunded);
+  return allCharges.filter(c => c.status === 'succeeded' && !c.refunded);
 }
 
 async function fetchPayouts() {
@@ -133,22 +152,35 @@ function subscriptionMonthlyAmountUSD(sub) {
   return total;
 }
 
-// Hook for splitting MRR into brands vs creators. Returns { brands, creators, other }.
-// Customize this once we know the convention (e.g., customer.metadata.account_type).
+// Returns brand-only MRR with a per-tier breakdown. Subs whose first-item
+// product is not in BRAND_PRODUCTS are excluded entirely (e.g. creator
+// subscriptions, internal-use plans).
 function splitMrrBy(subscriptions) {
-  let brands = 0;
-  let creators = 0;
-  let other = 0;
+  const tiers = { startup: 0, pro: 0, max: 0 };
+  let brandsTotal = 0;
+  let nonBrandSubs = 0;
+  let nonBrandMrr = 0;
+  let brandSubCount = 0;
   for (const sub of subscriptions) {
+    const productId = sub.items?.data?.[0]?.price?.product;
+    const tier = BRAND_PRODUCTS[productId];
     const monthly = subscriptionMonthlyAmountUSD(sub);
-    const tag = (sub.metadata?.account_type
-              ?? sub.customer_metadata?.account_type
-              ?? '').toLowerCase();
-    if (tag === 'brand')        brands += monthly;
-    else if (tag === 'creator') creators += monthly;
-    else                        other += monthly;
+    if (!tier) {
+      nonBrandSubs++;
+      nonBrandMrr += monthly;
+      continue;
+    }
+    tiers[tier] += monthly;
+    brandsTotal += monthly;
+    brandSubCount++;
   }
-  return { brands, creators, other, total: brands + creators + other };
+  return {
+    brands: brandsTotal,
+    tiers,
+    brandSubCount,
+    nonBrandSubs,
+    nonBrandMrr,
+  };
 }
 
 export async function fetchWeeklyMetrics() {
@@ -186,22 +218,23 @@ export async function fetchWeeklyMetrics() {
     bucket(ws).deposits += payoutAmountUSD(p);
   }
 
-  // MRR = current snapshot. Apply to the most recent week in the lookback so
-  // the dashboard's "latest" KPI picks it up.
+  // MRR = current snapshot, filtered to brand products only (Startup / Pro
+   // / Max). Attached to the most recent week so the dashboard's "latest"
+   // KPI picks it up.
   const mrr = splitMrrBy(subs);
-  console.log(`[stripe] MRR snapshot: total=$${mrr.total.toFixed(0)} brands=$${mrr.brands.toFixed(0)} creators=$${mrr.creators.toFixed(0)} other=$${mrr.other.toFixed(0)}`);
+  console.log(`[stripe] MRR (brand subs only): brands=$${mrr.brands.toFixed(0)} (${mrr.brandSubCount} subs)`);
+  console.log(`[stripe]   tier breakdown: startup=$${mrr.tiers.startup.toFixed(0)} pro=$${mrr.tiers.pro.toFixed(0)} max=$${mrr.tiers.max.toFixed(0)}`);
+  console.log(`[stripe]   excluded (non-brand): ${mrr.nonBrandSubs} subs · $${mrr.nonBrandMrr.toFixed(0)} MRR`);
 
   // Sort weeks ascending; attach MRR to the latest week
   const weeks = [...byWeek.values()].sort((a, b) => a.weekStart.localeCompare(b.weekStart));
   if (weeks.length > 0) {
     const latest = weeks[weeks.length - 1];
     latest.mrrBrands = +mrr.brands.toFixed(2);
-    latest.mrrCreators = +mrr.creators.toFixed(2);
-    if (mrr.other > 0) {
-      // If we couldn't classify, dump it into mrrBrands so the total isn't lost.
-      // User should set customer.metadata.account_type = 'brand' | 'creator' to fix.
-      latest.mrrBrands += +mrr.other.toFixed(2);
-    }
+    latest.mrrBrandStartup = +mrr.tiers.startup.toFixed(2);
+    latest.mrrBrandPro = +mrr.tiers.pro.toFixed(2);
+    latest.mrrBrandMax = +mrr.tiers.max.toFixed(2);
+    // No more mrrCreators — those subs are out of scope per user direction.
   }
 
   // Round monetary values
@@ -216,10 +249,13 @@ export async function fetchWeeklyMetrics() {
       chargeCount: charges.length,
       payoutCount: payouts.length,
       activeSubscriptionCount: subs.length,
-      mrrTotal: +mrr.total.toFixed(2),
       mrrBrands: +mrr.brands.toFixed(2),
-      mrrCreators: +mrr.creators.toFixed(2),
-      mrrUnclassified: +mrr.other.toFixed(2),
+      mrrBrandStartup: +mrr.tiers.startup.toFixed(2),
+      mrrBrandPro:     +mrr.tiers.pro.toFixed(2),
+      mrrBrandMax:     +mrr.tiers.max.toFixed(2),
+      brandSubCount: mrr.brandSubCount,
+      nonBrandSubCount: mrr.nonBrandSubs,
+      nonBrandMrrExcluded: +mrr.nonBrandMrr.toFixed(2),
       callErrors: Object.keys(callErrors).length ? callErrors : undefined,
     },
   };
