@@ -129,10 +129,33 @@
     </div>
   </section>
 
+  <section class="card leaderboard-card">
+    <div class="table-header">
+      <h3>Sales Rep Leaderboard</h3>
+      <span class="hint">Aggregated across the selected range. Click a column header to sort.</span>
+    </div>
+    <div class="table-wrap">
+      <table id="repLeaderboard">
+        <thead>
+          <tr>
+            <th data-sort="name">Rep</th>
+            <th data-sort="calls" class="num">Calls</th>
+            <th data-sort="newClients" class="num">New Clients</th>
+            <th data-sort="winRate" class="num">Win Rate</th>
+            <th data-sort="callsPerWeek" class="num">Calls / wk</th>
+            <th data-sort="newPerWeek" class="num">New / wk</th>
+            <th data-sort="callShare" class="num">Call Share</th>
+          </tr>
+        </thead>
+        <tbody id="repLeaderboardBody"></tbody>
+      </table>
+    </div>
+  </section>
+
   <section class="card table-card">
     <div class="table-header">
       <h3>Weekly Data</h3>
-      <span class="hint">Click any row to edit. Weeks are ISO week (Mon–Sun).</span>
+      <span class="hint">Click the row to edit, or the magnifier to audit data sources.</span>
     </div>
     <div class="table-wrap">
       <table id="weeksTable">
@@ -231,10 +254,19 @@
         <label>New Campaigns &gt; $1k
           <input type="number" name="campaigns" min="0" step="1" />
         </label>
-        <label>MRR for Brands ($)
+        <label>MRR Brands — Total ($)
           <input type="number" name="mrrBrands" min="0" step="0.01" />
         </label>
-        <label>MRR for Creators ($)
+        <label>MRR Brands — Startup ($)
+          <input type="number" name="mrrBrandStartup" min="0" step="0.01" />
+        </label>
+        <label>MRR Brands — Pro ($)
+          <input type="number" name="mrrBrandPro" min="0" step="0.01" />
+        </label>
+        <label>MRR Brands — Max ($)
+          <input type="number" name="mrrBrandMax" min="0" step="0.01" />
+        </label>
+        <label>MRR Creators ($)
           <input type="number" name="mrrCreators" min="0" step="0.01" />
         </label>
         <label>Creator GMV ($)
@@ -284,6 +316,24 @@
     </footer>
   </div>
 </div>
+
+<aside id="auditDrawer" class="drawer hidden" aria-hidden="true">
+  <div class="drawer-card">
+    <header>
+      <div>
+        <h3 id="auditTitle">Week Audit</h3>
+        <p id="auditSubtitle" class="subtitle"></p>
+      </div>
+      <button id="closeAuditDrawer" class="icon-btn" aria-label="Close">&times;</button>
+    </header>
+    <div class="drawer-body" id="auditBody"></div>
+    <footer class="form-footer">
+      <span class="hint">Effective value = topmost source with data. Manual entries always win.</span>
+      <div class="spacer"></div>
+      <button type="button" id="closeAuditDrawerBtn" class="btn">Close</button>
+    </footer>
+  </div>
+</aside>
 
 <footer class="pagefoot">
   Data is stored locally in your browser. Export to JSON to back up or share between devices.

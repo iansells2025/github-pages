@@ -47,8 +47,11 @@
     { key: 'creators',    label: 'Creators Signed Up',     type: 'int' },
     { key: 'brands',      label: 'Brands Signed Up',       type: 'int' },
     { key: 'campaigns',   label: 'New Campaigns >$1k',     type: 'int' },
-    { key: 'mrrBrands',   label: 'MRR Brands',             type: 'money' },
-    { key: 'mrrCreators', label: 'MRR Creators',           type: 'money' },
+    { key: 'mrrBrands',       label: 'MRR Brands',                type: 'money' },
+    { key: 'mrrBrandStartup', label: 'MRR Brand Startup',         type: 'money' },
+    { key: 'mrrBrandPro',     label: 'MRR Brand Pro',             type: 'money' },
+    { key: 'mrrBrandMax',     label: 'MRR Brand Max',             type: 'money' },
+    { key: 'mrrCreators',     label: 'MRR Creators',              type: 'money' },
     { key: 'gmv',         label: 'Creator GMV',            type: 'money' },
     { key: 'videos',      label: 'Shop Videos Produced',   type: 'int' },
   ];
@@ -57,8 +60,10 @@
     { key: 'revenue',    label: 'Revenue',        type: 'money' },
     { key: 'deposits',   label: 'Deposits',       type: 'money' },
     { key: 'costs',      label: 'Costs',          type: 'money', invert: true },
-    { key: 'mrrBrands',  label: 'MRR Brands',     type: 'money', latest: true },
-    { key: 'mrrCreators',label: 'MRR Creators',   type: 'money', latest: true },
+    { key: 'mrrBrands',       label: 'MRR Brands',         type: 'money', latest: true },
+    { key: 'mrrBrandStartup', label: 'MRR · Startup',      type: 'money', latest: true, group: 'mrrTier' },
+    { key: 'mrrBrandPro',     label: 'MRR · Pro',          type: 'money', latest: true, group: 'mrrTier' },
+    { key: 'mrrBrandMax',     label: 'MRR · Max',          type: 'money', latest: true, group: 'mrrTier' },
     { key: 'gmv',        label: 'Creator GMV',    type: 'money' },
     { key: 'newClients', label: 'New Clients',    type: 'int' },
     { key: 'salesCalls', label: 'Sales Calls',    type: 'int' },
@@ -138,9 +143,11 @@
 
   // Windsor.ai feed (read-only baseline). Loaded from data/windsor.json.
   let windsorData = [];
+  let windsorBySource = {}; // weekStart -> source -> metrics (for audit drawer)
   let windsorUpdatedAt = null;
   // Direct-API feed (Stripe, HubSpot, etc.). Loaded from data/direct.json.
   let directData = [];
+  let directBySource = {};  // weekStart -> source -> metrics (for audit drawer)
   let directUpdatedAt = null;
 
   async function loadJsonFeed(url) {
@@ -154,11 +161,13 @@
   const windsorJson = await loadJsonFeed(WINDSOR_URL);
   if (windsorJson) {
     windsorData = Array.isArray(windsorJson.weeks) ? windsorJson.weeks : [];
+    windsorBySource = windsorJson.weeksBySource || {};
     windsorUpdatedAt = windsorJson.updatedAt || null;
   }
   const directJson = await loadJsonFeed(DIRECT_URL);
   if (directJson) {
     directData = Array.isArray(directJson.weeks) ? directJson.weeks : [];
+    directBySource = directJson.weeksBySource || {};
     directUpdatedAt = directJson.updatedAt || null;
   }
 
@@ -380,6 +389,9 @@
     const wrap = document.getElementById('kpis');
     wrap.innerHTML = '';
 
+    // Pre-compute MRR Brands total so the per-tier cards can show share-of-total.
+    const mrrBrandsTotal = latestKey(mainRows, 'mrrBrands');
+
     KPI_LIST.forEach(kpi => {
       const current  = kpi.latest ? latestKey(mainRows, kpi.key)    : sumKey(mainRows, kpi.key);
       const previous = kpi.latest ? latestKey(compareRows, kpi.key) : sumKey(compareRows, kpi.key);
@@ -388,7 +400,7 @@
       if (compareMode !== 'none' && previous > 0) deltaPct = ((current - previous) / previous) * 100;
 
       const div = document.createElement('div');
-      div.className = 'kpi';
+      div.className = 'kpi' + (kpi.group === 'mrrTier' ? ' tier' : '');
       const isGood = kpi.invert ? (deltaPct !== null && deltaPct < 0) : (deltaPct !== null && deltaPct > 0);
       const isBad  = kpi.invert ? (deltaPct !== null && deltaPct > 0) : (deltaPct !== null && deltaPct < 0);
       const deltaClass = deltaPct === null ? 'flat' : (isGood ? 'up' : (isBad ? 'down' : 'flat'));
@@ -400,10 +412,17 @@
           ? `vs ${compareLabel} —`
           : `${deltaPct >= 0 ? '▲' : '▼'} ${Math.abs(deltaPct).toFixed(1)}% vs ${compareLabel}`;
 
+      let share = '';
+      if (kpi.group === 'mrrTier' && mrrBrandsTotal > 0) {
+        const pct = (current / mrrBrandsTotal) * 100;
+        share = `<div class="kpi-share">${pct.toFixed(0)}% of brand MRR</div>`;
+      }
+
       div.innerHTML = `
         <div class="label">${kpi.label}${kpi.latest ? ' (latest)' : ''}</div>
         <div class="value">${fmt(current, kpi.type)}</div>
         <div class="delta ${deltaClass}">${deltaText}</div>
+        ${share}
       `;
       wrap.appendChild(div);
     });
@@ -701,9 +720,19 @@
         <td>${fmt(r.mrrCreators,'money')}</td>
         <td>${fmt(r.gmv,'money')}</td>
         <td>${fmt(r.videos,'int')}</td>
-        <td><button class="row-delete" title="Delete">&times;</button></td>
+        <td>
+          <span class="row-actions">
+            <button class="row-audit" title="Audit data sources">⌕</button>
+            <button class="row-delete" title="Delete">&times;</button>
+          </span>
+        </td>
       `;
       tr.addEventListener('click', (e) => {
+        if (e.target.classList.contains('row-audit')) {
+          e.stopPropagation();
+          openAuditDrawer(r.weekStart);
+          return;
+        }
         if (e.target.classList.contains('row-delete')) {
           e.stopPropagation();
           if (confirm('Remove your manual entry for this week? (Windsor data, if any, will remain.)')) {
@@ -720,6 +749,92 @@
     }
   }
 
+  let repSortKey = 'newClients';
+  let repSortDir = 'desc';
+
+  function computeRepLeaderboard(mainRows) {
+    if (reps.length === 0) return [];
+    const weekCount = mainRows.length || 1;
+    const totals = reps.map((rep, idx) => {
+      let calls = 0;
+      let newClients = 0;
+      for (const r of mainRows) {
+        calls      += Number(r.salesCallsByRep?.[rep.id]) || 0;
+        newClients += Number(r.newClientsByRep?.[rep.id]) || 0;
+      }
+      return {
+        rep, idx,
+        calls, newClients,
+        winRate: calls > 0 ? (newClients / calls) * 100 : 0,
+        callsPerWeek: calls / weekCount,
+        newPerWeek: newClients / weekCount,
+        callShare: 0, // filled below
+      };
+    });
+    const totalCalls = totals.reduce((a, t) => a + t.calls, 0);
+    for (const t of totals) {
+      t.callShare = totalCalls > 0 ? (t.calls / totalCalls) * 100 : 0;
+    }
+    const direction = repSortDir === 'asc' ? 1 : -1;
+    totals.sort((a, b) => {
+      const av = repSortKey === 'name' ? a.rep.name.toLowerCase() : a[repSortKey];
+      const bv = repSortKey === 'name' ? b.rep.name.toLowerCase() : b[repSortKey];
+      if (av < bv) return -1 * direction;
+      if (av > bv) return  1 * direction;
+      return 0;
+    });
+    return totals;
+  }
+
+  function renderRepLeaderboard(mainRows) {
+    const tbody = document.getElementById('repLeaderboardBody');
+    const ths = document.querySelectorAll('#repLeaderboard thead th');
+    if (!tbody) return;
+    ths.forEach(th => {
+      th.removeAttribute('data-sorted');
+      if (th.dataset.sort === repSortKey) th.setAttribute('data-sorted', repSortDir);
+    });
+    const rows = computeRepLeaderboard(mainRows);
+    tbody.innerHTML = '';
+    if (rows.length === 0) {
+      tbody.innerHTML = `<tr class="empty-row"><td colspan="7">No sales reps configured. Click <b>Sales Reps</b> in the topbar to add some.</td></tr>`;
+      return;
+    }
+    rows.forEach((t, displayIdx) => {
+      const tr = document.createElement('tr');
+      if (displayIdx === 0 && repSortDir === 'desc' && t[repSortKey] > 0) tr.classList.add('top-row');
+      const color = repColor(t.rep, t.idx);
+      tr.innerHTML = `
+        <td>
+          <span class="rep-cell">
+            <span class="swatch" style="background:${color}"></span>${t.rep.name}
+          </span>
+        </td>
+        <td class="num">${numFmt.format(t.calls)}</td>
+        <td class="num">${numFmt.format(t.newClients)}</td>
+        <td class="num">${t.winRate.toFixed(1)}%</td>
+        <td class="num">${t.callsPerWeek.toFixed(1)}</td>
+        <td class="num">${t.newPerWeek.toFixed(1)}</td>
+        <td class="num">${t.callShare.toFixed(0)}%</td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+
+  document.querySelectorAll('#repLeaderboard thead th').forEach(th => {
+    th.addEventListener('click', () => {
+      const key = th.dataset.sort;
+      if (!key) return;
+      if (repSortKey === key) {
+        repSortDir = repSortDir === 'desc' ? 'asc' : 'desc';
+      } else {
+        repSortKey = key;
+        repSortDir = key === 'name' ? 'asc' : 'desc';
+      }
+      renderAll();
+    });
+  });
+
   function renderAll() {
     syncRangeInputsFromState();
     const main = resolveMainRange();
@@ -729,6 +844,7 @@
 
     renderKpis(mainRows, compareRows, compare.mode);
     renderCharts(mainRows, compareRows, compare.mode);
+    renderRepLeaderboard(mainRows);
     renderTable(mainRows);
 
     if (rangeLabelEl) {
@@ -1019,6 +1135,141 @@
     data = buildEffectiveData();
     renderAll();
   });
+
+  /* ---------- Audit drawer ---------- */
+  const auditDrawer = document.getElementById('auditDrawer');
+  const auditTitle = document.getElementById('auditTitle');
+  const auditSubtitle = document.getElementById('auditSubtitle');
+  const auditBody = document.getElementById('auditBody');
+
+  function metricLabel(key) {
+    const m = METRICS.find(x => x.key === key);
+    return m ? m.label : key;
+  }
+  function metricType(key) {
+    const m = METRICS.find(x => x.key === key);
+    return m ? m.type : 'int';
+  }
+
+  function openAuditDrawer(weekStart) {
+    auditTitle.textContent = `Week Audit · ${weekLabel(weekStart)}`;
+    const eff = data.find(r => r.weekStart === weekStart) || { weekStart };
+    const manual = manualData.find(r => r.weekStart === weekStart) || null;
+    const direct = directData.find(r => r.weekStart === weekStart) || null;
+    const windsor = windsorData.find(r => r.weekStart === weekStart) || null;
+    const directSrcMap = directBySource[weekStart] || {};
+    const windsorSrcMap = windsorBySource[weekStart] || {};
+
+    // Collect every metric key seen across all layers for this week.
+    const metricKeys = new Set();
+    function harvest(obj) {
+      if (!obj) return;
+      for (const k of Object.keys(obj)) {
+        if (k === 'weekStart' || k === 'salesCallsByRep' || k === 'newClientsByRep') continue;
+        metricKeys.add(k);
+      }
+    }
+    harvest(manual); harvest(direct); harvest(windsor);
+    for (const m of Object.values(directSrcMap)) harvest(m);
+    for (const m of Object.values(windsorSrcMap)) harvest(m);
+
+    auditSubtitle.innerHTML = `<b>${metricKeys.size}</b> metrics &middot; sources: ` +
+      [
+        manual ? '<span class="src manual">manual</span>' : null,
+        Object.keys(directSrcMap).length ? `<span class="src direct">direct (${Object.keys(directSrcMap).join(', ')})</span>` : null,
+        Object.keys(windsorSrcMap).length ? `<span class="src windsor">windsor (${Object.keys(windsorSrcMap).join(', ')})</span>` : null,
+      ].filter(Boolean).join(' &middot; ');
+
+    if (metricKeys.size === 0) {
+      auditBody.innerHTML = `<div class="audit-empty">No data for this week.</div>`;
+    } else {
+      // Order metrics by METRICS list, then any extras alphabetically.
+      const orderedKeys = [
+        ...METRICS.map(m => m.key).filter(k => metricKeys.has(k)),
+        ...[...metricKeys].filter(k => !METRICS.some(m => m.key === k)).sort(),
+      ];
+      const html = orderedKeys.map(key => {
+        const t = metricType(key);
+        const effVal = eff[key];
+        const manualVal = manual?.[key];
+        const directVal = direct?.[key];
+        const windsorVal = windsor?.[key];
+        const directParts = Object.entries(directSrcMap)
+          .filter(([_, m]) => m && m[key] !== undefined && m[key] !== null && m[key] !== '')
+          .map(([src, m]) => ({ src, val: m[key] }));
+        const windsorParts = Object.entries(windsorSrcMap)
+          .filter(([_, m]) => m && m[key] !== undefined && m[key] !== null && m[key] !== '')
+          .map(([src, m]) => ({ src, val: m[key] }));
+
+        const winning = manualVal !== undefined && manualVal !== null && manualVal !== '' ? 'manual'
+                      : directVal !== undefined && directVal !== null && directVal !== '' ? 'direct'
+                      : windsorVal !== undefined && windsorVal !== null && windsorVal !== '' ? 'windsor'
+                      : null;
+
+        const rowsHtml = [];
+        if (manualVal !== undefined && manualVal !== null && manualVal !== '') {
+          rowsHtml.push(`
+            <div class="audit-row">
+              <span class="src manual">manual</span>
+              <span class="label">user override</span>
+              <span class="val">${fmt(manualVal, t)}${winning === 'manual' ? '<span class="badge">used</span>' : ''}</span>
+            </div>`);
+        }
+        for (const p of directParts) {
+          rowsHtml.push(`
+            <div class="audit-row${winning !== 'direct' && winning !== null ? ' dim' : ''}">
+              <span class="src direct">direct</span>
+              <span class="label">${p.src}</span>
+              <span class="val">${fmt(p.val, t)}${winning === 'direct' && directParts.length === 1 ? '<span class="badge">used</span>' : ''}</span>
+            </div>`);
+        }
+        if (winning === 'direct' && directParts.length > 1) {
+          rowsHtml.push(`
+            <div class="audit-row">
+              <span class="src direct">direct</span>
+              <span class="label">sum across sources</span>
+              <span class="val">${fmt(directVal, t)}<span class="badge">used</span></span>
+            </div>`);
+        }
+        for (const p of windsorParts) {
+          rowsHtml.push(`
+            <div class="audit-row${winning && winning !== 'windsor' ? ' dim' : ''}">
+              <span class="src windsor">windsor</span>
+              <span class="label">${p.src}</span>
+              <span class="val">${fmt(p.val, t)}${winning === 'windsor' && windsorParts.length === 1 ? '<span class="badge">used</span>' : ''}</span>
+            </div>`);
+        }
+        if (winning === 'windsor' && windsorParts.length > 1) {
+          rowsHtml.push(`
+            <div class="audit-row">
+              <span class="src windsor">windsor</span>
+              <span class="label">sum across sources</span>
+              <span class="val">${fmt(windsorVal, t)}<span class="badge">used</span></span>
+            </div>`);
+        }
+
+        return `
+          <section class="audit-metric">
+            <header>
+              <span class="name">${metricLabel(key)}</span>
+              <span class="effective">${fmt(effVal, t)}</span>
+            </header>
+            <div class="audit-rows">${rowsHtml.join('') || '<div class="audit-empty">No source contributed.</div>'}</div>
+          </section>`;
+      }).join('');
+      auditBody.innerHTML = html;
+    }
+
+    auditDrawer.classList.remove('hidden');
+    auditDrawer.setAttribute('aria-hidden', 'false');
+  }
+  function closeAuditDrawer() {
+    auditDrawer.classList.add('hidden');
+    auditDrawer.setAttribute('aria-hidden', 'true');
+  }
+  document.getElementById('closeAuditDrawer').addEventListener('click', closeAuditDrawer);
+  document.getElementById('closeAuditDrawerBtn').addEventListener('click', closeAuditDrawer);
+  auditDrawer.addEventListener('click', (e) => { if (e.target === auditDrawer) closeAuditDrawer(); });
 
   presetSelect.addEventListener('change', () => {
     customRangeGroup.hidden = presetSelect.value !== 'custom';
