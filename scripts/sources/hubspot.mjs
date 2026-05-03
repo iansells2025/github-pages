@@ -65,20 +65,34 @@ async function hubspotGet(path, params = {}) {
 }
 
 async function hubspotPost(path, body) {
-  const res = await fetch(`${HUBSPOT_BASE}${path}`, {
-    method: 'POST',
-    headers: {
-      Authorization: authHeader(),
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(body),
-  });
-  if (!res.ok) {
-    const text = await res.text();
-    throw new Error(`HubSpot POST ${path} HTTP ${res.status}: ${text.slice(0, 300)}`);
+  // HubSpot Search API has a per-second limit (~4 req/s for private apps).
+  // Retry transient 429s with exponential backoff so a brief burst doesn't
+  // sink the whole run.
+  for (let attempt = 0; attempt < 5; attempt++) {
+    const res = await fetch(`${HUBSPOT_BASE}${path}`, {
+      method: 'POST',
+      headers: {
+        Authorization: authHeader(),
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(body),
+    });
+    if (res.status === 429) {
+      const wait = 500 * Math.pow(2, attempt) + Math.random() * 250;
+      console.warn(`[hubspot] 429 on ${path} — backing off ${Math.round(wait)}ms (attempt ${attempt + 1}/5)`);
+      await sleep(wait);
+      continue;
+    }
+    if (!res.ok) {
+      const text = await res.text();
+      throw new Error(`HubSpot POST ${path} HTTP ${res.status}: ${text.slice(0, 300)}`);
+    }
+    return res.json();
   }
-  return res.json();
+  throw new Error(`HubSpot POST ${path}: gave up after 5 retries on 429`);
 }
+
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 
 /* ---------- Marketing emails ---------- */
 
@@ -148,9 +162,11 @@ async function fetchEmailStats() {
 
 async function searchAll(objectType, body, capPages = 50) {
   // Uses /crm/v3/objects/{type}/search. Pages of up to 100, capped to 5k.
+  // Pause briefly between pages to stay under the per-second Search API limit.
   const items = [];
   let after = undefined;
   for (let page = 0; page < capPages; page++) {
+    if (page > 0) await sleep(300);
     const json = await hubspotPost(`/crm/v3/objects/${objectType}/search`, {
       ...body,
       limit: 100,
@@ -312,13 +328,23 @@ export async function fetchWeeklyMetrics() {
   const ownersR = await Promise.allSettled([fetchOwnersMap()]);
   const ownersMap = ownersR[0].status === 'fulfilled' ? ownersR[0].value : {};
 
-  const [emailR, contactsR, companiesR, dealsR, lpR] = await Promise.allSettled([
+  // Email + landing pages don't hit the Search API, safe to parallelize.
+  // Contacts/Companies/Deals all hit /crm/v3/objects/{type}/search which
+  // shares a per-second rate limit, so run them serially with delays.
+  const [emailR, lpR] = await Promise.allSettled([
     fetchEmailStats(),
-    fetchContactsByWeek(),
-    fetchCompaniesByWeek(),
-    fetchDealsByWeek(ownersMap),
     fetchLandingPagesByWeek(),
   ]);
+
+  async function settled(fn) {
+    try { return { status: 'fulfilled', value: await fn() }; }
+    catch (err) { return { status: 'rejected', reason: err }; }
+  }
+  const contactsR  = await settled(fetchContactsByWeek);
+  await sleep(500);
+  const companiesR = await settled(fetchCompaniesByWeek);
+  await sleep(500);
+  const dealsR     = await settled(() => fetchDealsByWeek(ownersMap));
 
   const callErrors = {};
   if (ownersR[0].status === 'rejected') callErrors.owners    = ownersR[0].reason.message;
