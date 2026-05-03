@@ -1,11 +1,11 @@
 {
-  "updatedAt": "2026-05-03T04:17:47.720Z",
+  "updatedAt": "2026-05-03T06:46:48.348Z",
   "sources": {
     "stripe": {
       "ok": true,
       "weekCount": 13,
       "diagnostics": {
-        "chargeCount": 8955,
+        "chargeCount": 8954,
         "payoutCount": 64,
         "activeSubscriptionCount": 360,
         "mrrTotal": 61561,
@@ -74,7 +74,7 @@
       "weekStart": "2026-02-09",
       "revenue": 0,
       "deposits": 262184.89,
-      "mktgSent": 379,
+      "mktgSent": 380,
       "mktgViewed": 121,
       "mktgClicked": 4
     },
@@ -130,22 +130,22 @@
     },
     {
       "weekStart": "2026-04-06",
-      "revenue": 225294.74,
+      "revenue": 225009,
       "deposits": 246857.81
     },
     {
       "weekStart": "2026-04-13",
-      "revenue": 275000.05,
+      "revenue": 274930.84,
       "deposits": 236761.17
     },
     {
       "weekStart": "2026-04-20",
-      "revenue": 261501.64,
+      "revenue": 261412.1,
       "deposits": 244390.07
     },
     {
       "weekStart": "2026-04-27",
-      "revenue": 263358.08,
+      "revenue": 263864.43,
       "deposits": 245494.27,
       "mrrBrands": 61561,
       "mrrCreators": 0
@@ -164,7 +164,7 @@
         "deposits": 262184.89
       },
       "hubspot": {
-        "mktgSent": 379,
+        "mktgSent": 380,
         "mktgViewed": 121,
         "mktgClicked": 4
       }
@@ -238,25 +238,25 @@
     },
     "2026-04-06": {
       "stripe": {
-        "revenue": 225294.74,
+        "revenue": 225009,
         "deposits": 246857.81
       }
     },
     "2026-04-13": {
       "stripe": {
-        "revenue": 275000.05,
+        "revenue": 274930.84,
         "deposits": 236761.17
       }
     },
     "2026-04-20": {
       "stripe": {
-        "revenue": 261501.64,
+        "revenue": 261412.1,
         "deposits": 244390.07
       }
     },
     "2026-04-27": {
       "stripe": {
-        "revenue": 263358.08,
+        "revenue": 263864.43,
         "deposits": 245494.27,
         "mrrBrands": 61561,
         "mrrCreators": 0
