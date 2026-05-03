@@ -44,15 +44,25 @@ Sources without a configured secret are skipped.
 
 - **Secret name:** `HUBSPOT_PRIVATE_APP_TOKEN`
 - **Type:** Private App access token (Settings → Integrations → Private Apps
-  → Create private app)
-- **Required scopes (read-only):** `content` (covers marketing emails on
-  most accounts) and/or `marketing-email` (newer scope name — tick if
-  available).
+  → Create private app → **Auth tab** → access token)
+- **Required scopes (read-only)** — each fetcher fails independently if its
+  scope is missing, so wire them up incrementally:
+  - `content` *or* `marketing-email` (marketing email stats)
+  - `crm.objects.contacts.read` (new leads)
+  - `crm.objects.companies.read` (new companies)
+  - `crm.objects.deals.read` (deals closed-won → new clients)
+  - `crm.objects.owners.read` (rep name resolution for the per-rep breakdown)
+  - `cms.knowledge_base.articles.read` *or* `content` (landing pages — list only for now)
 - **Metrics produced:**
-  - `mktgSent` — emails delivered, summed across all marketing emails per
-    week (by `publishDate`).
-  - `mktgViewed` — opens.
-  - `mktgClicked` — clicks.
+  - `mktgSent` / `mktgViewed` / `mktgClicked` — marketing email totals per week.
+  - `newLeads` — Contacts created per week.
+  - `newCompanies` — Companies created per week.
+  - `newClients` — Deals where `hs_is_closed_won = true`, by `closedate`.
+  - `newClientsByOwnerName` — same, broken out by HubSpot owner name. The
+    dashboard matches owner names against the manual rep list to populate
+    the per-rep stacked-bar charts.
+  - `lpViews` / `lpSubs` — pending Analytics scope; landing pages are
+    listed but not yet aggregated.
 
 ## Adding a new source
 
