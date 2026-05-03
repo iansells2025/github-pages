@@ -38,6 +38,8 @@
     { key: 'mktgSent',    label: 'Marketing Emails Sent',  type: 'int' },
     { key: 'mktgViewed',  label: 'Marketing Emails Viewed',type: 'int' },
     { key: 'mktgClicked', label: 'Marketing Emails Clicked',type: 'int' },
+    { key: 'newLeads',    label: 'New Leads (Contacts)',   type: 'int' },
+    { key: 'newCompanies',label: 'New Companies',          type: 'int' },
     { key: 'lpViews',     label: 'Landing Page Views',     type: 'int' },
     { key: 'lpSubs',      label: 'Landing Page Submissions',type: 'int' },
     { key: 'coldSent',    label: 'Cold Emails Sent',       type: 'int' },
@@ -65,6 +67,8 @@
     { key: 'mrrBrandPro',     label: 'MRR · Pro',          type: 'money', latest: true, group: 'mrrTier' },
     { key: 'mrrBrandMax',     label: 'MRR · Max',          type: 'money', latest: true, group: 'mrrTier' },
     { key: 'gmv',        label: 'Creator GMV',    type: 'money' },
+    { key: 'newLeads',   label: 'New Leads',      type: 'int' },
+    { key: 'newCompanies', label: 'New Companies', type: 'int' },
     { key: 'newClients', label: 'New Clients',    type: 'int' },
     { key: 'salesCalls', label: 'Sales Calls',    type: 'int' },
     { key: 'creators',   label: 'Creators Signed', type: 'int' },
@@ -194,64 +198,25 @@
 
   let data = buildEffectiveData();
 
-  /* ---------- Seed sample data on first load (only if no data anywhere) ---------- */
-  if (data.length === 0) {
-    manualData = buildSampleData();
-    saveData(manualData);
-    data = buildEffectiveData();
+  // Show real data only. Empty dashboard = no synced sources yet AND no
+  // manual entries. If the user still has stale demo data from a
+  // previous version that auto-seeded, offer a one-time wipe.
+  function looksLikeDemo(rows) {
+    if (rows.length < 12) return false;
+    // Demo seed always wrote `creators`, `brands`, `gmv`, `videos`, etc.
+    // and salesCallsByRep with the auto-generated rep IDs. Real data
+    // from Stripe/HubSpot/Windsor never includes `gmv` or `videos`.
+    return rows.some(r => r.gmv !== undefined && r.videos !== undefined && r.creators !== undefined);
+  }
+  if (manualData.length > 0 && looksLikeDemo(manualData) && !localStorage.getItem('jb-marketing-demo-clear-decided')) {
+    if (confirm('Clear demo/sample data so the dashboard shows only real synced data? Your manually-entered weeks (if any) will also be cleared.')) {
+      manualData = [];
+      saveData(manualData);
+      data = buildEffectiveData();
+    }
+    localStorage.setItem('jb-marketing-demo-clear-decided', '1');
   }
 
-  function buildSampleData() {
-    const rows = [];
-    const today = toMonday(new Date());
-    for (let i = 12; i >= 0; i--) {
-      const d = new Date(today);
-      d.setDate(d.getDate() - i * 7);
-      const base = 13 - i;
-      const totalCalls = 18 + base * 2 + rand(-3, 3);
-      const totalNew = 3 + Math.floor(base / 2) + rand(0, 2);
-      const callsByRep = {};
-      const newByRep = {};
-      let assignedCalls = 0, assignedNew = 0;
-      reps.forEach((rep, idx) => {
-        const isLast = idx === reps.length - 1;
-        const c = isLast ? Math.max(0, totalCalls - assignedCalls)
-                         : Math.max(0, Math.floor(totalCalls / reps.length) + rand(-2, 2));
-        const n = isLast ? Math.max(0, totalNew - assignedNew)
-                         : Math.max(0, Math.floor(totalNew / reps.length) + rand(0, 1));
-        callsByRep[rep.id] = c; assignedCalls += c;
-        newByRep[rep.id]   = n; assignedNew   += n;
-      });
-      rows.push({
-        weekStart: fmtDate(d),
-        organic: 1200 + base * 140 + rand(-80, 80),
-        paid: 800 + base * 90 + rand(-60, 60),
-        costs: 3500 + base * 220 + rand(-200, 200),
-        salesCalls: totalCalls,
-        newClients: totalNew,
-        salesCallsByRep: callsByRep,
-        newClientsByRep: newByRep,
-        mktgSent: 4000 + base * 220,
-        mktgViewed: 1600 + base * 100,
-        mktgClicked: 280 + base * 24,
-        lpViews: 900 + base * 80 + rand(-50, 50),
-        lpSubs: 60 + base * 6 + rand(-5, 5),
-        coldSent: 2200 + base * 150,
-        coldResp: 90 + base * 8 + rand(-5, 5),
-        deposits: 9000 + base * 900 + rand(-400, 400),
-        revenue: 12000 + base * 1100 + rand(-500, 500),
-        creators: 24 + base * 4 + rand(-2, 4),
-        brands: 6 + Math.floor(base / 2) + rand(0, 2),
-        campaigns: 2 + Math.floor(base / 3) + rand(0, 1),
-        mrrBrands: 8000 + base * 650,
-        mrrCreators: 4000 + base * 300,
-        gmv: 15000 + base * 1800 + rand(-600, 600),
-        videos: 22 + base * 3 + rand(-3, 3),
-      });
-    }
-    return rows;
-  }
-  function rand(lo, hi) { return Math.floor(Math.random() * (hi - lo + 1)) + lo; }
 
   /* ---------- Rendering ---------- */
   const charts = {};
