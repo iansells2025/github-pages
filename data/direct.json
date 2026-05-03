@@ -1,11 +1,11 @@
 {
-  "updatedAt": "2026-05-03T18:29:14.601Z",
+  "updatedAt": "2026-05-03T19:42:59.558Z",
   "sources": {
     "stripe": {
       "ok": true,
       "weekCount": 14,
       "diagnostics": {
-        "chargeCount": 31905,
+        "chargeCount": 31903,
         "payoutCount": 64,
         "activeSubscriptionCount": 358,
         "mrrBrands": 59990.5,
@@ -70,7 +70,7 @@
   "weeks": [
     {
       "weekStart": "2026-01-26",
-      "revenue": 3536.15,
+      "revenue": 2659.21,
       "deposits": 0
     },
     {
@@ -130,7 +130,7 @@
     },
     {
       "weekStart": "2026-03-30",
-      "revenue": 232225.55,
+      "revenue": 231988.65,
       "deposits": 179028.83,
       "mktgSent": 30,
       "mktgViewed": 2,
@@ -138,7 +138,7 @@
     },
     {
       "weekStart": "2026-04-06",
-      "revenue": 253410.7,
+      "revenue": 253339.63,
       "deposits": 246857.81
     },
     {
@@ -153,7 +153,7 @@
     },
     {
       "weekStart": "2026-04-27",
-      "revenue": 273534.09,
+      "revenue": 274583.25,
       "deposits": 245494.27,
       "mrrBrands": 59990.5,
       "mrrBrandStartup": 23413.42,
@@ -164,7 +164,7 @@
   "weeksBySource": {
     "2026-01-26": {
       "stripe": {
-        "revenue": 3536.15,
+        "revenue": 2659.21,
         "deposits": 0
       }
     },
@@ -243,7 +243,7 @@
     },
     "2026-03-30": {
       "stripe": {
-        "revenue": 232225.55,
+        "revenue": 231988.65,
         "deposits": 179028.83
       },
       "hubspot": {
@@ -254,7 +254,7 @@
     },
     "2026-04-06": {
       "stripe": {
-        "revenue": 253410.7,
+        "revenue": 253339.63,
         "deposits": 246857.81
       }
     },
@@ -272,7 +272,7 @@
     },
     "2026-04-27": {
       "stripe": {
-        "revenue": 273534.09,
+        "revenue": 274583.25,
         "deposits": 245494.27,
         "mrrBrands": 59990.5,
         "mrrBrandStartup": 23413.42,
