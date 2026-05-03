@@ -1,11 +1,11 @@
 {
-  "updatedAt": "2026-05-03T22:23:23.967Z",
+  "updatedAt": "2026-05-03T23:35:42.603Z",
   "sources": {
     "stripe": {
       "ok": true,
       "weekCount": 14,
       "diagnostics": {
-        "chargeCount": 31895,
+        "chargeCount": 31917,
         "payoutCount": 64,
         "activeSubscriptionCount": 358,
         "mrrBrands": 59990.5,
@@ -38,7 +38,7 @@
   "weeks": [
     {
       "weekStart": "2026-01-26",
-      "revenue": 1185.9,
+      "revenue": 236.64,
       "deposits": 0
     },
     {
@@ -104,7 +104,7 @@
       "mktgSent": 28,
       "mktgViewed": 8,
       "mktgClicked": 3,
-      "newLeads": 500,
+      "newLeads": 495,
       "newCompanies": 1,
       "newClients": 33,
       "newClientsByOwnerName": {
@@ -225,13 +225,13 @@
     },
     {
       "weekStart": "2026-04-27",
-      "revenue": 276261.12,
+      "revenue": 277471.27,
       "deposits": 245494.27,
       "mrrBrands": 59990.5,
       "mrrBrandStartup": 23413.42,
       "mrrBrandPro": 14621.08,
       "mrrBrandMax": 21956,
-      "newLeads": 512,
+      "newLeads": 517,
       "newCompanies": 58,
       "newClients": 48,
       "newClientsByOwnerName": {
@@ -246,7 +246,7 @@
   "weeksBySource": {
     "2026-01-26": {
       "stripe": {
-        "revenue": 1185.9,
+        "revenue": 236.64,
         "deposits": 0
       }
     },
@@ -327,7 +327,7 @@
         "mktgSent": 28,
         "mktgViewed": 8,
         "mktgClicked": 3,
-        "newLeads": 500,
+        "newLeads": 495,
         "newCompanies": 1,
         "newClients": 33,
         "newClientsByOwnerName": {
@@ -470,7 +470,7 @@
     },
     "2026-04-27": {
       "stripe": {
-        "revenue": 276261.12,
+        "revenue": 277471.27,
         "deposits": 245494.27,
         "mrrBrands": 59990.5,
         "mrrBrandStartup": 23413.42,
@@ -478,7 +478,7 @@
         "mrrBrandMax": 21956
       },
       "hubspot": {
-        "newLeads": 512,
+        "newLeads": 517,
         "newCompanies": 58,
         "newClients": 48,
         "newClientsByOwnerName": {
