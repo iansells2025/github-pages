@@ -1,11 +1,11 @@
 {
-  "updatedAt": "2026-05-03T21:31:30.974Z",
+  "updatedAt": "2026-05-03T22:23:23.967Z",
   "sources": {
     "stripe": {
       "ok": true,
       "weekCount": 14,
       "diagnostics": {
-        "chargeCount": 31897,
+        "chargeCount": 31895,
         "payoutCount": 64,
         "activeSubscriptionCount": 358,
         "mrrBrands": 59990.5,
@@ -19,55 +19,40 @@
     },
     "hubspot": {
       "ok": true,
-      "weekCount": 6,
+      "weekCount": 13,
       "diagnostics": {
-        "emailsTotal": 85,
-        "emailsInLookback": 42,
+        "emailsTotal": 86,
+        "emailsInLookback": 43,
         "emailsWithStats": 14,
-        "sampleStatKeys": [
-          "sent",
-          "open",
-          "delivered",
-          "bounce",
-          "unsubscribed",
-          "click",
-          "reply",
-          "dropped",
-          "selected",
-          "spamreport",
-          "suppressed",
-          "hardbounced",
-          "softbounced",
-          "pending",
-          "contactslost",
-          "notsent"
-        ],
-        "ownersCount": 0,
-        "contactsCreated": 0,
-        "companiesCreated": 0,
-        "dealsClosedWon": 0,
-        "dealsWithUnknownOwner": 0,
+        "sampleStatKeys": [],
+        "ownersCount": 21,
+        "contactsCreated": 5000,
+        "companiesCreated": 3334,
+        "dealsClosedWon": 574,
+        "dealsWithUnknownOwner": 332,
         "landingPages": 27,
-        "landingPagesNote": "Analytics integration pending — requires HubSpot Analytics API scope",
-        "callErrors": {
-          "owners": "HubSpot /crm/v3/owners/ HTTP 403: {\"status\":\"error\",\"message\":\"This app hasn't been granted all required scopes to make this call. Read more about required scopes here: https://developers.hubspot.com/scopes.\",\"correlationId\":\"019defc0-e935-72b4-9cab-5db75e5d0216\",\"errors\":[{\"message\":\"One or more of the following scopes are required",
-          "contacts": "HubSpot POST /crm/v3/objects/contacts/search HTTP 429: {\"status\":\"error\",\"message\":\"You have reached your secondly limit.\",\"errorType\":\"RATE_LIMIT\",\"correlationId\":\"019defc0-eaf7-7044-a6ea-19e61d9f46ff\",\"policyName\":\"SECONDLY\",\"groupName\":\"publicapi:crm:search:oauth:38304429:44906850\"}",
-          "companies": "HubSpot POST /crm/v3/objects/companies/search HTTP 429: {\"status\":\"error\",\"message\":\"You have reached your secondly limit.\",\"errorType\":\"RATE_LIMIT\",\"correlationId\":\"019defc0-eb0e-76da-8fd4-dbd4af47362c\",\"policyName\":\"SECONDLY\",\"groupName\":\"publicapi:crm:search:oauth:38304429:44906850\"}",
-          "deals": "HubSpot POST /crm/v3/objects/deals/search HTTP 429: {\"status\":\"error\",\"message\":\"You have reached your secondly limit.\",\"errorType\":\"RATE_LIMIT\",\"correlationId\":\"019defc0-eaa1-756e-bdcc-9040de7311cf\",\"policyName\":\"SECONDLY\",\"groupName\":\"publicapi:crm:search:oauth:38304429:44906850\"}"
-        }
+        "landingPagesNote": "Analytics integration pending — requires HubSpot Analytics API scope"
       }
     }
   },
   "weeks": [
     {
       "weekStart": "2026-01-26",
-      "revenue": 1515.9,
+      "revenue": 1185.9,
       "deposits": 0
     },
     {
       "weekStart": "2026-02-02",
       "revenue": 264614.97,
-      "deposits": 225314.9
+      "deposits": 225314.9,
+      "newCompanies": 4,
+      "newClients": 124,
+      "newClientsByOwnerName": {
+        "Diego Ross": 2,
+        "Nick JoinBrands": 3,
+        "Dee Mechev": 2,
+        "Dan Kriss": 1
+      }
     },
     {
       "weekStart": "2026-02-09",
@@ -75,7 +60,15 @@
       "deposits": 262184.89,
       "mktgSent": 388,
       "mktgViewed": 125,
-      "mktgClicked": 4
+      "mktgClicked": 4,
+      "newCompanies": 1,
+      "newClients": 38,
+      "newClientsByOwnerName": {
+        "Nick JoinBrands": 4,
+        "Dan Kriss": 3,
+        "Dee Mechev": 6,
+        "Diego Ross": 1
+      }
     },
     {
       "weekStart": "2026-02-16",
@@ -83,12 +76,26 @@
       "deposits": 219576.27,
       "mktgSent": 23,
       "mktgViewed": 14,
-      "mktgClicked": 0
+      "mktgClicked": 0,
+      "newCompanies": 2,
+      "newClients": 21,
+      "newClientsByOwnerName": {
+        "Nick JoinBrands": 5,
+        "Dan Kriss": 2,
+        "Dee Mechev": 1,
+        "Diego Ross": 1
+      }
     },
     {
       "weekStart": "2026-02-23",
       "revenue": 244923.59,
-      "deposits": 228763.43
+      "deposits": 228763.43,
+      "newCompanies": 1,
+      "newClients": 27,
+      "newClientsByOwnerName": {
+        "Dee Mechev": 4,
+        "Diego Ross": 3
+      }
     },
     {
       "weekStart": "2026-03-02",
@@ -96,12 +103,30 @@
       "deposits": 251141.36,
       "mktgSent": 28,
       "mktgViewed": 8,
-      "mktgClicked": 3
+      "mktgClicked": 3,
+      "newLeads": 500,
+      "newCompanies": 1,
+      "newClients": 33,
+      "newClientsByOwnerName": {
+        "Mila Vidakovic": 2,
+        "Nick JoinBrands": 2,
+        "Dee Mechev": 1,
+        "Diego Ross": 1
+      }
     },
     {
       "weekStart": "2026-03-09",
       "revenue": 252779.33,
-      "deposits": 242307.47
+      "deposits": 242307.47,
+      "newLeads": 703,
+      "newClients": 42,
+      "newClientsByOwnerName": {
+        "Dee Mechev": 4,
+        "Mila Vidakovic": 3,
+        "Nick JoinBrands": 1,
+        "Diego Ross": 1,
+        "Dan Kriss": 1
+      }
     },
     {
       "weekStart": "2026-03-16",
@@ -109,7 +134,16 @@
       "deposits": 222216.35,
       "mktgSent": 114,
       "mktgViewed": 45,
-      "mktgClicked": 8
+      "mktgClicked": 8,
+      "newLeads": 779,
+      "newClients": 50,
+      "newClientsByOwnerName": {
+        "Nick JoinBrands": 8,
+        "Mila Vidakovic": 3,
+        "Dee Mechev": 6,
+        "Dan Kriss": 5,
+        "Diego Ross": 3
+      }
     },
     {
       "weekStart": "2026-03-23",
@@ -117,7 +151,16 @@
       "deposits": 276155.57,
       "mktgSent": 195,
       "mktgViewed": 84,
-      "mktgClicked": 29
+      "mktgClicked": 29,
+      "newLeads": 479,
+      "newClients": 34,
+      "newClientsByOwnerName": {
+        "Mila Vidakovic": 7,
+        "Nick JoinBrands": 4,
+        "Dee Mechev": 4,
+        "Dan Kriss": 4,
+        "Diego Ross": 1
+      }
     },
     {
       "weekStart": "2026-03-30",
@@ -125,37 +168,85 @@
       "deposits": 179028.83,
       "mktgSent": 30,
       "mktgViewed": 2,
-      "mktgClicked": 0
+      "mktgClicked": 0,
+      "newLeads": 644,
+      "newCompanies": 1,
+      "newClients": 43,
+      "newClientsByOwnerName": {
+        "Dee Mechev": 5,
+        "Mila Vidakovic": 6,
+        "Nick JoinBrands": 6,
+        "Diego Ross": 3,
+        "Dan Kriss": 3
+      }
     },
     {
       "weekStart": "2026-04-06",
       "revenue": 253339.63,
-      "deposits": 246857.81
+      "deposits": 246857.81,
+      "newLeads": 461,
+      "newClients": 40,
+      "newClientsByOwnerName": {
+        "Dan Kriss": 4,
+        "Nick JoinBrands": 9,
+        "Diego Ross": 7,
+        "Dee Mechev": 8,
+        "Mila Vidakovic": 5
+      }
     },
     {
       "weekStart": "2026-04-13",
       "revenue": 274724.79,
-      "deposits": 236761.17
+      "deposits": 236761.17,
+      "newLeads": 422,
+      "newClients": 37,
+      "newClientsByOwnerName": {
+        "Mila Vidakovic": 4,
+        "Dee Mechev": 5,
+        "Diego Ross": 3,
+        "Dan Kriss": 6,
+        "Nick JoinBrands": 5
+      }
     },
     {
       "weekStart": "2026-04-20",
       "revenue": 261368.3,
-      "deposits": 244390.07
+      "deposits": 244390.07,
+      "newLeads": 500,
+      "newCompanies": 3266,
+      "newClients": 37,
+      "newClientsByOwnerName": {
+        "Diego Ross": 5,
+        "Nick JoinBrands": 3,
+        "Mila Vidakovic": 7,
+        "Dee Mechev": 9,
+        "Dan Kriss": 3
+      }
     },
     {
       "weekStart": "2026-04-27",
-      "revenue": 276143.18,
+      "revenue": 276261.12,
       "deposits": 245494.27,
       "mrrBrands": 59990.5,
       "mrrBrandStartup": 23413.42,
       "mrrBrandPro": 14621.08,
-      "mrrBrandMax": 21956
+      "mrrBrandMax": 21956,
+      "newLeads": 512,
+      "newCompanies": 58,
+      "newClients": 48,
+      "newClientsByOwnerName": {
+        "Dan Kriss": 7,
+        "Nick JoinBrands": 4,
+        "Diego Ross": 6,
+        "Dee Mechev": 14,
+        "Mila Vidakovic": 6
+      }
     }
   ],
   "weeksBySource": {
     "2026-01-26": {
       "stripe": {
-        "revenue": 1515.9,
+        "revenue": 1185.9,
         "deposits": 0
       }
     },
@@ -163,6 +254,16 @@
       "stripe": {
         "revenue": 264614.97,
         "deposits": 225314.9
+      },
+      "hubspot": {
+        "newCompanies": 4,
+        "newClients": 124,
+        "newClientsByOwnerName": {
+          "Diego Ross": 2,
+          "Nick JoinBrands": 3,
+          "Dee Mechev": 2,
+          "Dan Kriss": 1
+        }
       }
     },
     "2026-02-09": {
@@ -173,7 +274,15 @@
       "hubspot": {
         "mktgSent": 388,
         "mktgViewed": 125,
-        "mktgClicked": 4
+        "mktgClicked": 4,
+        "newCompanies": 1,
+        "newClients": 38,
+        "newClientsByOwnerName": {
+          "Nick JoinBrands": 4,
+          "Dan Kriss": 3,
+          "Dee Mechev": 6,
+          "Diego Ross": 1
+        }
       }
     },
     "2026-02-16": {
@@ -184,13 +293,29 @@
       "hubspot": {
         "mktgSent": 23,
         "mktgViewed": 14,
-        "mktgClicked": 0
+        "mktgClicked": 0,
+        "newCompanies": 2,
+        "newClients": 21,
+        "newClientsByOwnerName": {
+          "Nick JoinBrands": 5,
+          "Dan Kriss": 2,
+          "Dee Mechev": 1,
+          "Diego Ross": 1
+        }
       }
     },
     "2026-02-23": {
       "stripe": {
         "revenue": 244923.59,
         "deposits": 228763.43
+      },
+      "hubspot": {
+        "newCompanies": 1,
+        "newClients": 27,
+        "newClientsByOwnerName": {
+          "Dee Mechev": 4,
+          "Diego Ross": 3
+        }
       }
     },
     "2026-03-02": {
@@ -201,13 +326,33 @@
       "hubspot": {
         "mktgSent": 28,
         "mktgViewed": 8,
-        "mktgClicked": 3
+        "mktgClicked": 3,
+        "newLeads": 500,
+        "newCompanies": 1,
+        "newClients": 33,
+        "newClientsByOwnerName": {
+          "Mila Vidakovic": 2,
+          "Nick JoinBrands": 2,
+          "Dee Mechev": 1,
+          "Diego Ross": 1
+        }
       }
     },
     "2026-03-09": {
       "stripe": {
         "revenue": 252779.33,
         "deposits": 242307.47
+      },
+      "hubspot": {
+        "newLeads": 703,
+        "newClients": 42,
+        "newClientsByOwnerName": {
+          "Dee Mechev": 4,
+          "Mila Vidakovic": 3,
+          "Nick JoinBrands": 1,
+          "Diego Ross": 1,
+          "Dan Kriss": 1
+        }
       }
     },
     "2026-03-16": {
@@ -218,7 +363,16 @@
       "hubspot": {
         "mktgSent": 114,
         "mktgViewed": 45,
-        "mktgClicked": 8
+        "mktgClicked": 8,
+        "newLeads": 779,
+        "newClients": 50,
+        "newClientsByOwnerName": {
+          "Nick JoinBrands": 8,
+          "Mila Vidakovic": 3,
+          "Dee Mechev": 6,
+          "Dan Kriss": 5,
+          "Diego Ross": 3
+        }
       }
     },
     "2026-03-23": {
@@ -229,7 +383,16 @@
       "hubspot": {
         "mktgSent": 195,
         "mktgViewed": 84,
-        "mktgClicked": 29
+        "mktgClicked": 29,
+        "newLeads": 479,
+        "newClients": 34,
+        "newClientsByOwnerName": {
+          "Mila Vidakovic": 7,
+          "Nick JoinBrands": 4,
+          "Dee Mechev": 4,
+          "Dan Kriss": 4,
+          "Diego Ross": 1
+        }
       }
     },
     "2026-03-30": {
@@ -240,35 +403,91 @@
       "hubspot": {
         "mktgSent": 30,
         "mktgViewed": 2,
-        "mktgClicked": 0
+        "mktgClicked": 0,
+        "newLeads": 644,
+        "newCompanies": 1,
+        "newClients": 43,
+        "newClientsByOwnerName": {
+          "Dee Mechev": 5,
+          "Mila Vidakovic": 6,
+          "Nick JoinBrands": 6,
+          "Diego Ross": 3,
+          "Dan Kriss": 3
+        }
       }
     },
     "2026-04-06": {
       "stripe": {
         "revenue": 253339.63,
         "deposits": 246857.81
+      },
+      "hubspot": {
+        "newLeads": 461,
+        "newClients": 40,
+        "newClientsByOwnerName": {
+          "Dan Kriss": 4,
+          "Nick JoinBrands": 9,
+          "Diego Ross": 7,
+          "Dee Mechev": 8,
+          "Mila Vidakovic": 5
+        }
       }
     },
     "2026-04-13": {
       "stripe": {
         "revenue": 274724.79,
         "deposits": 236761.17
+      },
+      "hubspot": {
+        "newLeads": 422,
+        "newClients": 37,
+        "newClientsByOwnerName": {
+          "Mila Vidakovic": 4,
+          "Dee Mechev": 5,
+          "Diego Ross": 3,
+          "Dan Kriss": 6,
+          "Nick JoinBrands": 5
+        }
       }
     },
     "2026-04-20": {
       "stripe": {
         "revenue": 261368.3,
         "deposits": 244390.07
+      },
+      "hubspot": {
+        "newLeads": 500,
+        "newCompanies": 3266,
+        "newClients": 37,
+        "newClientsByOwnerName": {
+          "Diego Ross": 5,
+          "Nick JoinBrands": 3,
+          "Mila Vidakovic": 7,
+          "Dee Mechev": 9,
+          "Dan Kriss": 3
+        }
       }
     },
     "2026-04-27": {
       "stripe": {
-        "revenue": 276143.18,
+        "revenue": 276261.12,
         "deposits": 245494.27,
         "mrrBrands": 59990.5,
         "mrrBrandStartup": 23413.42,
         "mrrBrandPro": 14621.08,
         "mrrBrandMax": 21956
+      },
+      "hubspot": {
+        "newLeads": 512,
+        "newCompanies": 58,
+        "newClients": 48,
+        "newClientsByOwnerName": {
+          "Dan Kriss": 7,
+          "Nick JoinBrands": 4,
+          "Diego Ross": 6,
+          "Dee Mechev": 14,
+          "Mila Vidakovic": 6
+        }
       }
     }
   }
