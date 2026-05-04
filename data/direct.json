@@ -1,12 +1,12 @@
 {
-  "updatedAt": "2026-05-04T00:34:35.504Z",
+  "updatedAt": "2026-05-04T04:39:49.586Z",
   "sources": {
     "stripe": {
       "ok": true,
-      "weekCount": 13,
+      "weekCount": 14,
       "diagnostics": {
-        "chargeCount": 31916,
-        "payoutCount": 63,
+        "chargeCount": 31867,
+        "payoutCount": 64,
         "activeSubscriptionCount": 358,
         "mrrBrands": 59990.5,
         "mrrBrandStartup": 23413.42,
@@ -28,8 +28,8 @@
         "ownersCount": 21,
         "contactsCreated": 5000,
         "companiesCreated": 3334,
-        "dealsClosedWon": 574,
-        "dealsWithUnknownOwner": 332,
+        "dealsClosedWon": 573,
+        "dealsWithUnknownOwner": 331,
         "landingPages": 27,
         "landingPagesNote": "Analytics integration pending — requires HubSpot Analytics API scope"
       }
@@ -38,10 +38,10 @@
   "weeks": [
     {
       "weekStart": "2026-02-02",
-      "revenue": 264608.79,
+      "revenue": 256877.38,
       "deposits": 199005.26,
       "newCompanies": 4,
-      "newClients": 124,
+      "newClients": 123,
       "newClientsByOwnerName": {
         "Diego Ross": 2,
         "Nick JoinBrands": 3,
@@ -99,7 +99,7 @@
       "mktgSent": 28,
       "mktgViewed": 8,
       "mktgClicked": 3,
-      "newLeads": 493,
+      "newLeads": 484,
       "newCompanies": 1,
       "newClients": 33,
       "newClientsByOwnerName": {
@@ -220,12 +220,8 @@
     },
     {
       "weekStart": "2026-04-27",
-      "revenue": 278302.24,
+      "revenue": 278174.93,
       "deposits": 245494.27,
-      "mrrBrands": 59990.5,
-      "mrrBrandStartup": 23413.42,
-      "mrrBrandPro": 14621.08,
-      "mrrBrandMax": 21956,
       "newLeads": 518,
       "newCompanies": 58,
       "newClients": 48,
@@ -239,18 +235,24 @@
     },
     {
       "weekStart": "2026-05-04",
-      "newLeads": 1
+      "revenue": 1397.33,
+      "deposits": 51282.05,
+      "mrrBrands": 59990.5,
+      "mrrBrandStartup": 23413.42,
+      "mrrBrandPro": 14621.08,
+      "mrrBrandMax": 21956,
+      "newLeads": 10
     }
   ],
   "weeksBySource": {
     "2026-02-02": {
       "stripe": {
-        "revenue": 264608.79,
+        "revenue": 256877.38,
         "deposits": 199005.26
       },
       "hubspot": {
         "newCompanies": 4,
-        "newClients": 124,
+        "newClients": 123,
         "newClientsByOwnerName": {
           "Diego Ross": 2,
           "Nick JoinBrands": 3,
@@ -320,7 +322,7 @@
         "mktgSent": 28,
         "mktgViewed": 8,
         "mktgClicked": 3,
-        "newLeads": 493,
+        "newLeads": 484,
         "newCompanies": 1,
         "newClients": 33,
         "newClientsByOwnerName": {
@@ -463,12 +465,8 @@
     },
     "2026-04-27": {
       "stripe": {
-        "revenue": 278302.24,
-        "deposits": 245494.27,
-        "mrrBrands": 59990.5,
-        "mrrBrandStartup": 23413.42,
-        "mrrBrandPro": 14621.08,
-        "mrrBrandMax": 21956
+        "revenue": 278174.93,
+        "deposits": 245494.27
       },
       "hubspot": {
         "newLeads": 518,
@@ -484,8 +482,16 @@
       }
     },
     "2026-05-04": {
+      "stripe": {
+        "revenue": 1397.33,
+        "deposits": 51282.05,
+        "mrrBrands": 59990.5,
+        "mrrBrandStartup": 23413.42,
+        "mrrBrandPro": 14621.08,
+        "mrrBrandMax": 21956
+      },
       "hubspot": {
-        "newLeads": 1
+        "newLeads": 10
       }
     }
   }
