@@ -1,11 +1,11 @@
 {
-  "updatedAt": "2026-05-04T11:44:32.843Z",
+  "updatedAt": "2026-05-04T13:48:54.144Z",
   "source": "windsor.ai",
   "endpoint": "blended",
   "weeks": [
     {
       "weekStart": "2026-04-27",
-      "costs": 9032.31
+      "costs": 9047.28
     },
     {
       "weekStart": "2026-05-04"
@@ -17,7 +17,7 @@
         "costs": 6185.8892
       },
       "facebook": {
-        "costs": 2846.42
+        "costs": 2861.39
       }
     },
     "2026-05-04": {
@@ -69,10 +69,10 @@
       "email": "hannahroth979@gmail.com"
     },
     "instagram": {
-      "account_name": "joinbrands_brands",
+      "account_name": "joinbrands_creators",
       "datasource": "instagram",
       "date": "2026-05-04",
-      "followers_count": 1754,
+      "followers_count": 49008,
       "source": "instagram"
     }
   },
@@ -86,6 +86,6 @@
     "spend",
     "email"
   ],
-  "rowCount": 5866,
+  "rowCount": 5682,
   "usableRowCount": 192
 }
