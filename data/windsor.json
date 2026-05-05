@@ -1,26 +1,33 @@
 {
-  "updatedAt": "2026-05-05T02:24:11.486Z",
+  "updatedAt": "2026-05-05T05:39:18.323Z",
   "source": "windsor.ai",
   "endpoint": "blended",
   "weeks": [
     {
       "weekStart": "2026-04-27",
-      "costs": 9048.14
+      "costs": 7281.48
     },
     {
-      "weekStart": "2026-05-04"
+      "weekStart": "2026-05-04",
+      "costs": 1551.5
     }
   ],
   "weeksBySource": {
     "2026-04-27": {
       "googleads": {
-        "costs": 6185.8892
+        "costs": 4889.4423
       },
       "facebook": {
-        "costs": 2862.25
+        "costs": 2392.04
       }
     },
     "2026-05-04": {
+      "googleads": {
+        "costs": 1104.6021
+      },
+      "facebook": {
+        "costs": 446.9
+      },
       "instagram": {}
     }
   },
@@ -48,31 +55,31 @@
     "googleads": {
       "account_name": "Join Brands - MA",
       "datasource": "google_ads",
-      "date": "2026-04-27",
+      "date": "2026-04-28",
       "source": "google",
       "campaign": "TDD_Search_Brand_US",
-      "spend": 375.311
+      "spend": 330.0802
     },
     "facebook": {
       "account_name": "JoinBrands",
       "datasource": "facebook",
-      "date": "2026-04-27",
+      "date": "2026-04-28",
       "source": "facebook",
       "campaign": "TDD - Remarketing - US - Onboarding Leads",
-      "spend": 37.53
+      "spend": 34.39
     },
     "intercom": {
       "account_name": "windsor",
       "datasource": "intercom",
-      "date": "2026-04-27",
+      "date": "2026-04-28",
       "source": "intercom",
-      "email": "hannahroth979@gmail.com"
+      "email": "robertkawalski242@gmail.com"
     },
     "instagram": {
       "account_name": "joinbrands_creators",
       "datasource": "instagram",
-      "date": "2026-05-04",
-      "followers_count": 49060,
+      "date": "2026-05-05",
+      "followers_count": 49120,
       "source": "instagram"
     }
   },
@@ -86,6 +93,6 @@
     "spend",
     "email"
   ],
-  "rowCount": 5683,
-  "usableRowCount": 192
+  "rowCount": 5932,
+  "usableRowCount": 193
 }
