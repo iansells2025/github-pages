@@ -1,15 +1,15 @@
 {
-  "updatedAt": "2026-05-05T17:21:04.069Z",
+  "updatedAt": "2026-05-05T19:13:17.323Z",
   "source": "windsor.ai",
   "endpoint": "blended",
   "weeks": [
     {
       "weekStart": "2026-04-27",
-      "costs": 7281.48
+      "costs": 7281.51
     },
     {
       "weekStart": "2026-05-04",
-      "costs": 1578.31
+      "costs": 1579.14
     }
   ],
   "weeksBySource": {
@@ -18,15 +18,15 @@
         "costs": 4889.4423
       },
       "facebook": {
-        "costs": 2392.04
+        "costs": 2392.07
       }
     },
     "2026-05-04": {
       "googleads": {
-        "costs": 1104.6021
+        "costs": 1104.6919
       },
       "facebook": {
-        "costs": 473.71
+        "costs": 474.45
       },
       "instagram": {}
     }
@@ -76,10 +76,10 @@
       "email": "robertkawalski242@gmail.com"
     },
     "instagram": {
-      "account_name": "joinbrands_creators",
+      "account_name": "joinbrands_brands",
       "datasource": "instagram",
       "date": "2026-05-05",
-      "followers_count": 49145,
+      "followers_count": 1818,
       "source": "instagram"
     }
   },
@@ -93,6 +93,6 @@
     "spend",
     "email"
   ],
-  "rowCount": 5772,
+  "rowCount": 5774,
   "usableRowCount": 193
 }
