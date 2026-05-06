@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-05-06T16:02:03.873Z",
+  "updatedAt": "2026-05-06T18:12:35.908Z",
   "source": "windsor.ai",
   "endpoint": "blended",
   "weeks": [
@@ -9,7 +9,7 @@
     },
     {
       "weekStart": "2026-05-04",
-      "costs": 3015.47
+      "costs": 3015.8
     }
   ],
   "weeksBySource": {
@@ -26,7 +26,7 @@
         "costs": 2132.6457
       },
       "facebook": {
-        "costs": 882.82
+        "costs": 883.15
       },
       "instagram": {}
     }
@@ -76,10 +76,10 @@
       "email": "karen_mccaffery68@hotmail.com"
     },
     "instagram": {
-      "account_name": "joinbrands_creators",
+      "account_name": "joinbrands_brands",
       "datasource": "instagram",
       "date": "2026-05-06",
-      "followers_count": 49337,
+      "followers_count": 1827,
       "source": "instagram"
     }
   },
@@ -93,6 +93,6 @@
     "spend",
     "email"
   ],
-  "rowCount": 5839,
+  "rowCount": 5837,
   "usableRowCount": 191
 }
