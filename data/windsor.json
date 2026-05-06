@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-05-06T05:53:08.214Z",
+  "updatedAt": "2026-05-06T11:02:41.192Z",
   "source": "windsor.ai",
   "endpoint": "blended",
   "weeks": [
@@ -9,7 +9,7 @@
     },
     {
       "weekStart": "2026-05-04",
-      "costs": 2876.34
+      "costs": 3015.47
     }
   ],
   "weeksBySource": {
@@ -23,10 +23,10 @@
     },
     "2026-05-04": {
       "googleads": {
-        "costs": 2075.2224
+        "costs": 2132.6457
       },
       "facebook": {
-        "costs": 801.12
+        "costs": 882.82
       },
       "instagram": {}
     }
@@ -79,7 +79,7 @@
       "account_name": "joinbrands_creators",
       "datasource": "instagram",
       "date": "2026-05-06",
-      "followers_count": 49296,
+      "followers_count": 49337,
       "source": "instagram"
     }
   },
@@ -93,6 +93,6 @@
     "spend",
     "email"
   ],
-  "rowCount": 5895,
-  "usableRowCount": 190
+  "rowCount": 5839,
+  "usableRowCount": 191
 }
