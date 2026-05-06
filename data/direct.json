@@ -1,18 +1,18 @@
 {
-  "updatedAt": "2026-05-06T19:29:06.160Z",
+  "updatedAt": "2026-05-06T21:16:04.842Z",
   "sources": {
     "stripe": {
       "ok": true,
       "weekCount": 14,
       "diagnostics": {
-        "chargeCount": 31866,
+        "chargeCount": 31786,
         "payoutCount": 64,
-        "activeSubscriptionCount": 358,
-        "mrrBrands": 59790.5,
-        "mrrBrandStartup": 23413.42,
+        "activeSubscriptionCount": 360,
+        "mrrBrands": 59988.5,
+        "mrrBrandStartup": 23611.42,
         "mrrBrandPro": 14920.08,
         "mrrBrandMax": 21457,
-        "brandSubCount": 330,
+        "brandSubCount": 332,
         "nonBrandSubCount": 28,
         "nonBrandMrrExcluded": 1372.5
       }
@@ -38,7 +38,7 @@
   "weeks": [
     {
       "weekStart": "2026-02-02",
-      "revenue": 146336.12,
+      "revenue": 143870.13,
       "deposits": 77131.09,
       "newCompanies": 2,
       "newClients": 15,
@@ -111,7 +111,7 @@
       "weekStart": "2026-03-09",
       "revenue": 252675.51,
       "deposits": 242307.47,
-      "newLeads": 576,
+      "newLeads": 563,
       "newClients": 42,
       "newClientsByOwnerName": {
         "Dee Mechev": 4,
@@ -233,13 +233,13 @@
     },
     {
       "weekStart": "2026-05-04",
-      "revenue": 163411.84,
+      "revenue": 165057.88,
       "deposits": 166163.97,
-      "mrrBrands": 59790.5,
-      "mrrBrandStartup": 23413.42,
+      "mrrBrands": 59988.5,
+      "mrrBrandStartup": 23611.42,
       "mrrBrandPro": 14920.08,
       "mrrBrandMax": 21457,
-      "newLeads": 621,
+      "newLeads": 634,
       "newCompanies": 147,
       "newClients": 518,
       "newClientsByOwnerName": {
@@ -254,7 +254,7 @@
   "weeksBySource": {
     "2026-02-02": {
       "stripe": {
-        "revenue": 146336.12,
+        "revenue": 143870.13,
         "deposits": 77131.09
       },
       "hubspot": {
@@ -344,7 +344,7 @@
         "deposits": 242307.47
       },
       "hubspot": {
-        "newLeads": 576,
+        "newLeads": 563,
         "newClients": 42,
         "newClientsByOwnerName": {
           "Dee Mechev": 4,
@@ -488,15 +488,15 @@
     },
     "2026-05-04": {
       "stripe": {
-        "revenue": 163411.84,
+        "revenue": 165057.88,
         "deposits": 166163.97,
-        "mrrBrands": 59790.5,
-        "mrrBrandStartup": 23413.42,
+        "mrrBrands": 59988.5,
+        "mrrBrandStartup": 23611.42,
         "mrrBrandPro": 14920.08,
         "mrrBrandMax": 21457
       },
       "hubspot": {
-        "newLeads": 621,
+        "newLeads": 634,
         "newCompanies": 147,
         "newClients": 518,
         "newClientsByOwnerName": {
