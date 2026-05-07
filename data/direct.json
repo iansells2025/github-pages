@@ -1,12 +1,12 @@
 {
-  "updatedAt": "2026-05-07T00:34:10.802Z",
+  "updatedAt": "2026-05-07T04:32:37.141Z",
   "sources": {
     "stripe": {
       "ok": true,
       "weekCount": 14,
       "diagnostics": {
-        "chargeCount": 31737,
-        "payoutCount": 63,
+        "chargeCount": 31735,
+        "payoutCount": 64,
         "activeSubscriptionCount": 360,
         "mrrBrands": 59988.5,
         "mrrBrandStartup": 23611.42,
@@ -28,8 +28,8 @@
         "ownersCount": 21,
         "contactsCreated": 5000,
         "companiesCreated": 3479,
-        "dealsClosedWon": 983,
-        "dealsWithUnknownOwner": 713,
+        "dealsClosedWon": 982,
+        "dealsWithUnknownOwner": 712,
         "landingPages": 27,
         "landingPagesNote": "Analytics integration pending — requires HubSpot Analytics API scope"
       }
@@ -38,10 +38,10 @@
   "weeks": [
     {
       "weekStart": "2026-02-02",
-      "revenue": 124866.41,
+      "revenue": 122347.3,
       "deposits": 39615.58,
       "newCompanies": 2,
-      "newClients": 14,
+      "newClients": 11,
       "newClientsByOwnerName": {
         "Diego Ross": 1,
         "Nick JoinBrands": 2
@@ -49,9 +49,9 @@
     },
     {
       "weekStart": "2026-02-09",
-      "revenue": 247300.16,
+      "revenue": 247233.62,
       "deposits": 262184.89,
-      "mktgSent": 409,
+      "mktgSent": 410,
       "mktgViewed": 135,
       "mktgClicked": 4,
       "newCompanies": 1,
@@ -110,7 +110,7 @@
       "weekStart": "2026-03-09",
       "revenue": 252675.51,
       "deposits": 242307.47,
-      "newLeads": 555,
+      "newLeads": 547,
       "newClients": 42,
       "newClientsByOwnerName": {
         "Dee Mechev": 4,
@@ -139,7 +139,7 @@
     },
     {
       "weekStart": "2026-03-23",
-      "revenue": 236979.91,
+      "revenue": 236835.41,
       "deposits": 276155.57,
       "mktgSent": 195,
       "mktgViewed": 85,
@@ -232,15 +232,15 @@
     },
     {
       "weekStart": "2026-05-04",
-      "revenue": 172523.39,
-      "deposits": 166163.97,
+      "revenue": 176057.65,
+      "deposits": 220884.59,
       "mrrBrands": 59988.5,
       "mrrBrandStartup": 23611.42,
       "mrrBrandPro": 14920.08,
       "mrrBrandMax": 21457,
-      "newLeads": 642,
+      "newLeads": 650,
       "newCompanies": 147,
-      "newClients": 518,
+      "newClients": 520,
       "newClientsByOwnerName": {
         "Dan Kriss": 5,
         "Dee Mechev": 12,
@@ -253,12 +253,12 @@
   "weeksBySource": {
     "2026-02-02": {
       "stripe": {
-        "revenue": 124866.41,
+        "revenue": 122347.3,
         "deposits": 39615.58
       },
       "hubspot": {
         "newCompanies": 2,
-        "newClients": 14,
+        "newClients": 11,
         "newClientsByOwnerName": {
           "Diego Ross": 1,
           "Nick JoinBrands": 2
@@ -267,11 +267,11 @@
     },
     "2026-02-09": {
       "stripe": {
-        "revenue": 247300.16,
+        "revenue": 247233.62,
         "deposits": 262184.89
       },
       "hubspot": {
-        "mktgSent": 409,
+        "mktgSent": 410,
         "mktgViewed": 135,
         "mktgClicked": 4,
         "newCompanies": 1,
@@ -342,7 +342,7 @@
         "deposits": 242307.47
       },
       "hubspot": {
-        "newLeads": 555,
+        "newLeads": 547,
         "newClients": 42,
         "newClientsByOwnerName": {
           "Dee Mechev": 4,
@@ -375,7 +375,7 @@
     },
     "2026-03-23": {
       "stripe": {
-        "revenue": 236979.91,
+        "revenue": 236835.41,
         "deposits": 276155.57
       },
       "hubspot": {
@@ -486,17 +486,17 @@
     },
     "2026-05-04": {
       "stripe": {
-        "revenue": 172523.39,
-        "deposits": 166163.97,
+        "revenue": 176057.65,
+        "deposits": 220884.59,
         "mrrBrands": 59988.5,
         "mrrBrandStartup": 23611.42,
         "mrrBrandPro": 14920.08,
         "mrrBrandMax": 21457
       },
       "hubspot": {
-        "newLeads": 642,
+        "newLeads": 650,
         "newCompanies": 147,
-        "newClients": 518,
+        "newClients": 520,
         "newClientsByOwnerName": {
           "Dan Kriss": 5,
           "Dee Mechev": 12,
