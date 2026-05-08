@@ -1,11 +1,11 @@
 {
-  "updatedAt": "2026-05-08T06:36:17.917Z",
+  "updatedAt": "2026-05-08T08:27:47.231Z",
   "sources": {
     "stripe": {
       "ok": true,
       "weekCount": 14,
       "diagnostics": {
-        "chargeCount": 31673,
+        "chargeCount": 31698,
         "payoutCount": 64,
         "activeSubscriptionCount": 360,
         "mrrBrands": 60388.5,
@@ -38,7 +38,7 @@
   "weeks": [
     {
       "weekStart": "2026-02-02",
-      "revenue": 66645.98,
+      "revenue": 66085.87,
       "deposits": 0,
       "newClients": 6,
       "newClientsByOwnerName": {
@@ -108,7 +108,7 @@
       "weekStart": "2026-03-09",
       "revenue": 252675.51,
       "deposits": 242307.47,
-      "newLeads": 445,
+      "newLeads": 442,
       "newClients": 42,
       "newClientsByOwnerName": {
         "Dee Mechev": 4,
@@ -230,13 +230,13 @@
     },
     {
       "weekStart": "2026-05-04",
-      "revenue": 226645.76,
+      "revenue": 246635.06,
       "deposits": 266607.36,
       "mrrBrands": 60388.5,
       "mrrBrandStartup": 23512.42,
       "mrrBrandPro": 14920.08,
       "mrrBrandMax": 21956,
-      "newLeads": 752,
+      "newLeads": 755,
       "newCompanies": 206,
       "newClients": 526,
       "newClientsByOwnerName": {
@@ -251,7 +251,7 @@
   "weeksBySource": {
     "2026-02-02": {
       "stripe": {
-        "revenue": 66645.98,
+        "revenue": 66085.87,
         "deposits": 0
       },
       "hubspot": {
@@ -338,7 +338,7 @@
         "deposits": 242307.47
       },
       "hubspot": {
-        "newLeads": 445,
+        "newLeads": 442,
         "newClients": 42,
         "newClientsByOwnerName": {
           "Dee Mechev": 4,
@@ -482,7 +482,7 @@
     },
     "2026-05-04": {
       "stripe": {
-        "revenue": 226645.76,
+        "revenue": 246635.06,
         "deposits": 266607.36,
         "mrrBrands": 60388.5,
         "mrrBrandStartup": 23512.42,
@@ -490,7 +490,7 @@
         "mrrBrandMax": 21956
       },
       "hubspot": {
-        "newLeads": 752,
+        "newLeads": 755,
         "newCompanies": 206,
         "newClients": 526,
         "newClientsByOwnerName": {
