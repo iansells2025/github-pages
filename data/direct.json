@@ -1,11 +1,11 @@
 {
-  "updatedAt": "2026-05-09T17:41:26.593Z",
+  "updatedAt": "2026-05-09T18:34:08.461Z",
   "sources": {
     "stripe": {
       "ok": true,
       "weekCount": 14,
       "diagnostics": {
-        "chargeCount": 31618,
+        "chargeCount": 31633,
         "payoutCount": 64,
         "activeSubscriptionCount": 360,
         "mrrBrands": 59988.5,
@@ -28,8 +28,8 @@
         "ownersCount": 20,
         "contactsCreated": 5000,
         "companiesCreated": 3554,
-        "dealsClosedWon": 985,
-        "dealsWithUnknownOwner": 747,
+        "dealsClosedWon": 984,
+        "dealsWithUnknownOwner": 746,
         "landingPages": 28,
         "landingPagesNote": "Analytics integration pending — requires HubSpot Analytics API scope"
       }
@@ -38,9 +38,9 @@
   "weeks": [
     {
       "weekStart": "2026-02-02",
-      "revenue": 32317.32,
+      "revenue": 25873.88,
       "deposits": 0,
-      "newClients": 3,
+      "newClients": 2,
       "newClientsByOwnerName": {}
     },
     {
@@ -202,7 +202,7 @@
     },
     {
       "weekStart": "2026-04-27",
-      "revenue": 273425.92,
+      "revenue": 273385.35,
       "deposits": 245494.27,
       "newLeads": 518,
       "newCompanies": 58,
@@ -216,7 +216,7 @@
     },
     {
       "weekStart": "2026-05-04",
-      "revenue": 310301.22,
+      "revenue": 312261.68,
       "deposits": 266607.36,
       "mrrBrands": 59988.5,
       "mrrBrandStartup": 23710.42,
@@ -236,11 +236,11 @@
   "weeksBySource": {
     "2026-02-02": {
       "stripe": {
-        "revenue": 32317.32,
+        "revenue": 25873.88,
         "deposits": 0
       },
       "hubspot": {
-        "newClients": 3,
+        "newClients": 2,
         "newClientsByOwnerName": {}
       }
     },
@@ -436,7 +436,7 @@
     },
     "2026-04-27": {
       "stripe": {
-        "revenue": 273425.92,
+        "revenue": 273385.35,
         "deposits": 245494.27
       },
       "hubspot": {
@@ -453,7 +453,7 @@
     },
     "2026-05-04": {
       "stripe": {
-        "revenue": 310301.22,
+        "revenue": 312261.68,
         "deposits": 266607.36,
         "mrrBrands": 59988.5,
         "mrrBrandStartup": 23710.42,
