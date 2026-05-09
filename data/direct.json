@@ -1,11 +1,11 @@
 {
-  "updatedAt": "2026-05-09T00:36:35.435Z",
+  "updatedAt": "2026-05-09T04:24:55.763Z",
   "sources": {
     "stripe": {
       "ok": true,
       "weekCount": 14,
       "diagnostics": {
-        "chargeCount": 31618,
+        "chargeCount": 31610,
         "payoutCount": 64,
         "activeSubscriptionCount": 362,
         "mrrBrands": 60386.5,
@@ -25,11 +25,11 @@
         "emailsInLookback": 43,
         "emailsWithStats": 14,
         "sampleStatKeys": [],
-        "ownersCount": 21,
+        "ownersCount": 20,
         "contactsCreated": 5000,
         "companiesCreated": 3537,
         "dealsClosedWon": 984,
-        "dealsWithUnknownOwner": 711,
+        "dealsWithUnknownOwner": 749,
         "landingPages": 28,
         "landingPagesNote": "Analytics integration pending — requires HubSpot Analytics API scope"
       }
@@ -38,12 +38,10 @@
   "weeks": [
     {
       "weekStart": "2026-02-02",
-      "revenue": 42997.21,
+      "revenue": 42086.75,
       "deposits": 0,
       "newClients": 5,
-      "newClientsByOwnerName": {
-        "Diego Ross": 1
-      }
+      "newClientsByOwnerName": {}
     },
     {
       "weekStart": "2026-02-09",
@@ -57,8 +55,7 @@
       "newClientsByOwnerName": {
         "Nick JoinBrands": 4,
         "Dan Kriss": 3,
-        "Dee Mechev": 6,
-        "Diego Ross": 1
+        "Dee Mechev": 6
       }
     },
     {
@@ -73,8 +70,7 @@
       "newClientsByOwnerName": {
         "Nick JoinBrands": 5,
         "Dan Kriss": 2,
-        "Dee Mechev": 1,
-        "Diego Ross": 1
+        "Dee Mechev": 1
       }
     },
     {
@@ -84,8 +80,7 @@
       "newCompanies": 1,
       "newClients": 27,
       "newClientsByOwnerName": {
-        "Dee Mechev": 4,
-        "Diego Ross": 3
+        "Dee Mechev": 4
       }
     },
     {
@@ -100,21 +95,19 @@
       "newClientsByOwnerName": {
         "Mila Vidakovic": 2,
         "Nick JoinBrands": 2,
-        "Dee Mechev": 1,
-        "Diego Ross": 1
+        "Dee Mechev": 1
       }
     },
     {
       "weekStart": "2026-03-09",
       "revenue": 252675.51,
       "deposits": 242307.47,
-      "newLeads": 377,
+      "newLeads": 364,
       "newClients": 42,
       "newClientsByOwnerName": {
         "Dee Mechev": 4,
         "Mila Vidakovic": 3,
         "Nick JoinBrands": 1,
-        "Diego Ross": 1,
         "Dan Kriss": 1
       }
     },
@@ -131,8 +124,7 @@
         "Nick JoinBrands": 8,
         "Mila Vidakovic": 3,
         "Dee Mechev": 6,
-        "Dan Kriss": 5,
-        "Diego Ross": 3
+        "Dan Kriss": 5
       }
     },
     {
@@ -148,8 +140,7 @@
         "Mila Vidakovic": 7,
         "Nick JoinBrands": 4,
         "Dee Mechev": 4,
-        "Dan Kriss": 4,
-        "Diego Ross": 1
+        "Dan Kriss": 4
       }
     },
     {
@@ -166,8 +157,7 @@
         "Dee Mechev": 5,
         "Mila Vidakovic": 6,
         "Dan Kriss": 4,
-        "Nick JoinBrands": 6,
-        "Diego Ross": 3
+        "Nick JoinBrands": 6
       }
     },
     {
@@ -179,7 +169,6 @@
       "newClientsByOwnerName": {
         "Dan Kriss": 4,
         "Nick JoinBrands": 9,
-        "Diego Ross": 7,
         "Dee Mechev": 8,
         "Mila Vidakovic": 5
       }
@@ -193,7 +182,6 @@
       "newClientsByOwnerName": {
         "Mila Vidakovic": 5,
         "Dee Mechev": 5,
-        "Diego Ross": 3,
         "Dan Kriss": 6,
         "Nick JoinBrands": 4
       }
@@ -206,7 +194,6 @@
       "newCompanies": 3266,
       "newClients": 37,
       "newClientsByOwnerName": {
-        "Diego Ross": 5,
         "Nick JoinBrands": 3,
         "Mila Vidakovic": 7,
         "Dee Mechev": 9,
@@ -223,42 +210,38 @@
       "newClientsByOwnerName": {
         "Dan Kriss": 7,
         "Nick JoinBrands": 4,
-        "Diego Ross": 6,
         "Dee Mechev": 14,
         "Mila Vidakovic": 6
       }
     },
     {
       "weekStart": "2026-05-04",
-      "revenue": 298128.28,
+      "revenue": 302883.58,
       "deposits": 266607.36,
       "mrrBrands": 60386.5,
       "mrrBrandStartup": 23809.42,
       "mrrBrandPro": 14621.08,
       "mrrBrandMax": 21956,
-      "newLeads": 820,
+      "newLeads": 833,
       "newCompanies": 207,
       "newClients": 528,
       "newClientsByOwnerName": {
         "Dan Kriss": 6,
         "Mila Vidakovic": 6,
         "Dee Mechev": 13,
-        "Nick JoinBrands": 10,
-        "Diego Ross": 2
+        "Nick JoinBrands": 10
       }
     }
   ],
   "weeksBySource": {
     "2026-02-02": {
       "stripe": {
-        "revenue": 42997.21,
+        "revenue": 42086.75,
         "deposits": 0
       },
       "hubspot": {
         "newClients": 5,
-        "newClientsByOwnerName": {
-          "Diego Ross": 1
-        }
+        "newClientsByOwnerName": {}
       }
     },
     "2026-02-09": {
@@ -275,8 +258,7 @@
         "newClientsByOwnerName": {
           "Nick JoinBrands": 4,
           "Dan Kriss": 3,
-          "Dee Mechev": 6,
-          "Diego Ross": 1
+          "Dee Mechev": 6
         }
       }
     },
@@ -294,8 +276,7 @@
         "newClientsByOwnerName": {
           "Nick JoinBrands": 5,
           "Dan Kriss": 2,
-          "Dee Mechev": 1,
-          "Diego Ross": 1
+          "Dee Mechev": 1
         }
       }
     },
@@ -308,8 +289,7 @@
         "newCompanies": 1,
         "newClients": 27,
         "newClientsByOwnerName": {
-          "Dee Mechev": 4,
-          "Diego Ross": 3
+          "Dee Mechev": 4
         }
       }
     },
@@ -327,8 +307,7 @@
         "newClientsByOwnerName": {
           "Mila Vidakovic": 2,
           "Nick JoinBrands": 2,
-          "Dee Mechev": 1,
-          "Diego Ross": 1
+          "Dee Mechev": 1
         }
       }
     },
@@ -338,13 +317,12 @@
         "deposits": 242307.47
       },
       "hubspot": {
-        "newLeads": 377,
+        "newLeads": 364,
         "newClients": 42,
         "newClientsByOwnerName": {
           "Dee Mechev": 4,
           "Mila Vidakovic": 3,
           "Nick JoinBrands": 1,
-          "Diego Ross": 1,
           "Dan Kriss": 1
         }
       }
@@ -364,8 +342,7 @@
           "Nick JoinBrands": 8,
           "Mila Vidakovic": 3,
           "Dee Mechev": 6,
-          "Dan Kriss": 5,
-          "Diego Ross": 3
+          "Dan Kriss": 5
         }
       }
     },
@@ -384,8 +361,7 @@
           "Mila Vidakovic": 7,
           "Nick JoinBrands": 4,
           "Dee Mechev": 4,
-          "Dan Kriss": 4,
-          "Diego Ross": 1
+          "Dan Kriss": 4
         }
       }
     },
@@ -405,8 +381,7 @@
           "Dee Mechev": 5,
           "Mila Vidakovic": 6,
           "Dan Kriss": 4,
-          "Nick JoinBrands": 6,
-          "Diego Ross": 3
+          "Nick JoinBrands": 6
         }
       }
     },
@@ -421,7 +396,6 @@
         "newClientsByOwnerName": {
           "Dan Kriss": 4,
           "Nick JoinBrands": 9,
-          "Diego Ross": 7,
           "Dee Mechev": 8,
           "Mila Vidakovic": 5
         }
@@ -438,7 +412,6 @@
         "newClientsByOwnerName": {
           "Mila Vidakovic": 5,
           "Dee Mechev": 5,
-          "Diego Ross": 3,
           "Dan Kriss": 6,
           "Nick JoinBrands": 4
         }
@@ -454,7 +427,6 @@
         "newCompanies": 3266,
         "newClients": 37,
         "newClientsByOwnerName": {
-          "Diego Ross": 5,
           "Nick JoinBrands": 3,
           "Mila Vidakovic": 7,
           "Dee Mechev": 9,
@@ -474,7 +446,6 @@
         "newClientsByOwnerName": {
           "Dan Kriss": 7,
           "Nick JoinBrands": 4,
-          "Diego Ross": 6,
           "Dee Mechev": 14,
           "Mila Vidakovic": 6
         }
@@ -482,7 +453,7 @@
     },
     "2026-05-04": {
       "stripe": {
-        "revenue": 298128.28,
+        "revenue": 302883.58,
         "deposits": 266607.36,
         "mrrBrands": 60386.5,
         "mrrBrandStartup": 23809.42,
@@ -490,15 +461,14 @@
         "mrrBrandMax": 21956
       },
       "hubspot": {
-        "newLeads": 820,
+        "newLeads": 833,
         "newCompanies": 207,
         "newClients": 528,
         "newClientsByOwnerName": {
           "Dan Kriss": 6,
           "Mila Vidakovic": 6,
           "Dee Mechev": 13,
-          "Nick JoinBrands": 10,
-          "Diego Ross": 2
+          "Nick JoinBrands": 10
         }
       }
     }
