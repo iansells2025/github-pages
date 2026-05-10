@@ -1,11 +1,11 @@
 {
-  "updatedAt": "2026-05-10T17:41:05.497Z",
+  "updatedAt": "2026-05-10T18:34:44.461Z",
   "sources": {
     "stripe": {
       "ok": true,
       "weekCount": 14,
       "diagnostics": {
-        "chargeCount": 31577,
+        "chargeCount": 31576,
         "payoutCount": 64,
         "activeSubscriptionCount": 360,
         "mrrBrands": 59889.5,
@@ -38,7 +38,7 @@
   "weeks": [
     {
       "weekStart": "2026-02-02",
-      "revenue": 3436.87,
+      "revenue": 2769.4,
       "deposits": 0
     },
     {
@@ -100,7 +100,7 @@
       "weekStart": "2026-03-09",
       "revenue": 252675.51,
       "deposits": 242307.47,
-      "newLeads": 313,
+      "newLeads": 311,
       "newClients": 42,
       "newClientsByOwnerName": {
         "Dee Mechev": 4,
@@ -214,13 +214,13 @@
     },
     {
       "weekStart": "2026-05-04",
-      "revenue": 329874.69,
+      "revenue": 330531.33,
       "deposits": 266607.36,
       "mrrBrands": 59889.5,
       "mrrBrandStartup": 23611.42,
       "mrrBrandPro": 14322.08,
       "mrrBrandMax": 21956,
-      "newLeads": 884,
+      "newLeads": 886,
       "newCompanies": 226,
       "newClients": 531,
       "newClientsByOwnerName": {
@@ -234,7 +234,7 @@
   "weeksBySource": {
     "2026-02-02": {
       "stripe": {
-        "revenue": 3436.87,
+        "revenue": 2769.4,
         "deposits": 0
       }
     },
@@ -311,7 +311,7 @@
         "deposits": 242307.47
       },
       "hubspot": {
-        "newLeads": 313,
+        "newLeads": 311,
         "newClients": 42,
         "newClientsByOwnerName": {
           "Dee Mechev": 4,
@@ -447,7 +447,7 @@
     },
     "2026-05-04": {
       "stripe": {
-        "revenue": 329874.69,
+        "revenue": 330531.33,
         "deposits": 266607.36,
         "mrrBrands": 59889.5,
         "mrrBrandStartup": 23611.42,
@@ -455,7 +455,7 @@
         "mrrBrandMax": 21956
       },
       "hubspot": {
-        "newLeads": 884,
+        "newLeads": 886,
         "newCompanies": 226,
         "newClients": 531,
         "newClientsByOwnerName": {
