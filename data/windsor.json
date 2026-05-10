@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-05-10T21:42:48.894Z",
+  "updatedAt": "2026-05-10T22:41:29.152Z",
   "source": "windsor.ai",
   "endpoint": "blended",
   "weeks": [
@@ -9,7 +9,7 @@
     },
     {
       "weekStart": "2026-05-04",
-      "costs": 7414.39
+      "costs": 7414.88
     }
   ],
   "weeksBySource": {
@@ -23,10 +23,10 @@
     },
     "2026-05-04": {
       "googleads": {
-        "costs": 5311.2096
+        "costs": 5311.6396
       },
       "facebook": {
-        "costs": 2103.18
+        "costs": 2103.24
       },
       "instagram": {}
     }
@@ -76,10 +76,10 @@
       "email": "mlee88374@gmail.com"
     },
     "instagram": {
-      "account_name": "joinbrands_brands",
+      "account_name": "joinbrands_creators",
       "datasource": "instagram",
       "date": "2026-05-10",
-      "followers_count": 1944,
+      "followers_count": 49863,
       "source": "instagram"
     }
   },
