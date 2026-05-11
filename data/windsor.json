@@ -1,11 +1,11 @@
 {
-  "updatedAt": "2026-05-11T10:34:22.463Z",
+  "updatedAt": "2026-05-11T13:44:46.715Z",
   "source": "windsor.ai",
   "endpoint": "blended",
   "weeks": [
     {
       "weekStart": "2026-05-04",
-      "costs": 8254.6
+      "costs": 8259.49
     },
     {
       "weekStart": "2026-05-11"
@@ -17,7 +17,7 @@
         "costs": 5761.7694
       },
       "facebook": {
-        "costs": 2492.83
+        "costs": 2497.72
       }
     },
     "2026-05-11": {
@@ -69,10 +69,10 @@
       "email": "katyserpas398@gmail.com"
     },
     "instagram": {
-      "account_name": "joinbrands_creators",
+      "account_name": "joinbrands_brands",
       "datasource": "instagram",
       "date": "2026-05-11",
-      "followers_count": 49907,
+      "followers_count": 1985,
       "source": "instagram"
     }
   },
@@ -86,6 +86,6 @@
     "spend",
     "email"
   ],
-  "rowCount": 5831,
-  "usableRowCount": 181
+  "rowCount": 5640,
+  "usableRowCount": 182
 }
