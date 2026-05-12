@@ -1,26 +1,33 @@
 {
-  "updatedAt": "2026-05-12T02:35:44.776Z",
+  "updatedAt": "2026-05-12T06:11:12.430Z",
   "source": "windsor.ai",
   "endpoint": "blended",
   "weeks": [
     {
       "weekStart": "2026-05-04",
-      "costs": 8259.86
+      "costs": 6680.37
     },
     {
-      "weekStart": "2026-05-11"
+      "weekStart": "2026-05-11",
+      "costs": 1643.95
     }
   ],
   "weeksBySource": {
     "2026-05-04": {
       "googleads": {
-        "costs": 5761.7694
+        "costs": 4657.0735
       },
       "facebook": {
-        "costs": 2498.09
+        "costs": 2023.3
       }
     },
     "2026-05-11": {
+      "googleads": {
+        "costs": 1118.467
+      },
+      "facebook": {
+        "costs": 525.48
+      },
       "instagram": {}
     }
   },
@@ -48,31 +55,31 @@
     "googleads": {
       "account_name": "Join Brands - MA",
       "datasource": "google_ads",
-      "date": "2026-05-04",
+      "date": "2026-05-05",
       "source": "google",
       "campaign": "TDD_Search_Brand_US",
-      "spend": 436.7136
+      "spend": 302.926
     },
     "facebook": {
       "account_name": "JoinBrands",
       "datasource": "facebook",
-      "date": "2026-05-04",
+      "date": "2026-05-05",
       "source": "facebook",
       "campaign": "TDD - Remarketing - US - Onboarding Leads",
-      "spend": 42.24
+      "spend": 32.29
     },
     "intercom": {
       "account_name": "windsor",
       "datasource": "intercom",
-      "date": "2026-05-04",
+      "date": "2026-05-05",
       "source": "intercom",
-      "email": "katyserpas398@gmail.com"
+      "email": "aheiselmoyerugc@gmail.com"
     },
     "instagram": {
       "account_name": "joinbrands_brands",
       "datasource": "instagram",
-      "date": "2026-05-11",
-      "followers_count": 1985,
+      "date": "2026-05-12",
+      "followers_count": 1995,
       "source": "instagram"
     }
   },
@@ -86,6 +93,6 @@
     "spend",
     "email"
   ],
-  "rowCount": 5638,
+  "rowCount": 5931,
   "usableRowCount": 182
 }
