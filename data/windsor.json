@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-05-12T11:50:31.647Z",
+  "updatedAt": "2026-05-12T17:06:57.142Z",
   "source": "windsor.ai",
   "endpoint": "blended",
   "weeks": [
@@ -9,7 +9,7 @@
     },
     {
       "weekStart": "2026-05-11",
-      "costs": 1643.95
+      "costs": 1670.88
     }
   ],
   "weeksBySource": {
@@ -23,10 +23,10 @@
     },
     "2026-05-11": {
       "googleads": {
-        "costs": 1118.467
+        "costs": 1118.7921
       },
       "facebook": {
-        "costs": 525.48
+        "costs": 552.09
       },
       "instagram": {}
     }
@@ -76,10 +76,10 @@
       "email": "aheiselmoyerugc@gmail.com"
     },
     "instagram": {
-      "account_name": "joinbrands_brands",
+      "account_name": "joinbrands_creators",
       "datasource": "instagram",
       "date": "2026-05-12",
-      "followers_count": 1995,
+      "followers_count": 50043,
       "source": "instagram"
     }
   },
@@ -93,6 +93,6 @@
     "spend",
     "email"
   ],
-  "rowCount": 5931,
+  "rowCount": 5782,
   "usableRowCount": 182
 }
