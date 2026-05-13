@@ -1,32 +1,32 @@
 {
-  "updatedAt": "2026-05-13T03:48:56.821Z",
+  "updatedAt": "2026-05-13T06:44:41.990Z",
   "source": "windsor.ai",
   "endpoint": "blended",
   "weeks": [
     {
       "weekStart": "2026-05-04",
-      "costs": 6680.37
+      "costs": 5244.09
     },
     {
       "weekStart": "2026-05-11",
-      "costs": 1671.19
+      "costs": 3327.26
     }
   ],
   "weeksBySource": {
     "2026-05-04": {
       "googleads": {
-        "costs": 4657.0735
+        "costs": 3629.1597
       },
       "facebook": {
-        "costs": 2023.3
+        "costs": 1614.93
       }
     },
     "2026-05-11": {
       "googleads": {
-        "costs": 1118.7921
+        "costs": 2196.2443
       },
       "facebook": {
-        "costs": 552.4
+        "costs": 1131.02
       },
       "instagram": {}
     }
@@ -55,31 +55,31 @@
     "googleads": {
       "account_name": "Join Brands - MA",
       "datasource": "google_ads",
-      "date": "2026-05-05",
+      "date": "2026-05-06",
       "source": "google",
       "campaign": "TDD_Search_Brand_US",
-      "spend": 302.926
+      "spend": 295.297
     },
     "facebook": {
       "account_name": "JoinBrands",
       "datasource": "facebook",
-      "date": "2026-05-05",
+      "date": "2026-05-06",
       "source": "facebook",
       "campaign": "TDD - Remarketing - US - Onboarding Leads",
-      "spend": 32.29
+      "spend": 29.61
     },
     "intercom": {
       "account_name": "windsor",
       "datasource": "intercom",
-      "date": "2026-05-05",
+      "date": "2026-05-06",
       "source": "intercom",
-      "email": "aheiselmoyerugc@gmail.com"
+      "email": "itstheo_thedachshund@yahoo.com"
     },
     "instagram": {
-      "account_name": "joinbrands_brands",
+      "account_name": "joinbrands_creators",
       "datasource": "instagram",
-      "date": "2026-05-12",
-      "followers_count": 1987,
+      "date": "2026-05-13",
+      "followers_count": 50141,
       "source": "instagram"
     }
   },
@@ -93,6 +93,6 @@
     "spend",
     "email"
   ],
-  "rowCount": 5782,
+  "rowCount": 6155,
   "usableRowCount": 182
 }
