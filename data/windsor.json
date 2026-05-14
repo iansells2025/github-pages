@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-05-14T18:51:25.307Z",
+  "updatedAt": "2026-05-14T20:25:39.388Z",
   "source": "windsor.ai",
   "endpoint": "blended",
   "weeks": [
@@ -9,7 +9,7 @@
     },
     {
       "weekStart": "2026-05-11",
-      "costs": 4748.31
+      "costs": 4749.69
     }
   ],
   "weeksBySource": {
@@ -23,10 +23,10 @@
     },
     "2026-05-11": {
       "googleads": {
-        "costs": 3159.1333
+        "costs": 3159.2854
       },
       "facebook": {
-        "costs": 1589.18
+        "costs": 1590.4
       },
       "instagram": {}
     }
@@ -76,10 +76,10 @@
       "email": "liamshinairina@gmail.com"
     },
     "instagram": {
-      "account_name": "joinbrands_creators",
+      "account_name": "joinbrands_brands",
       "datasource": "instagram",
       "date": "2026-05-14",
-      "followers_count": 50295,
+      "followers_count": 2001,
       "source": "instagram"
     }
   },
@@ -93,6 +93,6 @@
     "spend",
     "email"
   ],
-  "rowCount": 6361,
+  "rowCount": 6358,
   "usableRowCount": 181
 }
