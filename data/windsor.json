@@ -1,32 +1,32 @@
 {
-  "updatedAt": "2026-05-14T23:53:25.662Z",
+  "updatedAt": "2026-05-15T02:43:40.934Z",
   "source": "windsor.ai",
   "endpoint": "blended",
   "weeks": [
     {
       "weekStart": "2026-05-04",
-      "costs": 3933.87
+      "costs": 2594.8
     },
     {
       "weekStart": "2026-05-11",
-      "costs": 4749.69
+      "costs": 5991.68
     }
   ],
   "weeksBySource": {
     "2026-05-04": {
       "googleads": {
-        "costs": 2667.2359
+        "costs": 1684.9994
       },
       "facebook": {
-        "costs": 1266.63
+        "costs": 909.8
       }
     },
     "2026-05-11": {
       "googleads": {
-        "costs": 3159.2854
+        "costs": 4023.8683
       },
       "facebook": {
-        "costs": 1590.4
+        "costs": 1967.81
       },
       "instagram": {}
     }
@@ -55,30 +55,30 @@
     "googleads": {
       "account_name": "Join Brands - MA",
       "datasource": "google_ads",
-      "date": "2026-05-07",
+      "date": "2026-05-08",
       "source": "google",
       "campaign": "TDD_Search_Brand_US",
-      "spend": 295.8834
+      "spend": 390.7959
     },
     "facebook": {
       "account_name": "JoinBrands",
       "datasource": "facebook",
-      "date": "2026-05-07",
+      "date": "2026-05-08",
       "source": "facebook",
       "campaign": "TDD - Remarketing - US - Onboarding Leads",
-      "spend": 30.42
+      "spend": 24.52
     },
     "intercom": {
       "account_name": "windsor",
       "datasource": "intercom",
-      "date": "2026-05-07",
+      "date": "2026-05-08",
       "source": "intercom",
-      "email": "liamshinairina@gmail.com"
+      "email": "hasanaugc@gmail.com"
     },
     "instagram": {
       "account_name": "joinbrands_brands",
       "datasource": "instagram",
-      "date": "2026-05-14",
+      "date": "2026-05-15",
       "followers_count": 2001,
       "source": "instagram"
     }
@@ -93,6 +93,6 @@
     "spend",
     "email"
   ],
-  "rowCount": 6358,
-  "usableRowCount": 181
+  "rowCount": 6524,
+  "usableRowCount": 180
 }
