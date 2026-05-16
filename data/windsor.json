@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-05-16T17:53:02.015Z",
+  "updatedAt": "2026-05-16T18:58:07.935Z",
   "source": "windsor.ai",
   "endpoint": "blended",
   "weeks": [
@@ -9,7 +9,7 @@
     },
     {
       "weekStart": "2026-05-11",
-      "costs": 7447.61
+      "costs": 7448.86
     }
   ],
   "weeksBySource": {
@@ -23,10 +23,10 @@
     },
     "2026-05-11": {
       "googleads": {
-        "costs": 5022.5152
+        "costs": 5023.2271
       },
       "facebook": {
-        "costs": 2425.09
+        "costs": 2425.63
       },
       "instagram": {}
     }
@@ -76,10 +76,10 @@
       "email": "afaftariab@gmail.com"
     },
     "instagram": {
-      "account_name": "joinbrands_brands",
+      "account_name": "joinbrands_creators",
       "datasource": "instagram",
       "date": "2026-05-16",
-      "followers_count": 2001,
+      "followers_count": 50507,
       "source": "instagram"
     }
   },
