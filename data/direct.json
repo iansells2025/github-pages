@@ -1,11 +1,11 @@
 {
-  "updatedAt": "2026-05-16T09:30:00.236Z",
+  "updatedAt": "2026-05-16T12:34:08.228Z",
   "sources": {
     "stripe": {
       "ok": true,
       "weekCount": 14,
       "diagnostics": {
-        "chargeCount": 30722,
+        "chargeCount": 30792,
         "payoutCount": 64,
         "activeSubscriptionCount": 363,
         "mrrBrands": 59988.5,
@@ -38,7 +38,7 @@
   "weeks": [
     {
       "weekStart": "2026-02-09",
-      "revenue": 17915.52,
+      "revenue": 17751.86,
       "deposits": 0,
       "newClients": 5,
       "newClientsByOwnerName": {
@@ -104,7 +104,7 @@
       "mktgSent": 114,
       "mktgViewed": 46,
       "mktgClicked": 8,
-      "newLeads": 607,
+      "newLeads": 604,
       "newClients": 50,
       "newClientsByOwnerName": {
         "Nick JoinBrands": 8,
@@ -216,13 +216,13 @@
     },
     {
       "weekStart": "2026-05-11",
-      "revenue": 251476.58,
+      "revenue": 261481.62,
       "deposits": 285747.41,
       "mrrBrands": 59988.5,
       "mrrBrandStartup": 23809.42,
       "mrrBrandPro": 13724.08,
       "mrrBrandMax": 22455,
-      "newLeads": 474,
+      "newLeads": 477,
       "newCompanies": 36,
       "newClients": 40,
       "newClientsByOwnerName": {
@@ -236,7 +236,7 @@
   "weeksBySource": {
     "2026-02-09": {
       "stripe": {
-        "revenue": 17915.52,
+        "revenue": 17751.86,
         "deposits": 0
       },
       "hubspot": {
@@ -319,7 +319,7 @@
         "mktgSent": 114,
         "mktgViewed": 46,
         "mktgClicked": 8,
-        "newLeads": 607,
+        "newLeads": 604,
         "newClients": 50,
         "newClientsByOwnerName": {
           "Nick JoinBrands": 8,
@@ -453,7 +453,7 @@
     },
     "2026-05-11": {
       "stripe": {
-        "revenue": 251476.58,
+        "revenue": 261481.62,
         "deposits": 285747.41,
         "mrrBrands": 59988.5,
         "mrrBrandStartup": 23809.42,
@@ -461,7 +461,7 @@
         "mrrBrandMax": 22455
       },
       "hubspot": {
-        "newLeads": 474,
+        "newLeads": 477,
         "newCompanies": 36,
         "newClients": 40,
         "newClientsByOwnerName": {
