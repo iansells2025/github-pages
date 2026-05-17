@@ -1,11 +1,11 @@
 {
-  "updatedAt": "2026-05-17T18:40:42.873Z",
+  "updatedAt": "2026-05-17T20:04:22.435Z",
   "sources": {
     "stripe": {
       "ok": true,
       "weekCount": 14,
       "diagnostics": {
-        "chargeCount": 30802,
+        "chargeCount": 30792,
         "payoutCount": 64,
         "activeSubscriptionCount": 361,
         "mrrBrands": 59489.5,
@@ -38,7 +38,7 @@
   "weeks": [
     {
       "weekStart": "2026-02-09",
-      "revenue": 5624.7,
+      "revenue": 4079.48,
       "deposits": 0
     },
     {
@@ -100,7 +100,7 @@
       "mktgSent": 114,
       "mktgViewed": 46,
       "mktgClicked": 8,
-      "newLeads": 543,
+      "newLeads": 537,
       "newClients": 50,
       "newClientsByOwnerName": {
         "Nick JoinBrands": 8,
@@ -212,13 +212,13 @@
     },
     {
       "weekStart": "2026-05-11",
-      "revenue": 280771.01,
+      "revenue": 281407.27,
       "deposits": 285747.41,
       "mrrBrands": 59489.5,
       "mrrBrandStartup": 23809.42,
       "mrrBrandPro": 13724.08,
       "mrrBrandMax": 21956,
-      "newLeads": 538,
+      "newLeads": 544,
       "newCompanies": 36,
       "newClients": 42,
       "newClientsByOwnerName": {
@@ -232,7 +232,7 @@
   "weeksBySource": {
     "2026-02-09": {
       "stripe": {
-        "revenue": 5624.7,
+        "revenue": 4079.48,
         "deposits": 0
       }
     },
@@ -309,7 +309,7 @@
         "mktgSent": 114,
         "mktgViewed": 46,
         "mktgClicked": 8,
-        "newLeads": 543,
+        "newLeads": 537,
         "newClients": 50,
         "newClientsByOwnerName": {
           "Nick JoinBrands": 8,
@@ -443,7 +443,7 @@
     },
     "2026-05-11": {
       "stripe": {
-        "revenue": 280771.01,
+        "revenue": 281407.27,
         "deposits": 285747.41,
         "mrrBrands": 59489.5,
         "mrrBrandStartup": 23809.42,
@@ -451,7 +451,7 @@
         "mrrBrandMax": 21956
       },
       "hubspot": {
-        "newLeads": 538,
+        "newLeads": 544,
         "newCompanies": 36,
         "newClients": 42,
         "newClientsByOwnerName": {
