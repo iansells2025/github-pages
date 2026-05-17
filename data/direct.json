@@ -1,11 +1,11 @@
 {
-  "updatedAt": "2026-05-17T21:37:20.542Z",
+  "updatedAt": "2026-05-17T22:37:18.467Z",
   "sources": {
     "stripe": {
       "ok": true,
       "weekCount": 14,
       "diagnostics": {
-        "chargeCount": 30786,
+        "chargeCount": 30783,
         "payoutCount": 64,
         "activeSubscriptionCount": 361,
         "mrrBrands": 59489.5,
@@ -38,7 +38,7 @@
   "weeks": [
     {
       "weekStart": "2026-02-09",
-      "revenue": 2542.22,
+      "revenue": 1451.71,
       "deposits": 0
     },
     {
@@ -100,7 +100,7 @@
       "mktgSent": 114,
       "mktgViewed": 46,
       "mktgClicked": 8,
-      "newLeads": 534,
+      "newLeads": 530,
       "newClients": 50,
       "newClientsByOwnerName": {
         "Nick JoinBrands": 8,
@@ -212,13 +212,13 @@
     },
     {
       "weekStart": "2026-05-11",
-      "revenue": 284228.83,
+      "revenue": 287146.45,
       "deposits": 285747.41,
       "mrrBrands": 59489.5,
       "mrrBrandStartup": 23809.42,
       "mrrBrandPro": 13724.08,
       "mrrBrandMax": 21956,
-      "newLeads": 547,
+      "newLeads": 551,
       "newCompanies": 36,
       "newClients": 43,
       "newClientsByOwnerName": {
@@ -232,7 +232,7 @@
   "weeksBySource": {
     "2026-02-09": {
       "stripe": {
-        "revenue": 2542.22,
+        "revenue": 1451.71,
         "deposits": 0
       }
     },
@@ -309,7 +309,7 @@
         "mktgSent": 114,
         "mktgViewed": 46,
         "mktgClicked": 8,
-        "newLeads": 534,
+        "newLeads": 530,
         "newClients": 50,
         "newClientsByOwnerName": {
           "Nick JoinBrands": 8,
@@ -443,7 +443,7 @@
     },
     "2026-05-11": {
       "stripe": {
-        "revenue": 284228.83,
+        "revenue": 287146.45,
         "deposits": 285747.41,
         "mrrBrands": 59489.5,
         "mrrBrandStartup": 23809.42,
@@ -451,7 +451,7 @@
         "mrrBrandMax": 21956
       },
       "hubspot": {
-        "newLeads": 547,
+        "newLeads": 551,
         "newCompanies": 36,
         "newClients": 43,
         "newClientsByOwnerName": {
