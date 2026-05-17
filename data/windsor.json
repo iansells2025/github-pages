@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-05-17T06:18:45.316Z",
+  "updatedAt": "2026-05-17T09:01:54.752Z",
   "source": "windsor.ai",
   "endpoint": "blended",
   "weeks": [
@@ -9,7 +9,7 @@
     },
     {
       "weekStart": "2026-05-11",
-      "costs": 8149.58
+      "costs": 8180.05
     }
   ],
   "weeksBySource": {
@@ -23,10 +23,10 @@
     },
     "2026-05-11": {
       "googleads": {
-        "costs": 5562.4795
+        "costs": 5573.4536
       },
       "facebook": {
-        "costs": 2587.1
+        "costs": 2606.6
       },
       "instagram": {}
     }
@@ -76,10 +76,10 @@
       "email": "donnaleeoconnor26@gmail.com"
     },
     "instagram": {
-      "account_name": "joinbrands_brands",
+      "account_name": "joinbrands_creators",
       "datasource": "instagram",
       "date": "2026-05-17",
-      "followers_count": 2009,
+      "followers_count": 50576,
       "source": "instagram"
     }
   },
@@ -93,6 +93,6 @@
     "spend",
     "email"
   ],
-  "rowCount": 6433,
+  "rowCount": 6235,
   "usableRowCount": 180
 }
