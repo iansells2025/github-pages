@@ -1,11 +1,11 @@
 {
-  "updatedAt": "2026-05-18T11:04:11.393Z",
+  "updatedAt": "2026-05-18T15:20:01.903Z",
   "source": "windsor.ai",
   "endpoint": "blended",
   "weeks": [
     {
       "weekStart": "2026-05-11",
-      "costs": 9043.23
+      "costs": 9044.67
     },
     {
       "weekStart": "2026-05-18"
@@ -17,7 +17,7 @@
         "costs": 6171.8542
       },
       "facebook": {
-        "costs": 2871.38
+        "costs": 2872.82
       }
     },
     "2026-05-18": {
@@ -69,10 +69,10 @@
       "email": "erika.hendricks94@gmail.com"
     },
     "instagram": {
-      "account_name": "joinbrands_creators",
+      "account_name": "joinbrands_brands",
       "datasource": "instagram",
       "date": "2026-05-18",
-      "followers_count": 50630,
+      "followers_count": 2006,
       "source": "instagram"
     }
   },
@@ -86,6 +86,6 @@
     "spend",
     "email"
   ],
-  "rowCount": 6619,
+  "rowCount": 6390,
   "usableRowCount": 177
 }
