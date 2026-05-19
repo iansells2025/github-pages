@@ -1,73 +1,44 @@
 {
-  "updatedAt": "2026-05-19T20:27:43.366Z",
+  "updatedAt": "2026-05-19T23:59:23.061Z",
   "source": "windsor.ai",
   "endpoint": "blended",
   "weeks": [
     {
       "weekStart": "2026-05-11",
-      "costs": 7373.58
+      "costs": 5053.06
     },
     {
       "weekStart": "2026-05-18",
-      "costs": 1248.95
+      "costs": 1026.82
     }
   ],
   "weeksBySource": {
     "2026-05-11": {
       "googleads": {
         "costs": 5053.0621
-      },
-      "facebook": {
-        "costs": 2320.52
       }
     },
     "2026-05-18": {
       "googleads": {
         "costs": 1026.8191
-      },
-      "facebook": {
-        "costs": 222.13
-      },
-      "instagram": {}
+      }
     }
   },
   "sourcesDiscovered": [
-    "facebook",
     "google_ads",
-    "instagram",
     "intercom"
   ],
   "sourcesNormalized": [
-    "facebook",
     "googleads",
-    "instagram",
     "intercom"
   ],
   "sourcesMapped": [
-    "facebook",
-    "googleads",
-    "instagram"
+    "googleads"
   ],
   "sourcesUnmapped": [
     "intercom"
   ],
   "fieldsBySource": {
-    "googleads": {
-      "account_name": "Join Brands - MA",
-      "datasource": "google_ads",
-      "date": "2026-05-12",
-      "source": "google",
-      "campaign": "TDD_Search_Brand_US",
-      "spend": 295.6132
-    },
-    "facebook": {
-      "account_name": "JoinBrands",
-      "datasource": "facebook",
-      "date": "2026-05-12",
-      "source": "facebook",
-      "campaign": "TDD - Remarketing - US - Onboarding Leads",
-      "spend": 38.83
-    },
     "intercom": {
       "account_name": "windsor",
       "datasource": "intercom",
@@ -75,12 +46,13 @@
       "source": "intercom",
       "email": "outfitsandbeautybuis@gmail.com"
     },
-    "instagram": {
-      "account_name": "joinbrands_brands",
-      "datasource": "instagram",
-      "date": "2026-05-19",
-      "followers_count": 2028,
-      "source": "instagram"
+    "googleads": {
+      "account_name": "Join Brands - MA",
+      "datasource": "google_ads",
+      "date": "2026-05-12",
+      "source": "google",
+      "campaign": "TDD_Search_Brand_US",
+      "spend": 295.6132
     }
   },
   "sampleRowKeys": [
@@ -93,6 +65,6 @@
     "spend",
     "email"
   ],
-  "rowCount": 6356,
-  "usableRowCount": 173
+  "rowCount": 6084,
+  "usableRowCount": 115
 }
