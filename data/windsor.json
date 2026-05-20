@@ -1,26 +1,26 @@
 {
-  "updatedAt": "2026-05-20T04:12:14.176Z",
+  "updatedAt": "2026-05-20T08:22:56.393Z",
   "source": "windsor.ai",
   "endpoint": "blended",
   "weeks": [
     {
       "weekStart": "2026-05-11",
-      "costs": 5053.06
+      "costs": 3975.61
     },
     {
       "weekStart": "2026-05-18",
-      "costs": 1026.82
+      "costs": 1855.51
     }
   ],
   "weeksBySource": {
     "2026-05-11": {
       "googleads": {
-        "costs": 5053.0621
+        "costs": 3975.6099
       }
     },
     "2026-05-18": {
       "googleads": {
-        "costs": 1026.8191
+        "costs": 1855.5058
       }
     }
   },
@@ -39,20 +39,20 @@
     "intercom"
   ],
   "fieldsBySource": {
-    "intercom": {
-      "account_name": "windsor",
-      "datasource": "intercom",
-      "date": "2026-05-12",
-      "source": "intercom",
-      "email": "outfitsandbeautybuis@gmail.com"
-    },
     "googleads": {
       "account_name": "Join Brands - MA",
       "datasource": "google_ads",
-      "date": "2026-05-12",
+      "date": "2026-05-13",
       "source": "google",
       "campaign": "TDD_Search_Brand_US",
-      "spend": 295.6132
+      "spend": 295.3142
+    },
+    "intercom": {
+      "account_name": "windsor",
+      "datasource": "intercom",
+      "date": "2026-05-13",
+      "source": "intercom",
+      "email": "2kzht4ympm@privaterelay.appleid.com"
     }
   },
   "sampleRowKeys": [
@@ -65,6 +65,6 @@
     "spend",
     "email"
   ],
-  "rowCount": 6084,
+  "rowCount": 6459,
   "usableRowCount": 115
 }
