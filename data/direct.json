@@ -1,11 +1,11 @@
 {
-  "updatedAt": "2026-05-20T21:41:13.442Z",
+  "updatedAt": "2026-05-20T23:12:06.789Z",
   "sources": {
     "stripe": {
       "ok": true,
       "weekCount": 14,
       "diagnostics": {
-        "chargeCount": 30502,
+        "chargeCount": 30512,
         "payoutCount": 65,
         "activeSubscriptionCount": 360,
         "mrrBrands": 58889.5,
@@ -38,7 +38,7 @@
   "weeks": [
     {
       "weekStart": "2026-02-16",
-      "revenue": 127649.37,
+      "revenue": 126392.3,
       "deposits": 151725.87,
       "newClients": 8,
       "newClientsByOwnerName": {
@@ -90,7 +90,7 @@
       "mktgSent": 114,
       "mktgViewed": 46,
       "mktgClicked": 8,
-      "newLeads": 274,
+      "newLeads": 272,
       "newClients": 50,
       "newClientsByOwnerName": {
         "Nick JoinBrands": 8,
@@ -188,7 +188,7 @@
     },
     {
       "weekStart": "2026-05-04",
-      "revenue": 328447.66,
+      "revenue": 328357.25,
       "deposits": 266607.36,
       "newLeads": 895,
       "newCompanies": 226,
@@ -216,13 +216,13 @@
     },
     {
       "weekStart": "2026-05-18",
-      "revenue": 164879.7,
+      "revenue": 167515.21,
       "deposits": 162767.63,
       "mrrBrands": 58889.5,
       "mrrBrandStartup": 24007.42,
       "mrrBrandPro": 13425.08,
       "mrrBrandMax": 21457,
-      "newLeads": 253,
+      "newLeads": 255,
       "newCompanies": 20,
       "newClients": 26,
       "newClientsByOwnerName": {
@@ -236,7 +236,7 @@
   "weeksBySource": {
     "2026-02-16": {
       "stripe": {
-        "revenue": 127649.37,
+        "revenue": 126392.3,
         "deposits": 151725.87
       },
       "hubspot": {
@@ -302,7 +302,7 @@
         "mktgSent": 114,
         "mktgViewed": 46,
         "mktgClicked": 8,
-        "newLeads": 274,
+        "newLeads": 272,
         "newClients": 50,
         "newClientsByOwnerName": {
           "Nick JoinBrands": 8,
@@ -419,7 +419,7 @@
     },
     "2026-05-04": {
       "stripe": {
-        "revenue": 328447.66,
+        "revenue": 328357.25,
         "deposits": 266607.36
       },
       "hubspot": {
@@ -453,7 +453,7 @@
     },
     "2026-05-18": {
       "stripe": {
-        "revenue": 164879.7,
+        "revenue": 167515.21,
         "deposits": 162767.63,
         "mrrBrands": 58889.5,
         "mrrBrandStartup": 24007.42,
@@ -461,7 +461,7 @@
         "mrrBrandMax": 21457
       },
       "hubspot": {
-        "newLeads": 253,
+        "newLeads": 255,
         "newCompanies": 20,
         "newClients": 26,
         "newClientsByOwnerName": {
