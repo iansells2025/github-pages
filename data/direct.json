@@ -1,20 +1,20 @@
 {
-  "updatedAt": "2026-05-21T14:02:10.978Z",
+  "updatedAt": "2026-05-21T17:21:08.568Z",
   "sources": {
     "stripe": {
       "ok": true,
       "weekCount": 14,
       "diagnostics": {
-        "chargeCount": 30511,
+        "chargeCount": 30423,
         "payoutCount": 65,
-        "activeSubscriptionCount": 362,
-        "mrrBrands": 59087.5,
-        "mrrBrandStartup": 24205.42,
+        "activeSubscriptionCount": 360,
+        "mrrBrands": 58988.5,
+        "mrrBrandStartup": 24106.42,
         "mrrBrandPro": 13425.08,
         "mrrBrandMax": 21457,
-        "brandSubCount": 333,
-        "nonBrandSubCount": 29,
-        "nonBrandMrrExcluded": 1422.45
+        "brandSubCount": 332,
+        "nonBrandSubCount": 28,
+        "nonBrandMrrExcluded": 1372.5
       }
     },
     "hubspot": {
@@ -28,8 +28,8 @@
         "ownersCount": 21,
         "contactsCreated": 5000,
         "companiesCreated": 3609,
-        "dealsClosedWon": 993,
-        "dealsWithUnknownOwner": 722,
+        "dealsClosedWon": 992,
+        "dealsWithUnknownOwner": 721,
         "landingPages": 30,
         "landingPagesNote": "Analytics integration pending — requires HubSpot Analytics API scope"
       }
@@ -38,9 +38,9 @@
   "weeks": [
     {
       "weekStart": "2026-02-16",
-      "revenue": 114690.87,
+      "revenue": 104141.32,
       "deposits": 62869.57,
-      "newClients": 4,
+      "newClients": 3,
       "newClientsByOwnerName": {
         "Nick JoinBrands": 1
       }
@@ -89,7 +89,7 @@
       "mktgSent": 114,
       "mktgViewed": 46,
       "mktgClicked": 8,
-      "newLeads": 246,
+      "newLeads": 230,
       "newClients": 50,
       "newClientsByOwnerName": {
         "Nick JoinBrands": 8,
@@ -133,7 +133,7 @@
     },
     {
       "weekStart": "2026-04-06",
-      "revenue": 251085.16,
+      "revenue": 251000.69,
       "deposits": 246857.81,
       "newLeads": 461,
       "newClients": 40,
@@ -201,7 +201,7 @@
     },
     {
       "weekStart": "2026-05-11",
-      "revenue": 284635.37,
+      "revenue": 283617.31,
       "deposits": 285747.41,
       "newLeads": 555,
       "newCompanies": 36,
@@ -215,13 +215,13 @@
     },
     {
       "weekStart": "2026-05-18",
-      "revenue": 196150.73,
+      "revenue": 190708.86,
       "deposits": 213210.3,
-      "mrrBrands": 59087.5,
-      "mrrBrandStartup": 24205.42,
+      "mrrBrands": 58988.5,
+      "mrrBrandStartup": 24106.42,
       "mrrBrandPro": 13425.08,
       "mrrBrandMax": 21457,
-      "newLeads": 281,
+      "newLeads": 297,
       "newCompanies": 20,
       "newClients": 27,
       "newClientsByOwnerName": {
@@ -235,11 +235,11 @@
   "weeksBySource": {
     "2026-02-16": {
       "stripe": {
-        "revenue": 114690.87,
+        "revenue": 104141.32,
         "deposits": 62869.57
       },
       "hubspot": {
-        "newClients": 4,
+        "newClients": 3,
         "newClientsByOwnerName": {
           "Nick JoinBrands": 1
         }
@@ -300,7 +300,7 @@
         "mktgSent": 114,
         "mktgViewed": 46,
         "mktgClicked": 8,
-        "newLeads": 246,
+        "newLeads": 230,
         "newClients": 50,
         "newClientsByOwnerName": {
           "Nick JoinBrands": 8,
@@ -351,7 +351,7 @@
     },
     "2026-04-06": {
       "stripe": {
-        "revenue": 251085.16,
+        "revenue": 251000.69,
         "deposits": 246857.81
       },
       "hubspot": {
@@ -434,7 +434,7 @@
     },
     "2026-05-11": {
       "stripe": {
-        "revenue": 284635.37,
+        "revenue": 283617.31,
         "deposits": 285747.41
       },
       "hubspot": {
@@ -451,15 +451,15 @@
     },
     "2026-05-18": {
       "stripe": {
-        "revenue": 196150.73,
+        "revenue": 190708.86,
         "deposits": 213210.3,
-        "mrrBrands": 59087.5,
-        "mrrBrandStartup": 24205.42,
+        "mrrBrands": 58988.5,
+        "mrrBrandStartup": 24106.42,
         "mrrBrandPro": 13425.08,
         "mrrBrandMax": 21457
       },
       "hubspot": {
-        "newLeads": 281,
+        "newLeads": 297,
         "newCompanies": 20,
         "newClients": 27,
         "newClientsByOwnerName": {
