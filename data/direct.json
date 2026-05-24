@@ -1,11 +1,11 @@
 {
-  "updatedAt": "2026-05-24T14:28:25.495Z",
+  "updatedAt": "2026-05-24T15:50:44.804Z",
   "sources": {
     "stripe": {
       "ok": true,
       "weekCount": 14,
       "diagnostics": {
-        "chargeCount": 30230,
+        "chargeCount": 30236,
         "payoutCount": 65,
         "activeSubscriptionCount": 361,
         "mrrBrands": 58788.5,
@@ -28,8 +28,8 @@
         "ownersCount": 21,
         "contactsCreated": 5000,
         "companiesCreated": 3609,
-        "dealsClosedWon": 1012,
-        "dealsWithUnknownOwner": 722,
+        "dealsClosedWon": 1013,
+        "dealsWithUnknownOwner": 723,
         "landingPages": 30,
         "landingPagesNote": "Analytics integration pending — requires HubSpot Analytics API scope"
       }
@@ -38,7 +38,7 @@
   "weeks": [
     {
       "weekStart": "2026-02-16",
-      "revenue": 2935.07,
+      "revenue": 2068.86,
       "deposits": 0
     },
     {
@@ -85,7 +85,7 @@
       "mktgSent": 114,
       "mktgViewed": 46,
       "mktgClicked": 8,
-      "newLeads": 91,
+      "newLeads": 89,
       "newClients": 50,
       "newClientsByOwnerName": {
         "Nick JoinBrands": 8,
@@ -211,15 +211,15 @@
     },
     {
       "weekStart": "2026-05-18",
-      "revenue": 273832.38,
+      "revenue": 274671.24,
       "deposits": 276061.55,
       "mrrBrands": 58788.5,
       "mrrBrandStartup": 24106.42,
       "mrrBrandPro": 13724.08,
       "mrrBrandMax": 20958,
-      "newLeads": 437,
+      "newLeads": 439,
       "newCompanies": 20,
-      "newClients": 50,
+      "newClients": 51,
       "newClientsByOwnerName": {
         "Dee Mechev": 17,
         "Dan Kriss": 12,
@@ -231,7 +231,7 @@
   "weeksBySource": {
     "2026-02-16": {
       "stripe": {
-        "revenue": 2935.07,
+        "revenue": 2068.86,
         "deposits": 0
       }
     },
@@ -290,7 +290,7 @@
         "mktgSent": 114,
         "mktgViewed": 46,
         "mktgClicked": 8,
-        "newLeads": 91,
+        "newLeads": 89,
         "newClients": 50,
         "newClientsByOwnerName": {
           "Nick JoinBrands": 8,
@@ -441,7 +441,7 @@
     },
     "2026-05-18": {
       "stripe": {
-        "revenue": 273832.38,
+        "revenue": 274671.24,
         "deposits": 276061.55,
         "mrrBrands": 58788.5,
         "mrrBrandStartup": 24106.42,
@@ -449,9 +449,9 @@
         "mrrBrandMax": 20958
       },
       "hubspot": {
-        "newLeads": 437,
+        "newLeads": 439,
         "newCompanies": 20,
-        "newClients": 50,
+        "newClients": 51,
         "newClientsByOwnerName": {
           "Dee Mechev": 17,
           "Dan Kriss": 12,
