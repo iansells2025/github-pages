@@ -1,11 +1,11 @@
 {
-  "updatedAt": "2026-05-24T08:30:24.220Z",
+  "updatedAt": "2026-05-24T10:37:27.859Z",
   "sources": {
     "stripe": {
       "ok": true,
       "weekCount": 14,
       "diagnostics": {
-        "chargeCount": 30229,
+        "chargeCount": 30227,
         "payoutCount": 65,
         "activeSubscriptionCount": 361,
         "mrrBrands": 59188.5,
@@ -38,7 +38,7 @@
   "weeks": [
     {
       "weekStart": "2026-02-16",
-      "revenue": 9847.26,
+      "revenue": 3654.6,
       "deposits": 0
     },
     {
@@ -85,7 +85,7 @@
       "mktgSent": 114,
       "mktgViewed": 46,
       "mktgClicked": 8,
-      "newLeads": 96,
+      "newLeads": 94,
       "newClients": 50,
       "newClientsByOwnerName": {
         "Nick JoinBrands": 8,
@@ -211,13 +211,13 @@
     },
     {
       "weekStart": "2026-05-18",
-      "revenue": 272176.22,
+      "revenue": 272121.39,
       "deposits": 276061.55,
       "mrrBrands": 59188.5,
       "mrrBrandStartup": 24007.42,
       "mrrBrandPro": 13724.08,
       "mrrBrandMax": 21457,
-      "newLeads": 432,
+      "newLeads": 434,
       "newCompanies": 20,
       "newClients": 50,
       "newClientsByOwnerName": {
@@ -231,7 +231,7 @@
   "weeksBySource": {
     "2026-02-16": {
       "stripe": {
-        "revenue": 9847.26,
+        "revenue": 3654.6,
         "deposits": 0
       }
     },
@@ -290,7 +290,7 @@
         "mktgSent": 114,
         "mktgViewed": 46,
         "mktgClicked": 8,
-        "newLeads": 96,
+        "newLeads": 94,
         "newClients": 50,
         "newClientsByOwnerName": {
           "Nick JoinBrands": 8,
@@ -441,7 +441,7 @@
     },
     "2026-05-18": {
       "stripe": {
-        "revenue": 272176.22,
+        "revenue": 272121.39,
         "deposits": 276061.55,
         "mrrBrands": 59188.5,
         "mrrBrandStartup": 24007.42,
@@ -449,7 +449,7 @@
         "mrrBrandMax": 21457
       },
       "hubspot": {
-        "newLeads": 432,
+        "newLeads": 434,
         "newCompanies": 20,
         "newClients": 50,
         "newClientsByOwnerName": {
