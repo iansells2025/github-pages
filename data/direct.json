@@ -1,11 +1,11 @@
 {
-  "updatedAt": "2026-05-23T23:39:02.863Z",
+  "updatedAt": "2026-05-24T00:42:52.809Z",
   "sources": {
     "stripe": {
       "ok": true,
       "weekCount": 14,
       "diagnostics": {
-        "chargeCount": 30187,
+        "chargeCount": 30170,
         "payoutCount": 65,
         "activeSubscriptionCount": 362,
         "mrrBrands": 59287.5,
@@ -38,7 +38,7 @@
   "weeks": [
     {
       "weekStart": "2026-02-16",
-      "revenue": 18860.07,
+      "revenue": 12217.06,
       "deposits": 0
     },
     {
@@ -85,7 +85,7 @@
       "mktgSent": 114,
       "mktgViewed": 46,
       "mktgClicked": 8,
-      "newLeads": 111,
+      "newLeads": 107,
       "newClients": 50,
       "newClientsByOwnerName": {
         "Nick JoinBrands": 8,
@@ -211,13 +211,13 @@
     },
     {
       "weekStart": "2026-05-18",
-      "revenue": 267059.32,
+      "revenue": 266999.27,
       "deposits": 276061.55,
       "mrrBrands": 59287.5,
       "mrrBrandStartup": 24106.42,
       "mrrBrandPro": 13724.08,
       "mrrBrandMax": 21457,
-      "newLeads": 417,
+      "newLeads": 421,
       "newCompanies": 20,
       "newClients": 49,
       "newClientsByOwnerName": {
@@ -231,7 +231,7 @@
   "weeksBySource": {
     "2026-02-16": {
       "stripe": {
-        "revenue": 18860.07,
+        "revenue": 12217.06,
         "deposits": 0
       }
     },
@@ -290,7 +290,7 @@
         "mktgSent": 114,
         "mktgViewed": 46,
         "mktgClicked": 8,
-        "newLeads": 111,
+        "newLeads": 107,
         "newClients": 50,
         "newClientsByOwnerName": {
           "Nick JoinBrands": 8,
@@ -441,7 +441,7 @@
     },
     "2026-05-18": {
       "stripe": {
-        "revenue": 267059.32,
+        "revenue": 266999.27,
         "deposits": 276061.55,
         "mrrBrands": 59287.5,
         "mrrBrandStartup": 24106.42,
@@ -449,7 +449,7 @@
         "mrrBrandMax": 21457
       },
       "hubspot": {
-        "newLeads": 417,
+        "newLeads": 421,
         "newCompanies": 20,
         "newClients": 49,
         "newClientsByOwnerName": {
