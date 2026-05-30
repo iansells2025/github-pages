@@ -1,11 +1,11 @@
 {
-  "updatedAt": "2026-05-30T19:57:44.251Z",
+  "updatedAt": "2026-05-30T21:31:34.939Z",
   "sources": {
     "stripe": {
       "ok": true,
       "weekCount": 14,
       "diagnostics": {
-        "chargeCount": 29960,
+        "chargeCount": 29940,
         "payoutCount": 64,
         "activeSubscriptionCount": 361,
         "mrrBrands": 58677.58,
@@ -38,7 +38,7 @@
   "weeks": [
     {
       "weekStart": "2026-02-23",
-      "revenue": 15629.67,
+      "revenue": 14008.41,
       "deposits": 0,
       "newClients": 1,
       "newClientsByOwnerName": {}
@@ -92,7 +92,7 @@
       "mktgSent": 195,
       "mktgViewed": 85,
       "mktgClicked": 29,
-      "newLeads": 188,
+      "newLeads": 181,
       "newClients": 34,
       "newClientsByOwnerName": {
         "Mila Vidakovic": 7,
@@ -216,16 +216,16 @@
     },
     {
       "weekStart": "2026-05-25",
-      "revenue": 191603.6,
+      "revenue": 191726.3,
       "deposits": 201797.7,
       "mrrBrands": 58677.58,
       "mrrBrandStartup": 24294.5,
       "mrrBrandPro": 13425.08,
       "mrrBrandMax": 20958,
       "mktgSent": 4558,
-      "mktgViewed": 974,
+      "mktgViewed": 976,
       "mktgClicked": 12,
-      "newLeads": 359,
+      "newLeads": 366,
       "newCompanies": 85,
       "newClients": 31,
       "newClientsByOwnerName": {
@@ -239,7 +239,7 @@
   "weeksBySource": {
     "2026-02-23": {
       "stripe": {
-        "revenue": 15629.67,
+        "revenue": 14008.41,
         "deposits": 0
       },
       "hubspot": {
@@ -307,7 +307,7 @@
         "mktgSent": 195,
         "mktgViewed": 85,
         "mktgClicked": 29,
-        "newLeads": 188,
+        "newLeads": 181,
         "newClients": 34,
         "newClientsByOwnerName": {
           "Mila Vidakovic": 7,
@@ -456,7 +456,7 @@
     },
     "2026-05-25": {
       "stripe": {
-        "revenue": 191603.6,
+        "revenue": 191726.3,
         "deposits": 201797.7,
         "mrrBrands": 58677.58,
         "mrrBrandStartup": 24294.5,
@@ -465,9 +465,9 @@
       },
       "hubspot": {
         "mktgSent": 4558,
-        "mktgViewed": 974,
+        "mktgViewed": 976,
         "mktgClicked": 12,
-        "newLeads": 359,
+        "newLeads": 366,
         "newCompanies": 85,
         "newClients": 31,
         "newClientsByOwnerName": {
