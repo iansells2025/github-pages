@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-05-31T11:23:26.283Z",
+  "updatedAt": "2026-05-31T12:37:08.656Z",
   "sources": {
     "stripe": {
       "ok": true,
@@ -38,7 +38,7 @@
   "weeks": [
     {
       "weekStart": "2026-02-23",
-      "revenue": 7478.12,
+      "revenue": 7074.57,
       "deposits": 0,
       "newClients": 1,
       "newClientsByOwnerName": {}
@@ -92,7 +92,7 @@
       "mktgSent": 195,
       "mktgViewed": 85,
       "mktgClicked": 29,
-      "newLeads": 153,
+      "newLeads": 151,
       "newClients": 34,
       "newClientsByOwnerName": {
         "Mila Vidakovic": 7,
@@ -216,16 +216,16 @@
     },
     {
       "weekStart": "2026-05-25",
-      "revenue": 209379.3,
+      "revenue": 209682.63,
       "deposits": 201797.7,
       "mrrBrands": 58408.5,
       "mrrBrandStartup": 24294.5,
       "mrrBrandPro": 13156,
       "mrrBrandMax": 20958,
       "mktgSent": 4558,
-      "mktgViewed": 997,
+      "mktgViewed": 998,
       "mktgClicked": 12,
-      "newLeads": 394,
+      "newLeads": 396,
       "newCompanies": 90,
       "newClients": 32,
       "newClientsByOwnerName": {
@@ -239,7 +239,7 @@
   "weeksBySource": {
     "2026-02-23": {
       "stripe": {
-        "revenue": 7478.12,
+        "revenue": 7074.57,
         "deposits": 0
       },
       "hubspot": {
@@ -307,7 +307,7 @@
         "mktgSent": 195,
         "mktgViewed": 85,
         "mktgClicked": 29,
-        "newLeads": 153,
+        "newLeads": 151,
         "newClients": 34,
         "newClientsByOwnerName": {
           "Mila Vidakovic": 7,
@@ -456,7 +456,7 @@
     },
     "2026-05-25": {
       "stripe": {
-        "revenue": 209379.3,
+        "revenue": 209682.63,
         "deposits": 201797.7,
         "mrrBrands": 58408.5,
         "mrrBrandStartup": 24294.5,
@@ -465,9 +465,9 @@
       },
       "hubspot": {
         "mktgSent": 4558,
-        "mktgViewed": 997,
+        "mktgViewed": 998,
         "mktgClicked": 12,
-        "newLeads": 394,
+        "newLeads": 396,
         "newCompanies": 90,
         "newClients": 32,
         "newClientsByOwnerName": {
