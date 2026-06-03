@@ -1,26 +1,26 @@
 {
-  "updatedAt": "2026-06-03T01:42:35.563Z",
+  "updatedAt": "2026-06-03T06:48:56.294Z",
   "source": "windsor.ai",
   "endpoint": "blended",
   "weeks": [
     {
       "weekStart": "2026-05-25",
-      "costs": 4663.97
+      "costs": 3666.17
     },
     {
       "weekStart": "2026-06-01",
-      "costs": 1022.58
+      "costs": 1950.9
     }
   ],
   "weeksBySource": {
     "2026-05-25": {
       "googleads": {
-        "costs": 4663.9664
+        "costs": 3666.172
       }
     },
     "2026-06-01": {
       "googleads": {
-        "costs": 1022.5806
+        "costs": 1950.9045
       }
     }
   },
@@ -42,17 +42,17 @@
     "googleads": {
       "account_name": "Join Brands - MA",
       "datasource": "google_ads",
-      "date": "2026-05-26",
+      "date": "2026-05-27",
       "source": "google",
       "campaign": "TDD_Search_Brand_US",
-      "spend": 214.3337
+      "spend": 210.7034
     },
     "intercom": {
       "account_name": "windsor",
       "datasource": "intercom",
-      "date": "2026-05-26",
+      "date": "2026-05-27",
       "source": "intercom",
-      "email": "hustlegroundadmin@gmail.com"
+      "email": "pkwelliver@gmail.com"
     }
   },
   "sampleRowKeys": [
@@ -65,6 +65,6 @@
     "spend",
     "email"
   ],
-  "rowCount": 6525,
+  "rowCount": 6798,
   "usableRowCount": 130
 }
