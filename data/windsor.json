@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-03T11:53:05.465Z",
+  "updatedAt": "2026-06-03T16:29:43.967Z",
   "source": "windsor.ai",
   "endpoint": "blended",
   "weeks": [
@@ -65,6 +65,6 @@
     "spend",
     "email"
   ],
-  "rowCount": 6798,
+  "rowCount": 6603,
   "usableRowCount": 130
 }
