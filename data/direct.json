@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-06-06T08:19:30.452Z",
+  "updatedAt": "2026-06-06T10:37:58.366Z",
   "sources": {
     "stripe": {
       "ok": true,
@@ -38,7 +38,7 @@
   "weeks": [
     {
       "weekStart": "2026-03-02",
-      "revenue": 29957.87,
+      "revenue": 28642.38,
       "deposits": 0,
       "newClients": 8,
       "newClientsByOwnerName": {
@@ -157,7 +157,7 @@
       "weekStart": "2026-05-04",
       "revenue": 325489.06,
       "deposits": 266607.36,
-      "newLeads": 257,
+      "newLeads": 253,
       "newCompanies": 226,
       "newClients": 530,
       "newClientsByOwnerName": {
@@ -214,16 +214,16 @@
     },
     {
       "weekStart": "2026-06-01",
-      "revenue": 255485.46,
+      "revenue": 255442.41,
       "deposits": 243671.28,
       "mrrBrands": 59798.5,
       "mrrBrandStartup": 25185.5,
       "mrrBrandPro": 13156,
       "mrrBrandMax": 21457,
       "mktgSent": 2723,
-      "mktgViewed": 603,
+      "mktgViewed": 605,
       "mktgClicked": 18,
-      "newLeads": 3309,
+      "newLeads": 3313,
       "newCompanies": 111,
       "newClients": 83,
       "newClientsByOwnerName": {
@@ -237,7 +237,7 @@
   "weeksBySource": {
     "2026-03-02": {
       "stripe": {
-        "revenue": 29957.87,
+        "revenue": 28642.38,
         "deposits": 0
       },
       "hubspot": {
@@ -385,7 +385,7 @@
         "deposits": 266607.36
       },
       "hubspot": {
-        "newLeads": 257,
+        "newLeads": 253,
         "newCompanies": 226,
         "newClients": 530,
         "newClientsByOwnerName": {
@@ -452,7 +452,7 @@
     },
     "2026-06-01": {
       "stripe": {
-        "revenue": 255485.46,
+        "revenue": 255442.41,
         "deposits": 243671.28,
         "mrrBrands": 59798.5,
         "mrrBrandStartup": 25185.5,
@@ -461,9 +461,9 @@
       },
       "hubspot": {
         "mktgSent": 2723,
-        "mktgViewed": 603,
+        "mktgViewed": 605,
         "mktgClicked": 18,
-        "newLeads": 3309,
+        "newLeads": 3313,
         "newCompanies": 111,
         "newClients": 83,
         "newClientsByOwnerName": {
