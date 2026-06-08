@@ -1,26 +1,17 @@
 {
-  "updatedAt": "2026-06-07T23:00:18.849Z",
+  "updatedAt": "2026-06-08T03:31:49.360Z",
   "source": "windsor.ai",
   "endpoint": "blended",
   "weeks": [
     {
-      "weekStart": "2026-05-25",
-      "costs": 442.28
-    },
-    {
       "weekStart": "2026-06-01",
-      "costs": 5355.62
+      "costs": 5970.35
     }
   ],
   "weeksBySource": {
-    "2026-05-25": {
-      "googleads": {
-        "costs": 442.2784
-      }
-    },
     "2026-06-01": {
       "googleads": {
-        "costs": 5355.619
+        "costs": 5970.3509
       }
     }
   },
@@ -42,17 +33,17 @@
     "googleads": {
       "account_name": "Join Brands - MA",
       "datasource": "google_ads",
-      "date": "2026-05-31",
+      "date": "2026-06-01",
       "source": "google",
       "campaign": "TDD_Search_Brand_US",
-      "spend": 160.1421
+      "spend": 234.5838
     },
     "intercom": {
       "account_name": "windsor",
       "datasource": "intercom",
-      "date": "2026-05-31",
+      "date": "2026-06-01",
       "source": "intercom",
-      "email": "sarahaudi0405@gmail.com"
+      "email": "dick@coffee4water.org"
     }
   },
   "sampleRowKeys": [
@@ -65,6 +56,6 @@
     "spend",
     "email"
   ],
-  "rowCount": 6738,
-  "usableRowCount": 130
+  "rowCount": 7076,
+  "usableRowCount": 131
 }
