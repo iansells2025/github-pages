@@ -1,11 +1,11 @@
 {
-  "updatedAt": "2026-06-08T22:18:22.381Z",
+  "updatedAt": "2026-06-08T23:52:47.705Z",
   "sources": {
     "stripe": {
       "ok": true,
       "weekCount": 14,
       "diagnostics": {
-        "chargeCount": 29238,
+        "chargeCount": 29246,
         "payoutCount": 64,
         "activeSubscriptionCount": 369,
         "mrrBrands": 59800.5,
@@ -28,8 +28,8 @@
         "ownersCount": 22,
         "contactsCreated": 5000,
         "companiesCreated": 3815,
-        "dealsClosedWon": 1087,
-        "dealsWithUnknownOwner": 727,
+        "dealsClosedWon": 1088,
+        "dealsWithUnknownOwner": 728,
         "landingPages": 30,
         "landingPagesNote": "Analytics integration pending — requires HubSpot Analytics API scope"
       }
@@ -38,9 +38,9 @@
   "weeks": [
     {
       "weekStart": "2026-03-09",
-      "revenue": 219590.41,
+      "revenue": 211423.19,
       "deposits": 212754.43,
-      "newClients": 36,
+      "newClients": 35,
       "newClientsByOwnerName": {
         "Dee Mechev": 3,
         "Mila Vidakovic": 2,
@@ -160,7 +160,7 @@
       "weekStart": "2026-05-11",
       "revenue": 280050.25,
       "deposits": 285747.41,
-      "newLeads": 508,
+      "newLeads": 504,
       "newCompanies": 36,
       "newClients": 43,
       "newClientsByOwnerName": {
@@ -172,7 +172,7 @@
     },
     {
       "weekStart": "2026-05-18",
-      "revenue": 271808.39,
+      "revenue": 271689.37,
       "deposits": 276061.55,
       "newLeads": 477,
       "newCompanies": 20,
@@ -205,10 +205,10 @@
       "weekStart": "2026-06-01",
       "revenue": 289012.08,
       "deposits": 243671.28,
-      "mktgSent": 3854,
-      "mktgViewed": 871,
-      "mktgClicked": 36,
-      "newLeads": 3454,
+      "mktgSent": 3871,
+      "mktgViewed": 876,
+      "mktgClicked": 37,
+      "newLeads": 3453,
       "newCompanies": 114,
       "newClients": 96,
       "newClientsByOwnerName": {
@@ -220,15 +220,15 @@
     },
     {
       "weekStart": "2026-06-08",
-      "revenue": 58492.63,
+      "revenue": 60316.66,
       "deposits": 44666.34,
       "mrrBrands": 59800.5,
       "mrrBrandStartup": 24987.5,
       "mrrBrandPro": 12857,
       "mrrBrandMax": 21956,
-      "newLeads": 103,
+      "newLeads": 108,
       "newCompanies": 4,
-      "newClients": 7,
+      "newClients": 9,
       "newClientsByOwnerName": {
         "Dee Mechev": 1,
         "Dan Kriss": 1,
@@ -240,11 +240,11 @@
   "weeksBySource": {
     "2026-03-09": {
       "stripe": {
-        "revenue": 219590.41,
+        "revenue": 211423.19,
         "deposits": 212754.43
       },
       "hubspot": {
-        "newClients": 36,
+        "newClients": 35,
         "newClientsByOwnerName": {
           "Dee Mechev": 3,
           "Mila Vidakovic": 2,
@@ -391,7 +391,7 @@
         "deposits": 285747.41
       },
       "hubspot": {
-        "newLeads": 508,
+        "newLeads": 504,
         "newCompanies": 36,
         "newClients": 43,
         "newClientsByOwnerName": {
@@ -404,7 +404,7 @@
     },
     "2026-05-18": {
       "stripe": {
-        "revenue": 271808.39,
+        "revenue": 271689.37,
         "deposits": 276061.55
       },
       "hubspot": {
@@ -445,10 +445,10 @@
         "deposits": 243671.28
       },
       "hubspot": {
-        "mktgSent": 3854,
-        "mktgViewed": 871,
-        "mktgClicked": 36,
-        "newLeads": 3454,
+        "mktgSent": 3871,
+        "mktgViewed": 876,
+        "mktgClicked": 37,
+        "newLeads": 3453,
         "newCompanies": 114,
         "newClients": 96,
         "newClientsByOwnerName": {
@@ -461,7 +461,7 @@
     },
     "2026-06-08": {
       "stripe": {
-        "revenue": 58492.63,
+        "revenue": 60316.66,
         "deposits": 44666.34,
         "mrrBrands": 59800.5,
         "mrrBrandStartup": 24987.5,
@@ -469,9 +469,9 @@
         "mrrBrandMax": 21956
       },
       "hubspot": {
-        "newLeads": 103,
+        "newLeads": 108,
         "newCompanies": 4,
-        "newClients": 7,
+        "newClients": 9,
         "newClientsByOwnerName": {
           "Dee Mechev": 1,
           "Dan Kriss": 1,
