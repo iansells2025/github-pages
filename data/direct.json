@@ -1,11 +1,11 @@
 {
-  "updatedAt": "2026-06-09T04:39:59.523Z",
+  "updatedAt": "2026-06-09T08:57:33.554Z",
   "sources": {
     "stripe": {
       "ok": true,
       "weekCount": 14,
       "diagnostics": {
-        "chargeCount": 29322,
+        "chargeCount": 29293,
         "payoutCount": 64,
         "activeSubscriptionCount": 369,
         "mrrBrands": 59800.5,
@@ -27,9 +27,9 @@
         "sampleStatKeys": [],
         "ownersCount": 22,
         "contactsCreated": 5000,
-        "companiesCreated": 3815,
-        "dealsClosedWon": 1089,
-        "dealsWithUnknownOwner": 727,
+        "companiesCreated": 3821,
+        "dealsClosedWon": 1091,
+        "dealsWithUnknownOwner": 728,
         "landingPages": 30,
         "landingPagesNote": "Analytics integration pending — requires HubSpot Analytics API scope"
       }
@@ -38,7 +38,7 @@
   "weeks": [
     {
       "weekStart": "2026-03-09",
-      "revenue": 206033.27,
+      "revenue": 204364.7,
       "deposits": 194240.27,
       "newClients": 34,
       "newClientsByOwnerName": {
@@ -160,7 +160,7 @@
       "weekStart": "2026-05-11",
       "revenue": 280050.25,
       "deposits": 285747.41,
-      "newLeads": 488,
+      "newLeads": 475,
       "newCompanies": 36,
       "newClients": 43,
       "newClientsByOwnerName": {
@@ -172,7 +172,7 @@
     },
     {
       "weekStart": "2026-05-18",
-      "revenue": 271658.45,
+      "revenue": 271249.36,
       "deposits": 276061.55,
       "newLeads": 477,
       "newCompanies": 20,
@@ -203,10 +203,10 @@
     },
     {
       "weekStart": "2026-06-01",
-      "revenue": 288538.77,
+      "revenue": 288429.93,
       "deposits": 243671.28,
-      "mktgSent": 3919,
-      "mktgViewed": 888,
+      "mktgSent": 3967,
+      "mktgViewed": 898,
       "mktgClicked": 37,
       "newLeads": 3453,
       "newCompanies": 114,
@@ -220,19 +220,19 @@
     },
     {
       "weekStart": "2026-06-08",
-      "revenue": 65713.12,
+      "revenue": 67995.25,
       "deposits": 71532.71,
       "mrrBrands": 59800.5,
       "mrrBrandStartup": 24987.5,
       "mrrBrandPro": 12857,
       "mrrBrandMax": 21956,
-      "newLeads": 124,
-      "newCompanies": 4,
-      "newClients": 11,
+      "newLeads": 137,
+      "newCompanies": 10,
+      "newClients": 13,
       "newClientsByOwnerName": {
+        "Dan Kriss": 2,
         "Nick JoinBrands": 2,
         "Dee Mechev": 2,
-        "Dan Kriss": 1,
         "Mila Vidakovic": 1
       }
     }
@@ -240,7 +240,7 @@
   "weeksBySource": {
     "2026-03-09": {
       "stripe": {
-        "revenue": 206033.27,
+        "revenue": 204364.7,
         "deposits": 194240.27
       },
       "hubspot": {
@@ -391,7 +391,7 @@
         "deposits": 285747.41
       },
       "hubspot": {
-        "newLeads": 488,
+        "newLeads": 475,
         "newCompanies": 36,
         "newClients": 43,
         "newClientsByOwnerName": {
@@ -404,7 +404,7 @@
     },
     "2026-05-18": {
       "stripe": {
-        "revenue": 271658.45,
+        "revenue": 271249.36,
         "deposits": 276061.55
       },
       "hubspot": {
@@ -441,12 +441,12 @@
     },
     "2026-06-01": {
       "stripe": {
-        "revenue": 288538.77,
+        "revenue": 288429.93,
         "deposits": 243671.28
       },
       "hubspot": {
-        "mktgSent": 3919,
-        "mktgViewed": 888,
+        "mktgSent": 3967,
+        "mktgViewed": 898,
         "mktgClicked": 37,
         "newLeads": 3453,
         "newCompanies": 114,
@@ -461,7 +461,7 @@
     },
     "2026-06-08": {
       "stripe": {
-        "revenue": 65713.12,
+        "revenue": 67995.25,
         "deposits": 71532.71,
         "mrrBrands": 59800.5,
         "mrrBrandStartup": 24987.5,
@@ -469,13 +469,13 @@
         "mrrBrandMax": 21956
       },
       "hubspot": {
-        "newLeads": 124,
-        "newCompanies": 4,
-        "newClients": 11,
+        "newLeads": 137,
+        "newCompanies": 10,
+        "newClients": 13,
         "newClientsByOwnerName": {
+          "Dan Kriss": 2,
           "Nick JoinBrands": 2,
           "Dee Mechev": 2,
-          "Dan Kriss": 1,
           "Mila Vidakovic": 1
         }
       }
