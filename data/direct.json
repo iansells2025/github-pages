@@ -1,11 +1,11 @@
 {
-  "updatedAt": "2026-06-14T17:02:12.824Z",
+  "updatedAt": "2026-06-14T19:00:08.100Z",
   "sources": {
     "stripe": {
       "ok": true,
       "weekCount": 14,
       "diagnostics": {
-        "chargeCount": 29427,
+        "chargeCount": 29440,
         "payoutCount": 64,
         "activeSubscriptionCount": 368,
         "mrrBrands": 60101.5,
@@ -45,8 +45,8 @@
         "ownersCount": 22,
         "contactsCreated": 5000,
         "companiesCreated": 3868,
-        "dealsClosedWon": 1102,
-        "dealsWithUnknownOwner": 715,
+        "dealsClosedWon": 1103,
+        "dealsWithUnknownOwner": 716,
         "landingPages": 32,
         "landingPagesNote": "Analytics integration pending — requires HubSpot Analytics API scope"
       }
@@ -55,12 +55,12 @@
   "weeks": [
     {
       "weekStart": "2026-03-09",
-      "revenue": 1385.47,
+      "revenue": 1255.21,
       "deposits": 0
     },
     {
       "weekStart": "2026-03-16",
-      "revenue": 273181.46,
+      "revenue": 273060.65,
       "deposits": 222216.35,
       "mktgSent": 114,
       "mktgViewed": 46,
@@ -182,9 +182,9 @@
     },
     {
       "weekStart": "2026-05-18",
-      "revenue": 270068.87,
+      "revenue": 269957.33,
       "deposits": 276061.55,
-      "newLeads": 476,
+      "newLeads": 472,
       "newCompanies": 20,
       "newClients": 52,
       "newClientsByOwnerName": {
@@ -213,11 +213,11 @@
     },
     {
       "weekStart": "2026-06-01",
-      "revenue": 284931.53,
+      "revenue": 284824.41,
       "deposits": 243671.28,
-      "mktgSent": 5868,
-      "mktgViewed": 1243,
-      "mktgClicked": 50,
+      "mktgSent": 5870,
+      "mktgViewed": 1245,
+      "mktgClicked": 51,
       "newLeads": 3453,
       "newCompanies": 114,
       "newClients": 96,
@@ -230,18 +230,18 @@
     },
     {
       "weekStart": "2026-06-08",
-      "revenue": 251917.33,
+      "revenue": 255183.85,
       "deposits": 226134.59,
       "mrrBrands": 60101.5,
       "mrrBrandStartup": 24591.5,
       "mrrBrandPro": 14053,
       "mrrBrandMax": 21457,
       "mktgSent": 14095,
-      "mktgViewed": 2199,
+      "mktgViewed": 2200,
       "mktgClicked": 77,
-      "newLeads": 613,
+      "newLeads": 617,
       "newCompanies": 57,
-      "newClients": 58,
+      "newClients": 59,
       "newClientsByOwnerName": {
         "Dan Kriss": 8,
         "Dee Mechev": 10,
@@ -253,13 +253,13 @@
   "weeksBySource": {
     "2026-03-09": {
       "stripe": {
-        "revenue": 1385.47,
+        "revenue": 1255.21,
         "deposits": 0
       }
     },
     "2026-03-16": {
       "stripe": {
-        "revenue": 273181.46,
+        "revenue": 273060.65,
         "deposits": 222216.35
       },
       "hubspot": {
@@ -408,11 +408,11 @@
     },
     "2026-05-18": {
       "stripe": {
-        "revenue": 270068.87,
+        "revenue": 269957.33,
         "deposits": 276061.55
       },
       "hubspot": {
-        "newLeads": 476,
+        "newLeads": 472,
         "newCompanies": 20,
         "newClients": 52,
         "newClientsByOwnerName": {
@@ -445,13 +445,13 @@
     },
     "2026-06-01": {
       "stripe": {
-        "revenue": 284931.53,
+        "revenue": 284824.41,
         "deposits": 243671.28
       },
       "hubspot": {
-        "mktgSent": 5868,
-        "mktgViewed": 1243,
-        "mktgClicked": 50,
+        "mktgSent": 5870,
+        "mktgViewed": 1245,
+        "mktgClicked": 51,
         "newLeads": 3453,
         "newCompanies": 114,
         "newClients": 96,
@@ -465,7 +465,7 @@
     },
     "2026-06-08": {
       "stripe": {
-        "revenue": 251917.33,
+        "revenue": 255183.85,
         "deposits": 226134.59,
         "mrrBrands": 60101.5,
         "mrrBrandStartup": 24591.5,
@@ -474,11 +474,11 @@
       },
       "hubspot": {
         "mktgSent": 14095,
-        "mktgViewed": 2199,
+        "mktgViewed": 2200,
         "mktgClicked": 77,
-        "newLeads": 613,
+        "newLeads": 617,
         "newCompanies": 57,
-        "newClients": 58,
+        "newClients": 59,
         "newClientsByOwnerName": {
           "Dan Kriss": 8,
           "Dee Mechev": 10,
