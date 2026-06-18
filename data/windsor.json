@@ -1,26 +1,26 @@
 {
-  "updatedAt": "2026-06-17T23:23:31.309Z",
+  "updatedAt": "2026-06-18T03:28:22.299Z",
   "source": "windsor.ai",
   "endpoint": "blended",
   "weeks": [
     {
       "weekStart": "2026-06-08",
-      "costs": 3591.27
+      "costs": 2603.16
     },
     {
       "weekStart": "2026-06-15",
-      "costs": 2382.38
+      "costs": 3340.19
     }
   ],
   "weeksBySource": {
     "2026-06-08": {
       "googleads": {
-        "costs": 3591.2655
+        "costs": 2603.1646
       }
     },
     "2026-06-15": {
       "googleads": {
-        "costs": 2382.381
+        "costs": 3340.1943
       }
     }
   },
@@ -42,17 +42,17 @@
     "googleads": {
       "account_name": "Join Brands - MA",
       "datasource": "google_ads",
-      "date": "2026-06-10",
+      "date": "2026-06-11",
       "source": "google",
       "campaign": "TDD_Search_Brand_US",
-      "spend": 239.774
+      "spend": 250.6058
     },
     "intercom": {
       "account_name": "windsor",
       "datasource": "intercom",
-      "date": "2026-06-10",
+      "date": "2026-06-11",
       "source": "intercom",
-      "email": "influencers@nectarandbloom.co"
+      "email": "yesdasimerino@gmail.com"
     }
   },
   "sampleRowKeys": [
@@ -65,6 +65,6 @@
     "spend",
     "email"
   ],
-  "rowCount": 6769,
+  "rowCount": 6873,
   "usableRowCount": 113
 }
