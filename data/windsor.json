@@ -1,32 +1,32 @@
 {
-  "updatedAt": "2026-06-19T00:22:22.571Z",
+  "updatedAt": "2026-06-19T06:13:13.889Z",
   "source": "windsor.ai",
   "endpoint": "blended",
   "weeks": [
     {
       "weekStart": "2026-06-08",
-      "costs": 4173.61
+      "costs": 3319.69
     },
     {
       "weekStart": "2026-06-15",
-      "costs": 4735.14
+      "costs": 5538.99
     }
   ],
   "weeksBySource": {
     "2026-06-08": {
-      "googleads": {
-        "costs": 2603.1646
-      },
       "facebook": {
         "costs": 1570.45
+      },
+      "googleads": {
+        "costs": 1749.2354
       }
     },
     "2026-06-15": {
       "googleads": {
-        "costs": 3347.617
+        "costs": 4151.4591
       },
       "facebook": {
-        "costs": 1387.52
+        "costs": 1387.53
       }
     }
   },
@@ -48,14 +48,6 @@
     "intercom"
   ],
   "fieldsBySource": {
-    "googleads": {
-      "account_name": "Join Brands - MA",
-      "datasource": "google_ads",
-      "date": "2026-06-11",
-      "source": "google",
-      "campaign": "TDD_Search_Brand_US",
-      "spend": 250.6058
-    },
     "facebook": {
       "account_name": "Million Dollar Sellers",
       "datasource": "facebook",
@@ -64,12 +56,20 @@
       "campaign": "TM_Leads",
       "spend": 181.27
     },
+    "googleads": {
+      "account_name": "Join Brands - MA",
+      "datasource": "google_ads",
+      "date": "2026-06-12",
+      "source": "google",
+      "campaign": "TDD_Search_Brand_US",
+      "spend": 238.8464
+    },
     "intercom": {
       "account_name": "windsor",
       "datasource": "intercom",
-      "date": "2026-06-11",
+      "date": "2026-06-12",
       "source": "intercom",
-      "email": "yesdasimerino@gmail.com"
+      "email": "collabs@era69.co"
     }
   },
   "sampleRowKeys": [
@@ -82,6 +82,6 @@
     "spend",
     "email"
   ],
-  "rowCount": 6722,
-  "usableRowCount": 171
+  "rowCount": 6988,
+  "usableRowCount": 172
 }
