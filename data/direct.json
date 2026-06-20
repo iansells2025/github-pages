@@ -1,11 +1,11 @@
 {
-  "updatedAt": "2026-06-20T05:58:05.520Z",
+  "updatedAt": "2026-06-20T09:51:04.108Z",
   "sources": {
     "stripe": {
       "ok": true,
       "weekCount": 14,
       "diagnostics": {
-        "chargeCount": 29091,
+        "chargeCount": 29060,
         "payoutCount": 63,
         "activeSubscriptionCount": 375,
         "mrrBrands": 61394.5,
@@ -55,7 +55,7 @@
   "weeks": [
     {
       "weekStart": "2026-03-16",
-      "revenue": 22898.77,
+      "revenue": 19831.84,
       "deposits": 0,
       "newClients": 3,
       "newClientsByOwnerName": {
@@ -119,7 +119,7 @@
     },
     {
       "weekStart": "2026-04-20",
-      "revenue": 251964.49,
+      "revenue": 251923.29,
       "deposits": 244390.07,
       "newCompanies": 3266,
       "newClients": 37,
@@ -132,7 +132,7 @@
     },
     {
       "weekStart": "2026-04-27",
-      "revenue": 261183.58,
+      "revenue": 260887.46,
       "deposits": 245494.27,
       "newCompanies": 58,
       "newClients": 48,
@@ -189,7 +189,7 @@
       "mktgSent": 4558,
       "mktgViewed": 1097,
       "mktgClicked": 13,
-      "newLeads": 404,
+      "newLeads": 399,
       "newCompanies": 90,
       "newClients": 34,
       "newClientsByOwnerName": {
@@ -203,8 +203,8 @@
       "weekStart": "2026-06-01",
       "revenue": 281703.11,
       "deposits": 243671.28,
-      "mktgSent": 6949,
-      "mktgViewed": 1432,
+      "mktgSent": 6966,
+      "mktgViewed": 1435,
       "mktgClicked": 62,
       "newLeads": 3453,
       "newCompanies": 114,
@@ -218,10 +218,10 @@
     },
     {
       "weekStart": "2026-06-08",
-      "revenue": 251383.5,
+      "revenue": 250990.73,
       "deposits": 226134.59,
       "mktgSent": 14095,
-      "mktgViewed": 2411,
+      "mktgViewed": 2413,
       "mktgClicked": 84,
       "newLeads": 637,
       "newCompanies": 57,
@@ -235,7 +235,7 @@
     },
     {
       "weekStart": "2026-06-15",
-      "revenue": 227254.99,
+      "revenue": 228074.19,
       "deposits": 209998.97,
       "mrrBrands": 61394.5,
       "mrrBrandStartup": 25086.5,
@@ -244,7 +244,7 @@
       "mktgSent": 7067,
       "mktgViewed": 1092,
       "mktgClicked": 51,
-      "newLeads": 506,
+      "newLeads": 511,
       "newCompanies": 25,
       "newClients": 53,
       "newClientsByOwnerName": {
@@ -258,7 +258,7 @@
   "weeksBySource": {
     "2026-03-16": {
       "stripe": {
-        "revenue": 22898.77,
+        "revenue": 19831.84,
         "deposits": 0
       },
       "hubspot": {
@@ -337,7 +337,7 @@
     },
     "2026-04-20": {
       "stripe": {
-        "revenue": 251964.49,
+        "revenue": 251923.29,
         "deposits": 244390.07
       },
       "hubspot": {
@@ -353,7 +353,7 @@
     },
     "2026-04-27": {
       "stripe": {
-        "revenue": 261183.58,
+        "revenue": 260887.46,
         "deposits": 245494.27
       },
       "hubspot": {
@@ -424,7 +424,7 @@
         "mktgSent": 4558,
         "mktgViewed": 1097,
         "mktgClicked": 13,
-        "newLeads": 404,
+        "newLeads": 399,
         "newCompanies": 90,
         "newClients": 34,
         "newClientsByOwnerName": {
@@ -441,8 +441,8 @@
         "deposits": 243671.28
       },
       "hubspot": {
-        "mktgSent": 6949,
-        "mktgViewed": 1432,
+        "mktgSent": 6966,
+        "mktgViewed": 1435,
         "mktgClicked": 62,
         "newLeads": 3453,
         "newCompanies": 114,
@@ -457,12 +457,12 @@
     },
     "2026-06-08": {
       "stripe": {
-        "revenue": 251383.5,
+        "revenue": 250990.73,
         "deposits": 226134.59
       },
       "hubspot": {
         "mktgSent": 14095,
-        "mktgViewed": 2411,
+        "mktgViewed": 2413,
         "mktgClicked": 84,
         "newLeads": 637,
         "newCompanies": 57,
@@ -477,7 +477,7 @@
     },
     "2026-06-15": {
       "stripe": {
-        "revenue": 227254.99,
+        "revenue": 228074.19,
         "deposits": 209998.97,
         "mrrBrands": 61394.5,
         "mrrBrandStartup": 25086.5,
@@ -488,7 +488,7 @@
         "mktgSent": 7067,
         "mktgViewed": 1092,
         "mktgClicked": 51,
-        "newLeads": 506,
+        "newLeads": 511,
         "newCompanies": 25,
         "newClients": 53,
         "newClientsByOwnerName": {
