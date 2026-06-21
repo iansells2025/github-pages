@@ -1,0 +1,196 @@
+/* =============================================================================
+   CAROUSEL STUDIO — base.css
+   A premium "spatial" design system for 1080x1350 (4:5) Instagram slides.
+
+   REBRAND IN 6 VARIABLES: edit the six --brand-* tokens in :root and the whole
+   studio re-skins. Everything else is derived from them.
+   ============================================================================= */
+
+@font-face {
+  font-family: "Inter";
+  src: url("vendor/fonts/inter-var.woff2") format("woff2");
+  font-weight: 100 900;
+  font-display: block;          /* block, not swap: avoids a flash mid-render */
+}
+
+:root {
+  /* ----- THE 6 BRAND KNOBS (change these to rebrand everything) ----------- */
+  --brand-accent:    #2E6BFF;   /* 1. the ONE accent color                    */
+  --brand-bg:        #0B1220;   /* 2. deep background base                    */
+  --brand-bg-glow:   #1B2C4D;   /* 3. radial light bloom behind the cards     */
+  --brand-plate:     #0E1626;   /* 4. dark headline plates                    */
+  --brand-tile:      #FFFFFF;   /* 5. floating content tiles                  */
+  --brand-ink:       #0B1220;   /* 6. primary text on light tiles            */
+
+  /* ----- derived tokens (don't usually need to touch) -------------------- */
+  --accent-soft:  color-mix(in srgb, var(--brand-accent) 16%, transparent);
+  --accent-line:  color-mix(in srgb, var(--brand-accent) 38%, transparent);
+  --ink-soft:     color-mix(in srgb, var(--brand-ink) 62%, transparent);
+  --ink-faint:    color-mix(in srgb, var(--brand-ink) 40%, transparent);
+  --on-dark:      #EAF0FF;
+  --on-dark-soft: color-mix(in srgb, #EAF0FF 60%, transparent);
+  --tile-edge:    color-mix(in srgb, var(--brand-ink) 8%, transparent);
+
+  --shadow-tile: 0 24px 60px -24px rgba(6, 12, 28, 0.45),
+                 0 6px 18px -10px rgba(6, 12, 28, 0.30);
+  --shadow-plate: 0 40px 90px -30px rgba(0, 0, 0, 0.65);
+
+  --pad: 96px;                  /* outer safe padding                         */
+  --radius-tile: 36px;
+  --radius-plate: 44px;
+}
+
+/* ----- the frame: EXACTLY native 1080x1350 ------------------------------- */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html, body { width: 1080px; height: 1350px; overflow: hidden; }
+
+body {
+  font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: geometricPrecision;
+  color: var(--brand-ink);
+  position: relative;
+}
+
+/* Soft radial-lit spatial background ------------------------------------- */
+.stage {
+  position: absolute; inset: 0;
+  width: 1080px; height: 1350px;
+  overflow: hidden;
+  background:
+    radial-gradient(120% 90% at 50% -10%,
+      var(--brand-bg-glow) 0%, transparent 55%),
+    radial-gradient(90% 70% at 85% 110%,
+      var(--accent-soft) 0%, transparent 50%),
+    var(--brand-bg);
+}
+/* faint dot grid for depth */
+.stage::before {
+  content: ""; position: absolute; inset: 0;
+  background-image: radial-gradient(circle at 1px 1px,
+    rgba(255,255,255,0.045) 1px, transparent 0);
+  background-size: 44px 44px;
+  mask-image: radial-gradient(80% 80% at 50% 40%, #000 30%, transparent 80%);
+}
+
+/* =============================================================================
+   COMPONENTS
+   ============================================================================= */
+
+/* Floating white content tile */
+.tile {
+  position: relative;
+  background: var(--brand-tile);
+  border: 1px solid var(--tile-edge);
+  border-radius: var(--radius-tile);
+  box-shadow: var(--shadow-tile);
+}
+
+/* Deep dark headline plate */
+.plate {
+  position: relative;
+  background:
+    linear-gradient(160deg,
+      color-mix(in srgb, var(--brand-plate) 100%, white 4%),
+      var(--brand-plate));
+  border: 1px solid color-mix(in srgb, var(--brand-accent) 20%, transparent);
+  border-radius: var(--radius-plate);
+  box-shadow: var(--shadow-plate);
+  color: var(--on-dark);
+}
+.plate::after {  /* top accent sheen */
+  content: ""; position: absolute; inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(180deg,
+    color-mix(in srgb, var(--brand-accent) 14%, transparent), transparent 30%);
+  pointer-events: none;
+}
+
+/* Accent pill / kicker */
+.kicker {
+  display: inline-flex; align-items: center; gap: 12px;
+  padding: 14px 26px; border-radius: 999px;
+  font-weight: 700; font-size: 26px; letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--brand-accent);
+  background: var(--accent-soft);
+  border: 1px solid var(--accent-line);
+}
+.kicker .dot { width: 14px; height: 14px; border-radius: 50%;
+  background: var(--brand-accent); box-shadow: 0 0 18px var(--brand-accent); }
+
+/* Icon tile (square, rounded, holds an app/logo/glyph) */
+.icon-tile {
+  display: grid; place-items: center;
+  width: 132px; height: 132px; border-radius: 30px;
+  background: var(--brand-tile);
+  border: 1px solid var(--tile-edge);
+  box-shadow: var(--shadow-tile);
+  overflow: hidden;
+}
+.icon-tile img { width: 78px; height: 78px; object-fit: contain; }
+.icon-tile.on-dark {
+  background: color-mix(in srgb, var(--brand-plate) 70%, white 6%);
+  border-color: color-mix(in srgb, var(--brand-accent) 22%, transparent);
+}
+
+/* Typography scale */
+.h-display { font-weight: 900; font-size: 132px; line-height: 0.94;
+  letter-spacing: -0.03em; }
+.h-1 { font-weight: 800; font-size: 92px;  line-height: 0.98;
+  letter-spacing: -0.025em; }
+.h-2 { font-weight: 800; font-size: 64px;  line-height: 1.02;
+  letter-spacing: -0.02em; }
+.lead { font-weight: 500; font-size: 38px; line-height: 1.32;
+  color: var(--ink-soft); letter-spacing: -0.01em; }
+.lead.on-dark { color: var(--on-dark-soft); }
+.accent { color: var(--brand-accent); }
+.stat { font-weight: 900; font-size: 300px; line-height: 0.86;
+  letter-spacing: -0.04em; color: var(--brand-accent); }
+
+/* Step index chip */
+.index {
+  display: grid; place-items: center;
+  width: 92px; height: 92px; border-radius: 26px; flex: none;
+  background: var(--brand-accent); color: #fff;
+  font-weight: 900; font-size: 46px;
+  box-shadow: 0 16px 40px -12px var(--brand-accent);
+}
+
+/* Avatar host. Default sits in the bottom-right; templates keep text out of
+   its zone. `.sm` is used on centered slides (cover / stat / cta). */
+.avatar {
+  position: absolute; bottom: 0; right: 24px;
+  height: 600px; width: auto; z-index: 5;
+  filter: drop-shadow(0 26px 44px rgba(0,0,0,0.32));
+  pointer-events: none;
+}
+.avatar.sm { height: 460px; }
+.avatar.left { right: auto; left: 24px; }
+
+/* Page footer / progress */
+.footer {
+  position: absolute; left: var(--pad); right: var(--pad); bottom: 54px;
+  display: flex; align-items: center; justify-content: space-between;
+  color: var(--on-dark-soft); font-weight: 600; font-size: 26px;
+  z-index: 6;
+}
+.handle { color: var(--on-dark); }
+.progress { display: flex; gap: 10px; }
+.progress i { width: 30px; height: 8px; border-radius: 8px;
+  background: color-mix(in srgb, #fff 22%, transparent); display: block; }
+.progress i.on { background: var(--brand-accent); width: 46px; }
+
+/* Generic layout helpers */
+.frame { position: absolute; inset: 0; padding: var(--pad);
+  display: flex; flex-direction: column; }
+.center { align-items: center; justify-content: center; text-align: center; }
+.grow { flex: 1; }
+.row { display: flex; align-items: center; }
+.col { display: flex; flex-direction: column; }
+.gap-s { gap: 20px; } .gap-m { gap: 34px; } .gap-l { gap: 56px; }
+
+/* Elements that animate start hidden; GSAP reveals them. When the page is in
+   ?render mode the timeline is seeked, so this is just the t=0 state. */
+[data-anim] { will-change: transform, opacity; }

@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8">
+<title>slide 2 — step</title>
+<link rel="stylesheet" href="../base.css">
+<style>:root{
+  --brand-accent:#2E6BFF; --brand-bg:#0B1220;
+  --brand-bg-glow:#1B2C4D; --brand-plate:#0E1626;
+  --brand-tile:#FFFFFF; --brand-ink:#0B1220;
+}</style>
+</head><body>
+<div class="stage"></div>
+
+<div class="frame" style="justify-content:flex-start;gap:0">
+  <span class="kicker" style="align-self:flex-start"><span class="dot"></span>Step 1</span>
+  <div class="tile" style="margin-top:30px;flex:1;padding:80px 72px;display:flex;
+       flex-direction:column;gap:40px;justify-content:flex-start">
+    <div class="row gap-m">
+      <div class="index">1</div>
+      <div class="icon-tile"><img src="../icons/claude.svg" alt="Claude"></div>
+    </div>
+    <div class="h-1" style="max-width:660px">Give it a topic + a keyword</div>
+    <div class="lead" style="max-width:500px">You bring the idea and the comment keyword. The studio drafts the outline.</div>
+  </div>
+</div>
+<img class="avatar" src="../assets/pose-casual-cutout.png" alt="">
+<div class="footer"><span class="handle">@yourhandle</span>
+    <span class="progress"><i class=""></i><i class="on"></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i></span></div>
+<script src="../vendor/gsap.min.js"></script>
+<script>
+const DURATION = 2.8;
+
+const P = new URLSearchParams(location.search);
+const RENDER = P.has('render');
+const FPS = +(P.get('fps')||30);
+const FRAME = +(P.get('frame')||0);
+function boot(build){
+  const tl = gsap.timeline({paused:true, defaults:{ease:'power3.out', duration:0.8}});
+  build(tl, DURATION);
+  if (tl.duration() < DURATION) tl.to({}, {duration: DURATION - tl.duration()});
+  window.__DURATION = tl.duration();
+  // Renderer hook: jump to an exact frame deterministically (no wall clock).
+  window.__seek = function(frame){ tl.pause(); tl.time(Math.min(frame/FPS, tl.duration())); };
+  const ready = Promise.all([
+    (document.fonts && document.fonts.ready) ? document.fonts.ready : Promise.resolve(),
+    new Promise(r => (document.readyState === 'complete') ? r() : addEventListener('load', r))
+  ]);
+  ready.then(() => requestAnimationFrame(() => {
+    if (RENDER) { tl.pause(); tl.time(Math.min(FRAME/FPS, tl.duration()));
+      document.documentElement.setAttribute('data-ready','1'); }
+    else { tl.play(0); document.documentElement.setAttribute('data-ready','1'); }
+  }));
+}
+boot(function(tl, DURATION){
+
+  tl.from('.stage',{opacity:0,duration:0.5},0);
+  tl.from('.kicker',{x:-20,opacity:0},0.15);
+  tl.from('.tile',{y:50,opacity:0,duration:0.7},0.2);
+  tl.from('.index',{scale:0,opacity:0,ease:'back.out(1.8)'},0.45);
+  tl.from('.icon-tile',{scale:0,opacity:0,ease:'back.out(1.8)'},0.55);
+  tl.from('.h-1',{y:30,opacity:0,duration:0.6},0.6);
+  tl.from('.lead',{y:20,opacity:0},0.8);
+  tl.from('.avatar',{y:300,opacity:0,duration:0.9},0.4);
+});
+</script>
+</body></html>

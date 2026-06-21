@@ -1,0 +1,20 @@
+{
+  "name": "carousel-studio",
+  "version": "1.0.0",
+  "description": "Turn a topic into an animated Instagram carousel (one MP4 per slide, 1080x1350) fronted by a cartoon avatar of you.",
+  "scripts": {
+    "gen": "node gen.js carousel.json",
+    "qa": "node render.js --qa",
+    "render": "node render.js",
+    "avatar:placeholder": "python3 avatar/make_placeholder_avatars.py"
+  },
+  "keywords": ["instagram", "carousel", "gsap", "ffmpeg", "generator"],
+  "license": "MIT",
+  "dependencies": {
+    "@fontsource-variable/inter": "^5.2.8",
+    "ffmpeg-static": "^5.3.0",
+    "gsap": "^3.12.5",
+    "playwright-core": "^1.61.0",
+    "simple-icons": "^16.24.0"
+  }
+}

@@ -1,0 +1,12 @@
+# dependencies & bundled binaries (regenerable via `npm install` / render.js)
+node_modules/
+.chrome/
+.pw-browsers/
+package-lock.json
+
+# generated render artifacts (regenerable from slides/)
+frames/
+output/
+
+# os noise
+.DS_Store

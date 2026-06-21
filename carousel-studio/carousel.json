@@ -1,0 +1,66 @@
+{
+  "brand": {
+    "accent": "#2E6BFF",
+    "bg": "#0B1220",
+    "bgGlow": "#1B2C4D",
+    "plate": "#0E1626",
+    "tile": "#FFFFFF",
+    "ink": "#0B1220",
+    "handle": "@yourhandle"
+  },
+  "fps": 30,
+  "slides": [
+    {
+      "type": "cover",
+      "kicker": "Carousel Studio",
+      "title": "Turn any idea into a scroll-stopping carousel",
+      "titleAccent": "scroll-stopping",
+      "subtitle": "An animated, on-brand Instagram carousel — hosted by your own avatar.",
+      "avatar": "pointing",
+      "icons": ["claude", "notion", "figma", "github", "instagram", "ffmpeg"]
+    },
+    {
+      "type": "step",
+      "kicker": "Step 1",
+      "index": 1,
+      "icon": "claude",
+      "title": "Give it a topic + a keyword",
+      "body": "You bring the idea and the comment keyword. The studio drafts the outline.",
+      "avatar": "casual"
+    },
+    {
+      "type": "step",
+      "kicker": "Step 2",
+      "index": 2,
+      "icon": "figma",
+      "title": "One idea per slide",
+      "body": "Cover, a few content slides, and a CTA — each with a single, clear point.",
+      "avatar": "arms-crossed"
+    },
+    {
+      "type": "stat",
+      "kicker": "The rule",
+      "value": "92%",
+      "label": "of every frame should be filled",
+      "body": "No dead white space. The avatar hosts the slide — never just decoration.",
+      "avatar": "pointing"
+    },
+    {
+      "type": "step",
+      "kicker": "Step 3",
+      "index": 3,
+      "icon": "ffmpeg",
+      "title": "Render each slide to its own MP4",
+      "body": "Headless Chrome screenshots every frame; ffmpeg encodes native 1080×1350.",
+      "avatar": "holding-phone"
+    },
+    {
+      "type": "cta",
+      "kicker": "Your move",
+      "title": "Want the full build?",
+      "keyword": "STUDIO",
+      "body": "Comment the keyword and I'll send you the repo.",
+      "avatar": "victory"
+    }
+  ]
+}

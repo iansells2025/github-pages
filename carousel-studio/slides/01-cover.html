@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8">
+<title>slide 1 — cover</title>
+<link rel="stylesheet" href="../base.css">
+<style>:root{
+  --brand-accent:#2E6BFF; --brand-bg:#0B1220;
+  --brand-bg-glow:#1B2C4D; --brand-plate:#0E1626;
+  --brand-tile:#FFFFFF; --brand-ink:#0B1220;
+}
+.ring{position:absolute;inset:0}
+.ring-i{position:absolute}</style>
+</head><body>
+<div class="stage"></div>
+
+<div class="ring"><div class="ring-i" style="left:44px;top:240px"><div class="icon-tile on-dark"><img src="../icons/claude.svg" alt="Claude"></div></div><div class="ring-i" style="left:906px;top:210px"><div class="icon-tile on-dark"><img src="../icons/notion.svg" alt="Notion"></div></div><div class="ring-i" style="left:40px;top:650px"><div class="icon-tile on-dark"><img src="../icons/figma.svg" alt="Figma"></div></div><div class="ring-i" style="left:906px;top:540px"><div class="icon-tile on-dark"><img src="../icons/github.svg" alt="GitHub"></div></div><div class="ring-i" style="left:150px;top:1010px"><div class="icon-tile on-dark"><img src="../icons/instagram.svg" alt="Instagram"></div></div></div>
+<div class="frame" style="align-items:center;justify-content:flex-start;
+     padding-top:96px;text-align:center">
+  <div class="plate" style="width:720px;padding:66px 56px;display:flex;
+       flex-direction:column;align-items:center;gap:28px">
+    <span class="kicker"><span class="dot"></span>Carousel Studio</span>
+    <div class="cover-title" style="font-weight:900;font-size:80px;line-height:0.98;
+         letter-spacing:-0.03em;text-align:center">Turn any idea into a <span class="accent">scroll-stopping</span> carousel</div>
+    <div class="lead on-dark" style="text-align:center;max-width:640px">An animated, on-brand Instagram carousel — hosted by your own avatar.</div>
+  </div>
+</div>
+<img class="avatar" src="../assets/pose-pointing-cutout.png" alt="">
+<div class="footer"><span class="handle">@yourhandle</span>
+    <span class="progress"><i class="on"></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i><i class=""></i></span></div>
+<script src="../vendor/gsap.min.js"></script>
+<script>
+const DURATION = 3.4;
+
+const P = new URLSearchParams(location.search);
+const RENDER = P.has('render');
+const FPS = +(P.get('fps')||30);
+const FRAME = +(P.get('frame')||0);
+function boot(build){
+  const tl = gsap.timeline({paused:true, defaults:{ease:'power3.out', duration:0.8}});
+  build(tl, DURATION);
+  if (tl.duration() < DURATION) tl.to({}, {duration: DURATION - tl.duration()});
+  window.__DURATION = tl.duration();
+  // Renderer hook: jump to an exact frame deterministically (no wall clock).
+  window.__seek = function(frame){ tl.pause(); tl.time(Math.min(frame/FPS, tl.duration())); };
+  const ready = Promise.all([
+    (document.fonts && document.fonts.ready) ? document.fonts.ready : Promise.resolve(),
+    new Promise(r => (document.readyState === 'complete') ? r() : addEventListener('load', r))
+  ]);
+  ready.then(() => requestAnimationFrame(() => {
+    if (RENDER) { tl.pause(); tl.time(Math.min(FRAME/FPS, tl.duration()));
+      document.documentElement.setAttribute('data-ready','1'); }
+    else { tl.play(0); document.documentElement.setAttribute('data-ready','1'); }
+  }));
+}
+boot(function(tl, DURATION){
+
+  tl.from('.stage', {opacity:0, duration:0.5}, 0);
+  tl.from('.ring-i', {scale:0, opacity:0, stagger:0.07, ease:'back.out(1.7)', duration:0.6}, 0.1);
+  tl.from('.plate', {scale:0.9, opacity:0, y:30, duration:0.7}, 0.2);
+  tl.from('.kicker', {y:20, opacity:0}, 0.5);
+  tl.from('.cover-title', {y:40, opacity:0, duration:0.7}, 0.6);
+  tl.from('.lead', {y:24, opacity:0}, 0.85);
+  tl.from('.avatar', {y:300, opacity:0, duration:0.9, ease:'power2.out'}, 0.5);
+});
+</script>
+</body></html>
