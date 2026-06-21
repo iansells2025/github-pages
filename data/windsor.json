@@ -1,32 +1,32 @@
 {
-  "updatedAt": "2026-06-21T08:25:01.710Z",
+  "updatedAt": "2026-06-21T11:42:20.294Z",
   "source": "windsor.ai",
   "endpoint": "blended",
   "weeks": [
     {
       "weekStart": "2026-06-08",
-      "costs": 1228.23
+      "costs": 936.69
     },
     {
       "weekStart": "2026-06-15",
-      "costs": 8294.31
+      "costs": 8873.56
     }
   ],
   "weeksBySource": {
     "2026-06-08": {
-      "facebook": {
-        "costs": 813.71
-      },
       "googleads": {
         "costs": 414.5204
+      },
+      "facebook": {
+        "costs": 522.17
       }
     },
     "2026-06-15": {
       "googleads": {
-        "costs": 5479.608
+        "costs": 5496.6191
       },
       "facebook": {
-        "costs": 2814.7
+        "costs": 3376.94
       }
     }
   },
@@ -48,14 +48,6 @@
     "intercom"
   ],
   "fieldsBySource": {
-    "facebook": {
-      "account_name": "Million Dollar Sellers",
-      "datasource": "facebook",
-      "date": "2026-06-13",
-      "source": "facebook",
-      "campaign": "TM_Leads",
-      "spend": 143.79
-    },
     "googleads": {
       "account_name": "Join Brands - MA",
       "datasource": "google_ads",
@@ -63,6 +55,14 @@
       "source": "google",
       "campaign": "TDD_Search_Brand_US",
       "spend": 182.2313
+    },
+    "facebook": {
+      "account_name": "Million Dollar Sellers",
+      "datasource": "facebook",
+      "date": "2026-06-14",
+      "source": "facebook",
+      "campaign": "TM_Leads",
+      "spend": 247.52
     },
     "intercom": {
       "account_name": "windsor",
@@ -82,6 +82,6 @@
     "spend",
     "email"
   ],
-  "rowCount": 6810,
-  "usableRowCount": 181
+  "rowCount": 6592,
+  "usableRowCount": 184
 }
