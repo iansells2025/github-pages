@@ -1,32 +1,32 @@
 {
-  "updatedAt": "2026-06-20T23:02:58.954Z",
+  "updatedAt": "2026-06-21T03:38:44.573Z",
   "source": "windsor.ai",
   "endpoint": "blended",
   "weeks": [
     {
       "weekStart": "2026-06-08",
-      "costs": 1540.96
+      "costs": 1228.23
     },
     {
       "weekStart": "2026-06-15",
-      "costs": 7926.16
+      "costs": 8294.31
     }
   ],
   "weeksBySource": {
     "2026-06-08": {
-      "googleads": {
-        "costs": 727.2545
-      },
       "facebook": {
         "costs": 813.71
+      },
+      "googleads": {
+        "costs": 414.5204
       }
     },
     "2026-06-15": {
       "googleads": {
-        "costs": 5111.4935
+        "costs": 5479.608
       },
       "facebook": {
-        "costs": 2814.67
+        "costs": 2814.7
       }
     }
   },
@@ -48,14 +48,6 @@
     "intercom"
   ],
   "fieldsBySource": {
-    "googleads": {
-      "account_name": "Join Brands - MA",
-      "datasource": "google_ads",
-      "date": "2026-06-13",
-      "source": "google",
-      "campaign": "TDD_Search_Brand_US",
-      "spend": 108.3784
-    },
     "facebook": {
       "account_name": "Million Dollar Sellers",
       "datasource": "facebook",
@@ -64,12 +56,20 @@
       "campaign": "TM_Leads",
       "spend": 143.79
     },
+    "googleads": {
+      "account_name": "Join Brands - MA",
+      "datasource": "google_ads",
+      "date": "2026-06-14",
+      "source": "google",
+      "campaign": "TDD_Search_Brand_US",
+      "spend": 182.2313
+    },
     "intercom": {
       "account_name": "windsor",
       "datasource": "intercom",
-      "date": "2026-06-13",
+      "date": "2026-06-14",
       "source": "intercom",
-      "email": "mikaylaccollab@gmail.com"
+      "email": "pugaverdecia@gmail.com"
     }
   },
   "sampleRowKeys": [
@@ -82,6 +82,6 @@
     "spend",
     "email"
   ],
-  "rowCount": 6602,
-  "usableRowCount": 179
+  "rowCount": 6810,
+  "usableRowCount": 181
 }
