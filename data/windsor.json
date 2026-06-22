@@ -1,32 +1,29 @@
 {
-  "updatedAt": "2026-06-21T23:07:23.950Z",
+  "updatedAt": "2026-06-22T03:42:19.472Z",
   "source": "windsor.ai",
   "endpoint": "blended",
   "weeks": [
     {
       "weekStart": "2026-06-08",
-      "costs": 936.69
+      "costs": 522.17
     },
     {
       "weekStart": "2026-06-15",
-      "costs": 8873.82
+      "costs": 9361.14
     }
   ],
   "weeksBySource": {
     "2026-06-08": {
-      "googleads": {
-        "costs": 414.5204
-      },
       "facebook": {
         "costs": 522.17
       }
     },
     "2026-06-15": {
       "googleads": {
-        "costs": 5496.6046
+        "costs": 5983.8876
       },
       "facebook": {
-        "costs": 3377.22
+        "costs": 3377.25
       }
     }
   },
@@ -48,14 +45,6 @@
     "intercom"
   ],
   "fieldsBySource": {
-    "googleads": {
-      "account_name": "Join Brands - MA",
-      "datasource": "google_ads",
-      "date": "2026-06-14",
-      "source": "google",
-      "campaign": "TDD_Search_Brand_US",
-      "spend": 182.2313
-    },
     "facebook": {
       "account_name": "Million Dollar Sellers",
       "datasource": "facebook",
@@ -64,12 +53,20 @@
       "campaign": "TM_Leads",
       "spend": 247.52
     },
+    "googleads": {
+      "account_name": "Join Brands - MA",
+      "datasource": "google_ads",
+      "date": "2026-06-15",
+      "source": "google",
+      "campaign": "TDD_Search_Brand_US",
+      "spend": 239.4587
+    },
     "intercom": {
       "account_name": "windsor",
       "datasource": "intercom",
-      "date": "2026-06-14",
+      "date": "2026-06-15",
       "source": "intercom",
-      "email": "pugaverdecia@gmail.com"
+      "email": "stacybirova@outlook.com"
     }
   },
   "sampleRowKeys": [
@@ -82,6 +79,6 @@
     "spend",
     "email"
   ],
-  "rowCount": 6593,
-  "usableRowCount": 184
+  "rowCount": 6691,
+  "usableRowCount": 185
 }
