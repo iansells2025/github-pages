@@ -1,20 +1,29 @@
 {
-  "updatedAt": "2026-06-29T23:59:09.448Z",
+  "updatedAt": "2026-06-30T04:08:34.591Z",
   "source": "windsor.ai",
   "endpoint": "blended",
   "weeks": [
     {
       "weekStart": "2026-06-22",
-      "costs": 9335.79
+      "costs": 8435.68
+    },
+    {
+      "weekStart": "2026-06-29",
+      "costs": 824.32
     }
   ],
   "weeksBySource": {
     "2026-06-22": {
-      "googleads": {
-        "costs": 5184.9725
-      },
       "facebook": {
-        "costs": 4150.82
+        "costs": 4150.87
+      },
+      "googleads": {
+        "costs": 4284.8066
+      }
+    },
+    "2026-06-29": {
+      "googleads": {
+        "costs": 824.3205
       }
     }
   },
@@ -36,14 +45,6 @@
     "intercom"
   ],
   "fieldsBySource": {
-    "googleads": {
-      "account_name": "Join Brands - MA",
-      "datasource": "google_ads",
-      "date": "2026-06-22",
-      "source": "google",
-      "campaign": "TDD_Search_Brand_US",
-      "spend": 227.5777
-    },
     "facebook": {
       "account_name": "Million Dollar Sellers",
       "datasource": "facebook",
@@ -52,12 +53,20 @@
       "campaign": "[LL]MDS Lead Form - 18k list",
       "spend": 83.05
     },
+    "googleads": {
+      "account_name": "Join Brands - MA",
+      "datasource": "google_ads",
+      "date": "2026-06-23",
+      "source": "google",
+      "campaign": "TDD_Search_Brand_US",
+      "spend": 212.3283
+    },
     "intercom": {
       "account_name": "windsor",
       "datasource": "intercom",
-      "date": "2026-06-22",
+      "date": "2026-06-23",
       "source": "intercom",
-      "email": "porebabese@gmail.com"
+      "email": "krismarie356@gmail.com"
     }
   },
   "sampleRowKeys": [
@@ -70,6 +79,6 @@
     "spend",
     "email"
   ],
-  "rowCount": 6595,
-  "usableRowCount": 201
+  "rowCount": 6733,
+  "usableRowCount": 200
 }
