@@ -1,65 +1,65 @@
 {
   "brand": {
-    "accent": "#2E6BFF",
-    "bg": "#0B1220",
-    "bgGlow": "#1B2C4D",
-    "plate": "#0E1626",
+    "accent": "#FE2C55",
+    "bg": "#0C0A0F",
+    "bgGlow": "#241528",
+    "plate": "#151019",
     "tile": "#FFFFFF",
-    "ink": "#0B1220",
+    "ink": "#0C0A0F",
     "handle": "@yourhandle"
   },
   "fps": 30,
   "slides": [
     {
       "type": "cover",
-      "kicker": "Carousel Studio",
-      "title": "Turn any idea into a scroll-stopping carousel",
-      "titleAccent": "scroll-stopping",
-      "subtitle": "An animated, on-brand Instagram carousel — hosted by your own avatar.",
+      "kicker": "TikTok Shop",
+      "title": "More videos beats better videos",
+      "titleAccent": "More videos",
+      "subtitle": "On TikTok Shop, at-bats win. Here's why volume outsells polish.",
       "avatar": "pointing",
-      "icons": ["claude", "notion", "figma", "github", "instagram", "ffmpeg"]
+      "icons": ["tiktok", "shopify", "instagram", "youtube", "pinterest"]
     },
     {
       "type": "step",
-      "kicker": "Step 1",
+      "kicker": "Reason 1",
       "index": 1,
-      "icon": "claude",
-      "title": "Give it a topic + a keyword",
-      "body": "You bring the idea and the comment keyword. The studio drafts the outline.",
+      "icon": "tiktok",
+      "title": "Every video is a fresh audition",
+      "body": "TikTok tests each post on a small new audience. Nothing you did before carries over.",
       "avatar": "casual"
     },
     {
-      "type": "step",
-      "kicker": "Step 2",
-      "index": 2,
-      "icon": "figma",
-      "title": "One idea per slide",
-      "body": "Cover, a few content slides, and a CTA — each with a single, clear point.",
-      "avatar": "arms-crossed"
-    },
-    {
       "type": "stat",
-      "kicker": "The rule",
-      "value": "92%",
-      "label": "of every frame should be filled",
-      "body": "No dead white space. The avatar hosts the slide — never just decoration.",
+      "kicker": "The reality",
+      "value": "95%",
+      "label": "of sales come from a few breakout videos",
+      "body": "You can't predict which ones. More posts = more shots at a breakout.",
       "avatar": "pointing"
     },
     {
       "type": "step",
-      "kicker": "Step 3",
+      "kicker": "Reason 2",
+      "index": 2,
+      "icon": "youtube",
+      "title": "Done beats perfect",
+      "body": "A rough video today outsells a polished one next week. Production value has steep diminishing returns.",
+      "avatar": "arms-crossed"
+    },
+    {
+      "type": "step",
+      "kicker": "The system",
       "index": 3,
-      "icon": "ffmpeg",
-      "title": "Render each slide to its own MP4",
-      "body": "Headless Chrome screenshots every frame; ffmpeg encodes native 1080×1350.",
+      "icon": "shopify",
+      "title": "Batch, post, double down",
+      "body": "Film 10 in one sitting. Post 3-5 a day. Then pour budget into the ones that pop.",
       "avatar": "holding-phone"
     },
     {
       "type": "cta",
-      "kicker": "Your move",
-      "title": "Want the full build?",
-      "keyword": "STUDIO",
-      "body": "Comment the keyword and I'll send you the repo.",
+      "kicker": "Free guide",
+      "title": "Want the posting system?",
+      "keyword": "Videos",
+      "body": "Comment the keyword and I'll send you the guide.",
       "avatar": "victory"
     }
   ]

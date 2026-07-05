@@ -1,34 +1,29 @@
 <!doctype html>
 <html lang="en"><head>
 <meta charset="utf-8">
-<title>slide 3 — step</title>
+<title>slide 3 — stat</title>
 <link rel="stylesheet" href="../base.css">
 <style>:root{
-  --brand-accent:#2E6BFF; --brand-bg:#0B1220;
-  --brand-bg-glow:#1B2C4D; --brand-plate:#0E1626;
-  --brand-tile:#FFFFFF; --brand-ink:#0B1220;
+  --brand-accent:#FE2C55; --brand-bg:#0C0A0F;
+  --brand-bg-glow:#241528; --brand-plate:#151019;
+  --brand-tile:#FFFFFF; --brand-ink:#0C0A0F;
 }</style>
 </head><body>
 <div class="stage"></div>
 
-<div class="frame" style="justify-content:flex-start;gap:0">
-  <span class="kicker" style="align-self:flex-start"><span class="dot"></span>Step 2</span>
-  <div class="tile" style="margin-top:30px;flex:1;padding:80px 72px;display:flex;
-       flex-direction:column;gap:40px;justify-content:flex-start">
-    <div class="row gap-m">
-      <div class="index">2</div>
-      <div class="icon-tile"><img src="../icons/figma.svg" alt="Figma"></div>
-    </div>
-    <div class="h-1" style="max-width:660px">One idea per slide</div>
-    <div class="lead" style="max-width:500px">Cover, a few content slides, and a CTA — each with a single, clear point.</div>
-  </div>
+<div class="frame" style="align-items:center;justify-content:flex-start;
+     padding-top:120px;text-align:center;gap:26px">
+  <span class="kicker"><span class="dot"></span>The reality</span>
+  <span class="stat" data-count="95" data-suffix="%">0%</span>
+  <div class="h-2 on-dark" style="color:var(--on-dark);text-align:center;max-width:720px">of sales come from a few breakout videos</div>
+  <div class="lead on-dark" style="text-align:center;max-width:600px">You can't predict which ones. More posts = more shots at a breakout.</div>
 </div>
-<img class="avatar" src="../assets/pose-arms-crossed-cutout.png" alt="">
+<img class="avatar sm" src="../assets/pose-pointing-cutout.png" alt="">
 <div class="footer"><span class="handle">@yourhandle</span>
     <span class="progress"><i class=""></i><i class=""></i><i class="on"></i><i class=""></i><i class=""></i><i class=""></i></span></div>
 <script src="../vendor/gsap.min.js"></script>
 <script>
-const DURATION = 2.8;
+const DURATION = 3.2;
 
 const P = new URLSearchParams(location.search);
 const RENDER = P.has('render');
@@ -54,12 +49,17 @@ function boot(build){
 boot(function(tl, DURATION){
 
   tl.from('.stage',{opacity:0,duration:0.5},0);
-  tl.from('.kicker',{x:-20,opacity:0},0.15);
-  tl.from('.tile',{y:50,opacity:0,duration:0.7},0.2);
-  tl.from('.index',{scale:0,opacity:0,ease:'back.out(1.8)'},0.45);
-  tl.from('.icon-tile',{scale:0,opacity:0,ease:'back.out(1.8)'},0.55);
-  tl.from('.h-1',{y:30,opacity:0,duration:0.6},0.6);
-  tl.from('.lead',{y:20,opacity:0},0.8);
+  tl.from('.kicker',{y:20,opacity:0},0.2);
+  tl.from('.stat',{scale:0.7,opacity:0,duration:0.7,ease:'back.out(1.5)'},0.2);
+  
+  const ne=document.querySelector('[data-count]');
+  const end=+ne.dataset.count, suf=ne.dataset.suffix||'';
+  const dec=(ne.dataset.count.indexOf('.')>=0);
+  const o={v:0};
+  tl.to(o,{v:end,duration:1.4,ease:'power2.out',onUpdate:()=>{
+    ne.textContent=(dec?o.v.toFixed(1):Math.round(o.v))+suf;}},0.3);
+  tl.from('.h-2',{y:24,opacity:0},0.9);
+  tl.from('.lead',{y:20,opacity:0},1.05);
   tl.from('.avatar',{y:300,opacity:0,duration:0.9},0.4);
 });
 </script>

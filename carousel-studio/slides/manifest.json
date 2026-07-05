@@ -1,12 +1,12 @@
 {
   "fps": 30,
   "brand": {
-    "accent": "#2E6BFF",
-    "bg": "#0B1220",
-    "bgGlow": "#1B2C4D",
-    "plate": "#0E1626",
+    "accent": "#FE2C55",
+    "bg": "#0C0A0F",
+    "bgGlow": "#241528",
+    "plate": "#151019",
     "tile": "#FFFFFF",
-    "ink": "#0B1220",
+    "ink": "#0C0A0F",
     "handle": "@yourhandle"
   },
   "slides": [
@@ -21,14 +21,14 @@
       "duration": 2.8
     },
     {
-      "file": "03-step.html",
-      "type": "step",
-      "duration": 2.8
-    },
-    {
-      "file": "04-stat.html",
+      "file": "03-stat.html",
       "type": "stat",
       "duration": 3.2
+    },
+    {
+      "file": "04-step.html",
+      "type": "step",
+      "duration": 2.8
     },
     {
       "file": "05-step.html",

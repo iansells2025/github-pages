@@ -147,7 +147,7 @@ const TEMPLATES = {
   cover(s, idx, total) {
     const icons = (s.icons || []).slice(0, 5);
     const ring = ringPositions(icons.length).map(([x, y], i) =>
-      `<div class="ring-i" style="left:${x}px;top:${y}px">${iconTile(icons[i], true)}</div>`
+      `<div class="ring-i" style="left:${x}px;top:${y}px">${iconTile(icons[i])}</div>`
     ).join("");
     const title = s.titleAccent
       ? esc(s.title).replace(esc(s.titleAccent),
