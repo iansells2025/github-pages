@@ -1,29 +1,20 @@
 {
-  "updatedAt": "2026-07-06T07:07:16.477Z",
+  "updatedAt": "2026-07-06T11:59:38.108Z",
   "source": "windsor.ai",
   "endpoint": "blended",
   "weeks": [
     {
-      "weekStart": "2026-06-22",
-      "costs": 742.28
-    },
-    {
       "weekStart": "2026-06-29",
-      "costs": 8819
+      "costs": 9628.7
     }
   ],
   "weeksBySource": {
-    "2026-06-22": {
-      "facebook": {
-        "costs": 742.28
-      }
-    },
     "2026-06-29": {
       "googleads": {
-        "costs": 5154.5719
+        "costs": 5202.259
       },
       "facebook": {
-        "costs": 3664.43
+        "costs": 4426.44
       }
     }
   },
@@ -45,14 +36,6 @@
     "intercom"
   ],
   "fieldsBySource": {
-    "facebook": {
-      "account_name": "Million Dollar Sellers",
-      "datasource": "facebook",
-      "date": "2026-06-28",
-      "source": "facebook",
-      "campaign": "[LL]MDS Lead Form - 18k list",
-      "spend": 98.02
-    },
     "googleads": {
       "account_name": "Join Brands - MA",
       "datasource": "google_ads",
@@ -67,6 +50,14 @@
       "date": "2026-06-29",
       "source": "intercom",
       "email": "lifewithriirii@gmail.com"
+    },
+    "facebook": {
+      "account_name": "Million Dollar Sellers",
+      "datasource": "facebook",
+      "date": "2026-06-29",
+      "source": "facebook",
+      "campaign": "[LL]MDS Lead Form - 18k list",
+      "spend": 81.87
     }
   },
   "sampleRowKeys": [
@@ -79,6 +70,6 @@
     "spend",
     "email"
   ],
-  "rowCount": 5792,
+  "rowCount": 5694,
   "usableRowCount": 201
 }
