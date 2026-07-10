@@ -1,32 +1,32 @@
 {
-  "updatedAt": "2026-07-10T04:04:28.318Z",
+  "updatedAt": "2026-07-10T08:17:27.300Z",
   "source": "windsor.ai",
   "endpoint": "blended",
   "weeks": [
     {
       "weekStart": "2026-06-29",
-      "costs": 4246.12
+      "costs": 3592.74
     },
     {
       "weekStart": "2026-07-06",
-      "costs": 5159.82
+      "costs": 5699.52
     }
   ],
   "weeksBySource": {
     "2026-06-29": {
-      "facebook": {
-        "costs": 2442.99
-      },
       "googleads": {
         "costs": 1803.1282
+      },
+      "facebook": {
+        "costs": 1789.61
       }
     },
     "2026-07-06": {
       "googleads": {
-        "costs": 3545.8904
+        "costs": 3623.2952
       },
       "facebook": {
-        "costs": 1613.93
+        "costs": 2076.22
       }
     }
   },
@@ -48,14 +48,6 @@
     "intercom"
   ],
   "fieldsBySource": {
-    "facebook": {
-      "account_name": "Million Dollar Sellers",
-      "datasource": "facebook",
-      "date": "2026-07-02",
-      "source": "facebook",
-      "campaign": "[LL]MDS Lead Form - 18k list",
-      "spend": 75.11
-    },
     "googleads": {
       "account_name": "Join Brands - MA",
       "datasource": "google_ads",
@@ -70,6 +62,14 @@
       "date": "2026-07-03",
       "source": "intercom",
       "email": "altheanalviar@yahoo.com"
+    },
+    "facebook": {
+      "account_name": "Million Dollar Sellers",
+      "datasource": "facebook",
+      "date": "2026-07-03",
+      "source": "facebook",
+      "campaign": "[LL]MDS Lead Form - 18k list",
+      "spend": 79.27
     }
   },
   "sampleRowKeys": [
@@ -82,6 +82,6 @@
     "spend",
     "email"
   ],
-  "rowCount": 6355,
-  "usableRowCount": 200
+  "rowCount": 6333,
+  "usableRowCount": 199
 }
