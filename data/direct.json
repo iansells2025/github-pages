@@ -1,11 +1,11 @@
 {
-  "updatedAt": "2026-07-11T19:44:47.548Z",
+  "updatedAt": "2026-07-11T21:17:50.128Z",
   "sources": {
     "stripe": {
       "ok": true,
       "weekCount": 14,
       "diagnostics": {
-        "chargeCount": 29073,
+        "chargeCount": 29075,
         "payoutCount": 63,
         "activeSubscriptionCount": 368,
         "mrrBrands": 59140.67,
@@ -55,7 +55,7 @@
   "weeks": [
     {
       "weekStart": "2026-04-06",
-      "revenue": 14395.33,
+      "revenue": 14296.33,
       "deposits": 0,
       "newClients": 1,
       "newClientsByOwnerName": {
@@ -160,9 +160,9 @@
       "revenue": 278701.81,
       "deposits": 243671.28,
       "mktgSent": 8081,
-      "mktgViewed": 1620,
+      "mktgViewed": 1621,
       "mktgClicked": 70,
-      "newLeads": 1911,
+      "newLeads": 1907,
       "newCompanies": 114,
       "newClients": 95,
       "newClientsByOwnerName": {
@@ -193,9 +193,9 @@
       "weekStart": "2026-06-15",
       "revenue": 237544.83,
       "deposits": 209998.97,
-      "mktgSent": 16844,
-      "mktgViewed": 2917,
-      "mktgClicked": 120,
+      "mktgSent": 16863,
+      "mktgViewed": 2919,
+      "mktgClicked": 121,
       "newLeads": 589,
       "newCompanies": 25,
       "newClients": 57,
@@ -224,7 +224,7 @@
     },
     {
       "weekStart": "2026-06-29",
-      "revenue": 226473.06,
+      "revenue": 226407.34,
       "deposits": 192068.17,
       "mktgSent": 55329,
       "mktgViewed": 4945,
@@ -240,16 +240,16 @@
     },
     {
       "weekStart": "2026-07-06",
-      "revenue": 267577.9,
+      "revenue": 268211.72,
       "deposits": 255270.82,
       "mrrBrands": 59140.67,
       "mrrBrandStartup": 24977.58,
       "mrrBrandPro": 13754,
       "mrrBrandMax": 20409.08,
       "mktgSent": 163443,
-      "mktgViewed": 13306,
+      "mktgViewed": 13309,
       "mktgClicked": 283,
-      "newLeads": 666,
+      "newLeads": 670,
       "newClients": 45,
       "newClientsByOwnerName": {
         "Dee Mechev": 11,
@@ -276,7 +276,7 @@
   "weeksBySource": {
     "2026-04-06": {
       "stripe": {
-        "revenue": 14395.33,
+        "revenue": 14296.33,
         "deposits": 0
       },
       "hubspot": {
@@ -407,9 +407,9 @@
       },
       "hubspot": {
         "mktgSent": 8081,
-        "mktgViewed": 1620,
+        "mktgViewed": 1621,
         "mktgClicked": 70,
-        "newLeads": 1911,
+        "newLeads": 1907,
         "newCompanies": 114,
         "newClients": 95,
         "newClientsByOwnerName": {
@@ -446,9 +446,9 @@
         "deposits": 209998.97
       },
       "hubspot": {
-        "mktgSent": 16844,
-        "mktgViewed": 2917,
-        "mktgClicked": 120,
+        "mktgSent": 16863,
+        "mktgViewed": 2919,
+        "mktgClicked": 121,
         "newLeads": 589,
         "newCompanies": 25,
         "newClients": 57,
@@ -481,7 +481,7 @@
     },
     "2026-06-29": {
       "stripe": {
-        "revenue": 226473.06,
+        "revenue": 226407.34,
         "deposits": 192068.17
       },
       "hubspot": {
@@ -500,7 +500,7 @@
     },
     "2026-07-06": {
       "stripe": {
-        "revenue": 267577.9,
+        "revenue": 268211.72,
         "deposits": 255270.82,
         "mrrBrands": 59140.67,
         "mrrBrandStartup": 24977.58,
@@ -509,9 +509,9 @@
       },
       "hubspot": {
         "mktgSent": 163443,
-        "mktgViewed": 13306,
+        "mktgViewed": 13309,
         "mktgClicked": 283,
-        "newLeads": 666,
+        "newLeads": 670,
         "newClients": 45,
         "newClientsByOwnerName": {
           "Dee Mechev": 11,
