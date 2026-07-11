@@ -1,29 +1,29 @@
 {
-  "updatedAt": "2026-07-10T22:58:30.938Z",
+  "updatedAt": "2026-07-11T00:01:43.984Z",
   "source": "windsor.ai",
   "endpoint": "blended",
   "weeks": [
     {
       "weekStart": "2026-06-29",
-      "costs": 3592.74
+      "costs": 2803.11
     },
     {
       "weekStart": "2026-07-06",
-      "costs": 5702.63
+      "costs": 6300.42
     }
   ],
   "weeksBySource": {
     "2026-06-29": {
-      "googleads": {
-        "costs": 1803.1282
-      },
       "facebook": {
         "costs": 1789.61
+      },
+      "googleads": {
+        "costs": 1013.4967
       }
     },
     "2026-07-06": {
       "googleads": {
-        "costs": 3623.2945
+        "costs": 4221.0842
       },
       "facebook": {
         "costs": 2079.34
@@ -48,14 +48,6 @@
     "intercom"
   ],
   "fieldsBySource": {
-    "googleads": {
-      "account_name": "Join Brands - MA",
-      "datasource": "google_ads",
-      "date": "2026-07-03",
-      "source": "google",
-      "campaign": "TDD_Search_Brand_US",
-      "spend": 227.0516
-    },
     "facebook": {
       "account_name": "Million Dollar Sellers",
       "datasource": "facebook",
@@ -67,9 +59,17 @@
     "intercom": {
       "account_name": "windsor",
       "datasource": "intercom",
-      "date": "2026-07-03",
+      "date": "2026-07-04",
       "source": "intercom",
-      "email": "altheanalviar@yahoo.com"
+      "email": "alyssajaycarpenter@gmail.com"
+    },
+    "googleads": {
+      "account_name": "Join Brands - MA",
+      "datasource": "google_ads",
+      "date": "2026-07-04",
+      "source": "google",
+      "campaign": "TDD_Search_Brand_US",
+      "spend": 166.595
     }
   },
   "sampleRowKeys": [
@@ -82,6 +82,6 @@
     "spend",
     "email"
   ],
-  "rowCount": 6330,
+  "rowCount": 5705,
   "usableRowCount": 199
 }
