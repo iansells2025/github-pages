@@ -1,32 +1,32 @@
 {
-  "updatedAt": "2026-07-11T23:50:14.382Z",
+  "updatedAt": "2026-07-12T02:13:32.563Z",
   "source": "windsor.ai",
   "endpoint": "blended",
   "weeks": [
     {
       "weekStart": "2026-06-29",
-      "costs": 2199.74
+      "costs": 1747.25
     },
     {
       "weekStart": "2026-07-06",
-      "costs": 6855.52
+      "costs": 7199.99
     }
   ],
   "weeksBySource": {
     "2026-06-29": {
-      "googleads": {
-        "costs": 1013.4967
-      },
       "facebook": {
         "costs": 1186.24
+      },
+      "googleads": {
+        "costs": 561.0077
       }
     },
     "2026-07-06": {
       "googleads": {
-        "costs": 4338.6164
+        "costs": 4683.0218
       },
       "facebook": {
-        "costs": 2516.9
+        "costs": 2516.97
       }
     }
   },
@@ -48,14 +48,6 @@
     "intercom"
   ],
   "fieldsBySource": {
-    "googleads": {
-      "account_name": "Join Brands - MA",
-      "datasource": "google_ads",
-      "date": "2026-07-04",
-      "source": "google",
-      "campaign": "TDD_Search_Brand_US",
-      "spend": 166.595
-    },
     "facebook": {
       "account_name": "Million Dollar Sellers",
       "datasource": "facebook",
@@ -64,12 +56,20 @@
       "campaign": "[LL]MDS Lead Form - 18k list",
       "spend": 38.12
     },
+    "googleads": {
+      "account_name": "Join Brands - MA",
+      "datasource": "google_ads",
+      "date": "2026-07-05",
+      "source": "google",
+      "campaign": "TDD_Search_Brand_US",
+      "spend": 164.7669
+    },
     "intercom": {
       "account_name": "windsor",
       "datasource": "intercom",
-      "date": "2026-07-04",
+      "date": "2026-07-05",
       "source": "intercom",
-      "email": "alyssajaycarpenter@gmail.com"
+      "email": "amandahurtado07@gmail.com"
     }
   },
   "sampleRowKeys": [
@@ -82,6 +82,6 @@
     "spend",
     "email"
   ],
-  "rowCount": 6386,
+  "rowCount": 6603,
   "usableRowCount": 200
 }
