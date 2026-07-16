@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-07-16T21:30:43.388Z",
+  "updatedAt": "2026-07-16T22:31:50.459Z",
   "sources": {
     "stripe": {
       "ok": true,
@@ -7,12 +7,12 @@
       "diagnostics": {
         "chargeCount": 29085,
         "payoutCount": 63,
-        "activeSubscriptionCount": 367,
-        "mrrBrands": 58843.67,
-        "mrrBrandStartup": 24680.58,
+        "activeSubscriptionCount": 366,
+        "mrrBrands": 58744.67,
+        "mrrBrandStartup": 24581.58,
         "mrrBrandPro": 13754,
         "mrrBrandMax": 20409.08,
-        "brandSubCount": 337,
+        "brandSubCount": 336,
         "nonBrandSubCount": 30,
         "nonBrandMrrExcluded": 1472.4
       }
@@ -45,7 +45,7 @@
         "ownersCount": 24,
         "contactsCreated": 5000,
         "companiesCreated": 3892,
-        "dealsClosedWon": 1185,
+        "dealsClosedWon": 1187,
         "dealsWithUnknownOwner": 692,
         "landingPages": 33,
         "landingPagesNote": "Analytics integration pending — requires HubSpot Analytics API scope"
@@ -55,7 +55,7 @@
   "weeks": [
     {
       "weekStart": "2026-04-13",
-      "revenue": 74698.37,
+      "revenue": 73180.92,
       "deposits": 41048.98,
       "newClients": 18,
       "newClientsByOwnerName": {
@@ -153,7 +153,7 @@
       "mktgSent": 8336,
       "mktgViewed": 1686,
       "mktgClicked": 77,
-      "newLeads": 1418,
+      "newLeads": 1415,
       "newCompanies": 114,
       "newClients": 95,
       "newClientsByOwnerName": {
@@ -184,7 +184,7 @@
       "weekStart": "2026-06-15",
       "revenue": 236108.12,
       "deposits": 209998.97,
-      "mktgSent": 17980,
+      "mktgSent": 17987,
       "mktgViewed": 3198,
       "mktgClicked": 130,
       "newLeads": 589,
@@ -247,22 +247,22 @@
     },
     {
       "weekStart": "2026-07-13",
-      "revenue": 188007.53,
+      "revenue": 189210.47,
       "deposits": 176714.46,
-      "mrrBrands": 58843.67,
-      "mrrBrandStartup": 24680.58,
+      "mrrBrands": 58744.67,
+      "mrrBrandStartup": 24581.58,
       "mrrBrandPro": 13754,
       "mrrBrandMax": 20409.08,
       "mktgSent": 104338,
-      "mktgViewed": 15266,
+      "mktgViewed": 15271,
       "mktgClicked": 220,
-      "newLeads": 400,
-      "newClients": 43,
+      "newLeads": 403,
+      "newClients": 45,
       "newClientsByOwnerName": {
-        "Dan Kriss": 6,
+        "Nick JoinBrands": 11,
+        "Dan Kriss": 7,
         "Mila Vidakovic": 11,
-        "Dee Mechev": 10,
-        "Nick JoinBrands": 10
+        "Dee Mechev": 10
       }
     },
     {
@@ -283,7 +283,7 @@
   "weeksBySource": {
     "2026-04-13": {
       "stripe": {
-        "revenue": 74698.37,
+        "revenue": 73180.92,
         "deposits": 41048.98
       },
       "hubspot": {
@@ -404,7 +404,7 @@
         "mktgSent": 8336,
         "mktgViewed": 1686,
         "mktgClicked": 77,
-        "newLeads": 1418,
+        "newLeads": 1415,
         "newCompanies": 114,
         "newClients": 95,
         "newClientsByOwnerName": {
@@ -441,7 +441,7 @@
         "deposits": 209998.97
       },
       "hubspot": {
-        "mktgSent": 17980,
+        "mktgSent": 17987,
         "mktgViewed": 3198,
         "mktgClicked": 130,
         "newLeads": 589,
@@ -514,24 +514,24 @@
     },
     "2026-07-13": {
       "stripe": {
-        "revenue": 188007.53,
+        "revenue": 189210.47,
         "deposits": 176714.46,
-        "mrrBrands": 58843.67,
-        "mrrBrandStartup": 24680.58,
+        "mrrBrands": 58744.67,
+        "mrrBrandStartup": 24581.58,
         "mrrBrandPro": 13754,
         "mrrBrandMax": 20409.08
       },
       "hubspot": {
         "mktgSent": 104338,
-        "mktgViewed": 15266,
+        "mktgViewed": 15271,
         "mktgClicked": 220,
-        "newLeads": 400,
-        "newClients": 43,
+        "newLeads": 403,
+        "newClients": 45,
         "newClientsByOwnerName": {
-          "Dan Kriss": 6,
+          "Nick JoinBrands": 11,
+          "Dan Kriss": 7,
           "Mila Vidakovic": 11,
-          "Dee Mechev": 10,
-          "Nick JoinBrands": 10
+          "Dee Mechev": 10
         }
       }
     },
