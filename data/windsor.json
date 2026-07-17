@@ -1,32 +1,32 @@
 {
-  "updatedAt": "2026-07-16T23:54:20.396Z",
+  "updatedAt": "2026-07-17T02:10:48.641Z",
   "source": "windsor.ai",
   "endpoint": "blended",
   "weeks": [
     {
       "weekStart": "2026-07-06",
-      "costs": 4440.82
+      "costs": 3525.26
     },
     {
       "weekStart": "2026-07-13",
-      "costs": 4718.49
+      "costs": 5582.93
     }
   ],
   "weeksBySource": {
     "2026-07-06": {
-      "googleads": {
-        "costs": 2553.0665
-      },
       "facebook": {
         "costs": 1887.75
+      },
+      "googleads": {
+        "costs": 1637.5121
       }
     },
     "2026-07-13": {
       "googleads": {
-        "costs": 2996.2452
+        "costs": 3860.6024
       },
       "facebook": {
-        "costs": 1722.24
+        "costs": 1722.33
       }
     }
   },
@@ -48,21 +48,6 @@
     "intercom"
   ],
   "fieldsBySource": {
-    "googleads": {
-      "account_name": "Join Brands - MA",
-      "datasource": "google_ads",
-      "date": "2026-07-09",
-      "source": "google",
-      "campaign": "TDD_Search_Brand_US",
-      "spend": 229.5458
-    },
-    "intercom": {
-      "account_name": "windsor",
-      "datasource": "intercom",
-      "date": "2026-07-09",
-      "source": "intercom",
-      "email": "baileymkaufmann@gmail.com"
-    },
     "facebook": {
       "account_name": "Million Dollar Sellers",
       "datasource": "facebook",
@@ -70,6 +55,21 @@
       "source": "facebook",
       "campaign": "[LL]MDS Lead Form - 18k list",
       "spend": 67.03
+    },
+    "googleads": {
+      "account_name": "Join Brands - MA",
+      "datasource": "google_ads",
+      "date": "2026-07-10",
+      "source": "google",
+      "campaign": "TDD_Search_Brand_US",
+      "spend": 225.5578
+    },
+    "intercom": {
+      "account_name": "windsor",
+      "datasource": "intercom",
+      "date": "2026-07-10",
+      "source": "intercom",
+      "email": "roberto14ortiz14@gmail.com"
     }
   },
   "sampleRowKeys": [
@@ -82,6 +82,6 @@
     "spend",
     "email"
   ],
-  "rowCount": 6961,
+  "rowCount": 7140,
   "usableRowCount": 201
 }
