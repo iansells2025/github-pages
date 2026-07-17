@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-07-17T16:10:35.045Z",
+  "updatedAt": "2026-07-17T18:00:53.850Z",
   "source": "windsor.ai",
   "endpoint": "blended",
   "weeks": [
@@ -9,7 +9,7 @@
     },
     {
       "weekStart": "2026-07-13",
-      "costs": 6146.27
+      "costs": 6146.72
     }
   ],
   "weeksBySource": {
@@ -26,7 +26,7 @@
         "costs": 3917.8628
       },
       "facebook": {
-        "costs": 2228.41
+        "costs": 2228.86
       }
     }
   },
@@ -56,13 +56,6 @@
       "campaign": "TDD_Search_Brand_US",
       "spend": 225.5578
     },
-    "intercom": {
-      "account_name": "windsor",
-      "datasource": "intercom",
-      "date": "2026-07-10",
-      "source": "intercom",
-      "email": "roberto14ortiz14@gmail.com"
-    },
     "facebook": {
       "account_name": "Million Dollar Sellers",
       "datasource": "facebook",
@@ -70,6 +63,13 @@
       "source": "facebook",
       "campaign": "[LL]MDS Lead Form - 18k list",
       "spend": 69.12
+    },
+    "intercom": {
+      "account_name": "windsor",
+      "datasource": "intercom",
+      "date": "2026-07-10",
+      "source": "intercom",
+      "email": "roberto14ortiz14@gmail.com"
     }
   },
   "sampleRowKeys": [
