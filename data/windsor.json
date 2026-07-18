@@ -1,32 +1,32 @@
 {
-  "updatedAt": "2026-07-18T06:57:45.815Z",
+  "updatedAt": "2026-07-18T08:49:52.445Z",
   "source": "windsor.ai",
   "endpoint": "blended",
   "weeks": [
     {
       "weekStart": "2026-07-06",
-      "costs": 2345.38
+      "costs": 1907.8
     },
     {
       "weekStart": "2026-07-13",
-      "costs": 6891.98
+      "costs": 7356.8
     }
   ],
   "weeksBySource": {
     "2026-07-06": {
-      "facebook": {
-        "costs": 1423.19
-      },
       "googleads": {
         "costs": 922.1892
+      },
+      "facebook": {
+        "costs": 985.61
       }
     },
     "2026-07-13": {
       "googleads": {
-        "costs": 4662.9373
+        "costs": 4691.1814
       },
       "facebook": {
-        "costs": 2229.04
+        "costs": 2665.62
       }
     }
   },
@@ -48,14 +48,6 @@
     "intercom"
   ],
   "fieldsBySource": {
-    "facebook": {
-      "account_name": "Million Dollar Sellers",
-      "datasource": "facebook",
-      "date": "2026-07-10",
-      "source": "facebook",
-      "campaign": "[LL]MDS Lead Form - 18k list",
-      "spend": 69.12
-    },
     "googleads": {
       "account_name": "Join Brands - MA",
       "datasource": "google_ads",
@@ -63,6 +55,14 @@
       "source": "google",
       "campaign": "TDD_Search_Brand_US",
       "spend": 94.4825
+    },
+    "facebook": {
+      "account_name": "Million Dollar Sellers",
+      "datasource": "facebook",
+      "date": "2026-07-11",
+      "source": "facebook",
+      "campaign": "[LL]MDS Lead Form - 18k list",
+      "spend": 56.7
     },
     "intercom": {
       "account_name": "windsor",
@@ -82,6 +82,6 @@
     "spend",
     "email"
   ],
-  "rowCount": 7177,
+  "rowCount": 7050,
   "usableRowCount": 202
 }
