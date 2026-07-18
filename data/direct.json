@@ -1,18 +1,18 @@
 {
-  "updatedAt": "2026-07-18T03:45:08.143Z",
+  "updatedAt": "2026-07-18T06:32:53.016Z",
   "sources": {
     "stripe": {
       "ok": true,
       "weekCount": 14,
       "diagnostics": {
-        "chargeCount": 28982,
+        "chargeCount": 28981,
         "payoutCount": 63,
-        "activeSubscriptionCount": 371,
-        "mrrBrands": 59239.67,
+        "activeSubscriptionCount": 372,
+        "mrrBrands": 59538.67,
         "mrrBrandStartup": 25076.58,
-        "mrrBrandPro": 13754,
+        "mrrBrandPro": 14053,
         "mrrBrandMax": 20409.08,
-        "brandSubCount": 341,
+        "brandSubCount": 342,
         "nonBrandSubCount": 30,
         "nonBrandMrrExcluded": 1472.4
       }
@@ -55,7 +55,7 @@
   "weeks": [
     {
       "weekStart": "2026-04-13",
-      "revenue": 25717.23,
+      "revenue": 25190.95,
       "deposits": 0,
       "newClients": 10,
       "newClientsByOwnerName": {
@@ -149,10 +149,10 @@
       "weekStart": "2026-06-01",
       "revenue": 277524.76,
       "deposits": 243671.28,
-      "mktgSent": 8429,
-      "mktgViewed": 1709,
+      "mktgSent": 8489,
+      "mktgViewed": 1718,
       "mktgClicked": 78,
-      "newLeads": 1311,
+      "newLeads": 1307,
       "newCompanies": 114,
       "newClients": 95,
       "newClientsByOwnerName": {
@@ -183,8 +183,8 @@
       "weekStart": "2026-06-15",
       "revenue": 235121.69,
       "deposits": 209998.97,
-      "mktgSent": 18291,
-      "mktgViewed": 3275,
+      "mktgSent": 18311,
+      "mktgViewed": 3279,
       "mktgClicked": 133,
       "newLeads": 589,
       "newCompanies": 25,
@@ -230,7 +230,7 @@
     },
     {
       "weekStart": "2026-07-06",
-      "revenue": 281424.43,
+      "revenue": 281366.47,
       "deposits": 255270.82,
       "mktgSent": 163443,
       "mktgViewed": 13774,
@@ -246,16 +246,16 @@
     },
     {
       "weekStart": "2026-07-13",
-      "revenue": 231785.29,
+      "revenue": 232251.66,
       "deposits": 221695.56,
-      "mrrBrands": 59239.67,
+      "mrrBrands": 59538.67,
       "mrrBrandStartup": 25076.58,
-      "mrrBrandPro": 13754,
+      "mrrBrandPro": 14053,
       "mrrBrandMax": 20409.08,
       "mktgSent": 104338,
-      "mktgViewed": 15424,
-      "mktgClicked": 222,
-      "newLeads": 507,
+      "mktgViewed": 15428,
+      "mktgClicked": 224,
+      "newLeads": 511,
       "newClients": 54,
       "newClientsByOwnerName": {
         "Mila Vidakovic": 13,
@@ -282,7 +282,7 @@
   "weeksBySource": {
     "2026-04-13": {
       "stripe": {
-        "revenue": 25717.23,
+        "revenue": 25190.95,
         "deposits": 0
       },
       "hubspot": {
@@ -399,10 +399,10 @@
         "deposits": 243671.28
       },
       "hubspot": {
-        "mktgSent": 8429,
-        "mktgViewed": 1709,
+        "mktgSent": 8489,
+        "mktgViewed": 1718,
         "mktgClicked": 78,
-        "newLeads": 1311,
+        "newLeads": 1307,
         "newCompanies": 114,
         "newClients": 95,
         "newClientsByOwnerName": {
@@ -439,8 +439,8 @@
         "deposits": 209998.97
       },
       "hubspot": {
-        "mktgSent": 18291,
-        "mktgViewed": 3275,
+        "mktgSent": 18311,
+        "mktgViewed": 3279,
         "mktgClicked": 133,
         "newLeads": 589,
         "newCompanies": 25,
@@ -493,7 +493,7 @@
     },
     "2026-07-06": {
       "stripe": {
-        "revenue": 281424.43,
+        "revenue": 281366.47,
         "deposits": 255270.82
       },
       "hubspot": {
@@ -512,18 +512,18 @@
     },
     "2026-07-13": {
       "stripe": {
-        "revenue": 231785.29,
+        "revenue": 232251.66,
         "deposits": 221695.56,
-        "mrrBrands": 59239.67,
+        "mrrBrands": 59538.67,
         "mrrBrandStartup": 25076.58,
-        "mrrBrandPro": 13754,
+        "mrrBrandPro": 14053,
         "mrrBrandMax": 20409.08
       },
       "hubspot": {
         "mktgSent": 104338,
-        "mktgViewed": 15424,
-        "mktgClicked": 222,
-        "newLeads": 507,
+        "mktgViewed": 15428,
+        "mktgClicked": 224,
+        "newLeads": 511,
         "newClients": 54,
         "newClientsByOwnerName": {
           "Mila Vidakovic": 13,
