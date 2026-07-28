@@ -1,11 +1,11 @@
 {
-  "updatedAt": "2026-07-28T17:06:08.906Z",
+  "updatedAt": "2026-07-28T18:58:51.833Z",
   "sources": {
     "stripe": {
       "ok": true,
       "weekCount": 14,
       "diagnostics": {
-        "chargeCount": 28887,
+        "chargeCount": 28885,
         "payoutCount": 63,
         "activeSubscriptionCount": 369,
         "mrrBrands": 59138.67,
@@ -28,8 +28,8 @@
         "ownersCount": 25,
         "contactsCreated": 5000,
         "companiesCreated": 608,
-        "dealsClosedWon": 1259,
-        "dealsWithUnknownOwner": 696,
+        "dealsClosedWon": 1258,
+        "dealsWithUnknownOwner": 695,
         "landingPages": 33,
         "landingPagesNote": "Analytics integration pending — requires HubSpot Analytics API scope"
       }
@@ -38,15 +38,15 @@
   "weeks": [
     {
       "weekStart": "2026-04-27",
-      "revenue": 187513.84,
+      "revenue": 181453.14,
       "deposits": 170683.41,
       "newCompanies": 40,
-      "newClients": 43,
+      "newClients": 40,
       "newClientsByOwnerName": {
         "Dan Kriss": 5,
         "Nick JoinBrands": 4,
         "Dee Mechev": 13,
-        "Mila Vidakovic": 6
+        "Mila Vidakovic": 5
       }
     },
     {
@@ -106,7 +106,7 @@
     },
     {
       "weekStart": "2026-06-01",
-      "revenue": 277010.07,
+      "revenue": 276891.05,
       "deposits": 243671.28,
       "mktgSent": 9262,
       "mktgViewed": 1902,
@@ -127,7 +127,7 @@
       "mktgSent": 14095,
       "mktgViewed": 2451,
       "mktgClicked": 86,
-      "newLeads": 434,
+      "newLeads": 409,
       "newCompanies": 57,
       "newClients": 60,
       "newClientsByOwnerName": {
@@ -141,8 +141,8 @@
       "weekStart": "2026-06-15",
       "revenue": 233968.02,
       "deposits": 209998.97,
-      "mktgSent": 20938,
-      "mktgViewed": 3997,
+      "mktgSent": 20962,
+      "mktgViewed": 4008,
       "mktgClicked": 163,
       "newLeads": 589,
       "newCompanies": 25,
@@ -156,10 +156,10 @@
     },
     {
       "weekStart": "2026-06-22",
-      "revenue": 219589.28,
+      "revenue": 219494.06,
       "deposits": 239563.33,
       "mktgSent": 44627,
-      "mktgViewed": 3771,
+      "mktgViewed": 3772,
       "mktgClicked": 67,
       "newLeads": 600,
       "newClients": 58,
@@ -172,10 +172,10 @@
     },
     {
       "weekStart": "2026-06-29",
-      "revenue": 218122.94,
+      "revenue": 218094.47,
       "deposits": 192068.17,
       "mktgSent": 55329,
-      "mktgViewed": 5052,
+      "mktgViewed": 5053,
       "mktgClicked": 40,
       "newLeads": 597,
       "newClients": 55,
@@ -191,7 +191,7 @@
       "revenue": 269076.14,
       "deposits": 255270.82,
       "mktgSent": 163443,
-      "mktgViewed": 14064,
+      "mktgViewed": 14071,
       "mktgClicked": 314,
       "newLeads": 759,
       "newClients": 51,
@@ -220,10 +220,10 @@
     },
     {
       "weekStart": "2026-07-20",
-      "revenue": 268764.46,
+      "revenue": 268728.6,
       "deposits": 226758.27,
       "mktgSent": 107865,
-      "mktgViewed": 16107,
+      "mktgViewed": 16126,
       "mktgClicked": 196,
       "newLeads": 1179,
       "newClients": 87,
@@ -236,16 +236,16 @@
     },
     {
       "weekStart": "2026-07-27",
-      "revenue": 82796.22,
+      "revenue": 90769.97,
       "deposits": 71552.12,
       "mrrBrands": 59138.67,
       "mrrBrandStartup": 25175.58,
       "mrrBrandPro": 14053,
       "mrrBrandMax": 19910.08,
-      "newLeads": 222,
-      "newClients": 31,
+      "newLeads": 247,
+      "newClients": 33,
       "newClientsByOwnerName": {
-        "Mila Vidakovic": 9,
+        "Mila Vidakovic": 10,
         "Nick JoinBrands": 7,
         "Dee Mechev": 5,
         "Dan Kriss": 4
@@ -262,17 +262,17 @@
   "weeksBySource": {
     "2026-04-27": {
       "stripe": {
-        "revenue": 187513.84,
+        "revenue": 181453.14,
         "deposits": 170683.41
       },
       "hubspot": {
         "newCompanies": 40,
-        "newClients": 43,
+        "newClients": 40,
         "newClientsByOwnerName": {
           "Dan Kriss": 5,
           "Nick JoinBrands": 4,
           "Dee Mechev": 13,
-          "Mila Vidakovic": 6
+          "Mila Vidakovic": 5
         }
       }
     },
@@ -345,7 +345,7 @@
     },
     "2026-06-01": {
       "stripe": {
-        "revenue": 277010.07,
+        "revenue": 276891.05,
         "deposits": 243671.28
       },
       "hubspot": {
@@ -371,7 +371,7 @@
         "mktgSent": 14095,
         "mktgViewed": 2451,
         "mktgClicked": 86,
-        "newLeads": 434,
+        "newLeads": 409,
         "newCompanies": 57,
         "newClients": 60,
         "newClientsByOwnerName": {
@@ -388,8 +388,8 @@
         "deposits": 209998.97
       },
       "hubspot": {
-        "mktgSent": 20938,
-        "mktgViewed": 3997,
+        "mktgSent": 20962,
+        "mktgViewed": 4008,
         "mktgClicked": 163,
         "newLeads": 589,
         "newCompanies": 25,
@@ -404,12 +404,12 @@
     },
     "2026-06-22": {
       "stripe": {
-        "revenue": 219589.28,
+        "revenue": 219494.06,
         "deposits": 239563.33
       },
       "hubspot": {
         "mktgSent": 44627,
-        "mktgViewed": 3771,
+        "mktgViewed": 3772,
         "mktgClicked": 67,
         "newLeads": 600,
         "newClients": 58,
@@ -423,12 +423,12 @@
     },
     "2026-06-29": {
       "stripe": {
-        "revenue": 218122.94,
+        "revenue": 218094.47,
         "deposits": 192068.17
       },
       "hubspot": {
         "mktgSent": 55329,
-        "mktgViewed": 5052,
+        "mktgViewed": 5053,
         "mktgClicked": 40,
         "newLeads": 597,
         "newClients": 55,
@@ -447,7 +447,7 @@
       },
       "hubspot": {
         "mktgSent": 163443,
-        "mktgViewed": 14064,
+        "mktgViewed": 14071,
         "mktgClicked": 314,
         "newLeads": 759,
         "newClients": 51,
@@ -480,12 +480,12 @@
     },
     "2026-07-20": {
       "stripe": {
-        "revenue": 268764.46,
+        "revenue": 268728.6,
         "deposits": 226758.27
       },
       "hubspot": {
         "mktgSent": 107865,
-        "mktgViewed": 16107,
+        "mktgViewed": 16126,
         "mktgClicked": 196,
         "newLeads": 1179,
         "newClients": 87,
@@ -499,7 +499,7 @@
     },
     "2026-07-27": {
       "stripe": {
-        "revenue": 82796.22,
+        "revenue": 90769.97,
         "deposits": 71552.12,
         "mrrBrands": 59138.67,
         "mrrBrandStartup": 25175.58,
@@ -507,10 +507,10 @@
         "mrrBrandMax": 19910.08
       },
       "hubspot": {
-        "newLeads": 222,
-        "newClients": 31,
+        "newLeads": 247,
+        "newClients": 33,
         "newClientsByOwnerName": {
-          "Mila Vidakovic": 9,
+          "Mila Vidakovic": 10,
           "Nick JoinBrands": 7,
           "Dee Mechev": 5,
           "Dan Kriss": 4
