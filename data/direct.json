@@ -1,18 +1,18 @@
 {
-  "updatedAt": "2026-08-01T19:47:14.415Z",
+  "updatedAt": "2026-08-01T21:23:02.544Z",
   "sources": {
     "stripe": {
       "ok": true,
       "weekCount": 14,
       "diagnostics": {
-        "chargeCount": 29410,
+        "chargeCount": 29403,
         "payoutCount": 63,
-        "activeSubscriptionCount": 366,
-        "mrrBrands": 58542.67,
-        "mrrBrandStartup": 24878.58,
+        "activeSubscriptionCount": 367,
+        "mrrBrands": 58641.67,
+        "mrrBrandStartup": 24977.58,
         "mrrBrandPro": 13754,
         "mrrBrandMax": 19910.08,
-        "brandSubCount": 338,
+        "brandSubCount": 339,
         "nonBrandSubCount": 28,
         "nonBrandMrrExcluded": 1372.5
       }
@@ -55,7 +55,7 @@
   "weeks": [
     {
       "weekStart": "2026-04-27",
-      "revenue": 24149.25,
+      "revenue": 23063.12,
       "deposits": 0,
       "newClients": 5,
       "newClientsByOwnerName": {
@@ -154,10 +154,10 @@
       "weekStart": "2026-06-15",
       "revenue": 233660.77,
       "deposits": 209998.97,
-      "mktgSent": 22263,
-      "mktgViewed": 4367,
+      "mktgSent": 22281,
+      "mktgViewed": 4374,
       "mktgClicked": 180,
-      "newLeads": 529,
+      "newLeads": 524,
       "newCompanies": 25,
       "newClients": 57,
       "newClientsByOwnerName": {
@@ -220,7 +220,7 @@
       "revenue": 243169.37,
       "deposits": 221695.56,
       "mktgSent": 104338,
-      "mktgViewed": 15857,
+      "mktgViewed": 15858,
       "mktgClicked": 238,
       "newLeads": 620,
       "newClients": 63,
@@ -236,7 +236,7 @@
       "revenue": 264600.07,
       "deposits": 226758.27,
       "mktgSent": 107865,
-      "mktgViewed": 16358,
+      "mktgViewed": 16360,
       "mktgClicked": 200,
       "newLeads": 1179,
       "newClients": 87,
@@ -249,16 +249,16 @@
     },
     {
       "weekStart": "2026-07-27",
-      "revenue": 310632.24,
+      "revenue": 311546.23,
       "deposits": 256662.07,
-      "mrrBrands": 58542.67,
-      "mrrBrandStartup": 24878.58,
+      "mrrBrands": 58641.67,
+      "mrrBrandStartup": 24977.58,
       "mrrBrandPro": 13754,
       "mrrBrandMax": 19910.08,
-      "mktgSent": 107656,
-      "mktgViewed": 9016,
-      "mktgClicked": 81,
-      "newLeads": 716,
+      "mktgSent": 107270,
+      "mktgViewed": 9093,
+      "mktgClicked": 85,
+      "newLeads": 721,
       "newClients": 85,
       "newClientsByOwnerName": {
         "Dan Kriss": 17,
@@ -279,7 +279,7 @@
   "weeksBySource": {
     "2026-04-27": {
       "stripe": {
-        "revenue": 24149.25,
+        "revenue": 23063.12,
         "deposits": 0
       },
       "hubspot": {
@@ -401,10 +401,10 @@
         "deposits": 209998.97
       },
       "hubspot": {
-        "mktgSent": 22263,
-        "mktgViewed": 4367,
+        "mktgSent": 22281,
+        "mktgViewed": 4374,
         "mktgClicked": 180,
-        "newLeads": 529,
+        "newLeads": 524,
         "newCompanies": 25,
         "newClients": 57,
         "newClientsByOwnerName": {
@@ -479,7 +479,7 @@
       },
       "hubspot": {
         "mktgSent": 104338,
-        "mktgViewed": 15857,
+        "mktgViewed": 15858,
         "mktgClicked": 238,
         "newLeads": 620,
         "newClients": 63,
@@ -498,7 +498,7 @@
       },
       "hubspot": {
         "mktgSent": 107865,
-        "mktgViewed": 16358,
+        "mktgViewed": 16360,
         "mktgClicked": 200,
         "newLeads": 1179,
         "newClients": 87,
@@ -512,18 +512,18 @@
     },
     "2026-07-27": {
       "stripe": {
-        "revenue": 310632.24,
+        "revenue": 311546.23,
         "deposits": 256662.07,
-        "mrrBrands": 58542.67,
-        "mrrBrandStartup": 24878.58,
+        "mrrBrands": 58641.67,
+        "mrrBrandStartup": 24977.58,
         "mrrBrandPro": 13754,
         "mrrBrandMax": 19910.08
       },
       "hubspot": {
-        "mktgSent": 107656,
-        "mktgViewed": 9016,
-        "mktgClicked": 81,
-        "newLeads": 716,
+        "mktgSent": 107270,
+        "mktgViewed": 9093,
+        "mktgClicked": 85,
+        "newLeads": 721,
         "newClients": 85,
         "newClientsByOwnerName": {
           "Dan Kriss": 17,
