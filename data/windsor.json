@@ -1,26 +1,26 @@
 {
-  "updatedAt": "2026-08-01T23:52:43.356Z",
+  "updatedAt": "2026-08-02T02:15:28.231Z",
   "source": "windsor.ai",
   "endpoint": "blended",
   "weeks": [
     {
       "weekStart": "2026-07-20",
-      "costs": 900.77
+      "costs": 569
     },
     {
       "weekStart": "2026-07-27",
-      "costs": 3787.13
+      "costs": 4209.56
     }
   ],
   "weeksBySource": {
     "2026-07-20": {
       "googleads": {
-        "costs": 900.7661
+        "costs": 569.0049
       }
     },
     "2026-07-27": {
       "googleads": {
-        "costs": 3787.1294
+        "costs": 4209.562
       }
     }
   },
@@ -42,17 +42,17 @@
     "googleads": {
       "account_name": "Join Brands - MA",
       "datasource": "google_ads",
-      "date": "2026-07-25",
+      "date": "2026-07-26",
       "source": "google",
       "campaign": "TDD_Search_Brand_US",
-      "spend": 147.5548
+      "spend": 148.9939
     },
     "intercom": {
       "account_name": "windsor",
       "datasource": "intercom",
-      "date": "2026-07-25",
+      "date": "2026-07-26",
       "source": "intercom",
-      "email": "brharmon573@gmail.com"
+      "email": "jessicalewis1216@yahoo.com"
     }
   },
   "sampleRowKeys": [
@@ -65,6 +65,6 @@
     "spend",
     "email"
   ],
-  "rowCount": 7181,
-  "usableRowCount": 110
+  "rowCount": 7196,
+  "usableRowCount": 112
 }
