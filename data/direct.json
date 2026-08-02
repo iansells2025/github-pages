@@ -1,11 +1,11 @@
 {
-  "updatedAt": "2026-08-02T19:47:47.699Z",
+  "updatedAt": "2026-08-02T21:24:32.073Z",
   "sources": {
     "stripe": {
       "ok": true,
       "weekCount": 14,
       "diagnostics": {
-        "chargeCount": 29398,
+        "chargeCount": 29379,
         "payoutCount": 63,
         "activeSubscriptionCount": 364,
         "mrrBrands": 58344.67,
@@ -55,7 +55,7 @@
   "weeks": [
     {
       "weekStart": "2026-04-27",
-      "revenue": 2944.3,
+      "revenue": 1578.95,
       "deposits": 0
     },
     {
@@ -117,8 +117,8 @@
       "weekStart": "2026-06-01",
       "revenue": 276548.26,
       "deposits": 243671.28,
-      "mktgSent": 9631,
-      "mktgViewed": 1983,
+      "mktgSent": 9632,
+      "mktgViewed": 1985,
       "mktgClicked": 84,
       "newCompanies": 114,
       "newClients": 115,
@@ -149,10 +149,10 @@
       "weekStart": "2026-06-15",
       "revenue": 233660.77,
       "deposits": 209998.97,
-      "mktgSent": 22524,
-      "mktgViewed": 4431,
+      "mktgSent": 22542,
+      "mktgViewed": 4436,
       "mktgClicked": 181,
-      "newLeads": 461,
+      "newLeads": 454,
       "newCompanies": 25,
       "newClients": 57,
       "newClientsByOwnerName": {
@@ -180,7 +180,7 @@
     },
     {
       "weekStart": "2026-06-29",
-      "revenue": 216873.09,
+      "revenue": 216837.23,
       "deposits": 192068.17,
       "mktgSent": 55329,
       "mktgViewed": 5059,
@@ -196,7 +196,7 @@
     },
     {
       "weekStart": "2026-07-06",
-      "revenue": 268110.31,
+      "revenue": 268061.95,
       "deposits": 255270.82,
       "mktgSent": 163443,
       "mktgViewed": 14095,
@@ -231,7 +231,7 @@
       "revenue": 264411.19,
       "deposits": 226758.27,
       "mktgSent": 107865,
-      "mktgViewed": 16367,
+      "mktgViewed": 16369,
       "mktgClicked": 202,
       "newLeads": 1179,
       "newClients": 87,
@@ -244,16 +244,16 @@
     },
     {
       "weekStart": "2026-07-27",
-      "revenue": 326729.14,
+      "revenue": 326684.95,
       "deposits": 256662.07,
       "mrrBrands": 58344.67,
       "mrrBrandStartup": 24680.58,
       "mrrBrandPro": 13754,
       "mrrBrandMax": 19910.08,
       "mktgSent": 106871,
-      "mktgViewed": 9544,
-      "mktgClicked": 96,
-      "newLeads": 784,
+      "mktgViewed": 9555,
+      "mktgClicked": 97,
+      "newLeads": 791,
       "newClients": 92,
       "newClientsByOwnerName": {
         "Dan Kriss": 19,
@@ -274,7 +274,7 @@
   "weeksBySource": {
     "2026-04-27": {
       "stripe": {
-        "revenue": 2944.3,
+        "revenue": 1578.95,
         "deposits": 0
       }
     },
@@ -351,8 +351,8 @@
         "deposits": 243671.28
       },
       "hubspot": {
-        "mktgSent": 9631,
-        "mktgViewed": 1983,
+        "mktgSent": 9632,
+        "mktgViewed": 1985,
         "mktgClicked": 84,
         "newCompanies": 114,
         "newClients": 115,
@@ -389,10 +389,10 @@
         "deposits": 209998.97
       },
       "hubspot": {
-        "mktgSent": 22524,
-        "mktgViewed": 4431,
+        "mktgSent": 22542,
+        "mktgViewed": 4436,
         "mktgClicked": 181,
-        "newLeads": 461,
+        "newLeads": 454,
         "newCompanies": 25,
         "newClients": 57,
         "newClientsByOwnerName": {
@@ -424,7 +424,7 @@
     },
     "2026-06-29": {
       "stripe": {
-        "revenue": 216873.09,
+        "revenue": 216837.23,
         "deposits": 192068.17
       },
       "hubspot": {
@@ -443,7 +443,7 @@
     },
     "2026-07-06": {
       "stripe": {
-        "revenue": 268110.31,
+        "revenue": 268061.95,
         "deposits": 255270.82
       },
       "hubspot": {
@@ -486,7 +486,7 @@
       },
       "hubspot": {
         "mktgSent": 107865,
-        "mktgViewed": 16367,
+        "mktgViewed": 16369,
         "mktgClicked": 202,
         "newLeads": 1179,
         "newClients": 87,
@@ -500,7 +500,7 @@
     },
     "2026-07-27": {
       "stripe": {
-        "revenue": 326729.14,
+        "revenue": 326684.95,
         "deposits": 256662.07,
         "mrrBrands": 58344.67,
         "mrrBrandStartup": 24680.58,
@@ -509,9 +509,9 @@
       },
       "hubspot": {
         "mktgSent": 106871,
-        "mktgViewed": 9544,
-        "mktgClicked": 96,
-        "newLeads": 784,
+        "mktgViewed": 9555,
+        "mktgClicked": 97,
+        "newLeads": 791,
         "newClients": 92,
         "newClientsByOwnerName": {
           "Dan Kriss": 19,
