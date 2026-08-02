@@ -1,11 +1,11 @@
 {
-  "updatedAt": "2026-08-02T17:28:26.446Z",
+  "updatedAt": "2026-08-02T18:25:59.007Z",
   "sources": {
     "stripe": {
       "ok": true,
       "weekCount": 14,
       "diagnostics": {
-        "chargeCount": 29419,
+        "chargeCount": 29415,
         "payoutCount": 63,
         "activeSubscriptionCount": 364,
         "mrrBrands": 58344.67,
@@ -55,7 +55,7 @@
   "weeks": [
     {
       "weekStart": "2026-04-27",
-      "revenue": 4489.25,
+      "revenue": 4000.16,
       "deposits": 0
     },
     {
@@ -149,10 +149,10 @@
       "weekStart": "2026-06-15",
       "revenue": 233660.77,
       "deposits": 209998.97,
-      "mktgSent": 22490,
-      "mktgViewed": 4415,
+      "mktgSent": 22502,
+      "mktgViewed": 4420,
       "mktgClicked": 181,
-      "newLeads": 467,
+      "newLeads": 464,
       "newCompanies": 25,
       "newClients": 57,
       "newClientsByOwnerName": {
@@ -244,16 +244,16 @@
     },
     {
       "weekStart": "2026-07-27",
-      "revenue": 326070.94,
+      "revenue": 326181.96,
       "deposits": 256662.07,
       "mrrBrands": 58344.67,
       "mrrBrandStartup": 24680.58,
       "mrrBrandPro": 13754,
       "mrrBrandMax": 19910.08,
-      "mktgSent": 106872,
-      "mktgViewed": 9512,
+      "mktgSent": 106871,
+      "mktgViewed": 9527,
       "mktgClicked": 96,
-      "newLeads": 778,
+      "newLeads": 781,
       "newClients": 92,
       "newClientsByOwnerName": {
         "Dan Kriss": 19,
@@ -274,7 +274,7 @@
   "weeksBySource": {
     "2026-04-27": {
       "stripe": {
-        "revenue": 4489.25,
+        "revenue": 4000.16,
         "deposits": 0
       }
     },
@@ -389,10 +389,10 @@
         "deposits": 209998.97
       },
       "hubspot": {
-        "mktgSent": 22490,
-        "mktgViewed": 4415,
+        "mktgSent": 22502,
+        "mktgViewed": 4420,
         "mktgClicked": 181,
-        "newLeads": 467,
+        "newLeads": 464,
         "newCompanies": 25,
         "newClients": 57,
         "newClientsByOwnerName": {
@@ -500,7 +500,7 @@
     },
     "2026-07-27": {
       "stripe": {
-        "revenue": 326070.94,
+        "revenue": 326181.96,
         "deposits": 256662.07,
         "mrrBrands": 58344.67,
         "mrrBrandStartup": 24680.58,
@@ -508,10 +508,10 @@
         "mrrBrandMax": 19910.08
       },
       "hubspot": {
-        "mktgSent": 106872,
-        "mktgViewed": 9512,
+        "mktgSent": 106871,
+        "mktgViewed": 9527,
         "mktgClicked": 96,
-        "newLeads": 778,
+        "newLeads": 781,
         "newClients": 92,
         "newClientsByOwnerName": {
           "Dan Kriss": 19,
