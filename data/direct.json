@@ -1,11 +1,11 @@
 {
-  "updatedAt": "2026-08-10T16:24:21.530Z",
+  "updatedAt": "2026-08-10T17:21:32.991Z",
   "sources": {
     "stripe": {
       "ok": true,
       "weekCount": 14,
       "diagnostics": {
-        "chargeCount": 29584,
+        "chargeCount": 29603,
         "payoutCount": 63,
         "activeSubscriptionCount": 364,
         "mrrBrands": 59544.67,
@@ -55,7 +55,7 @@
   "weeks": [
     {
       "weekStart": "2026-05-11",
-      "revenue": 263047.16,
+      "revenue": 261357.54,
       "deposits": 241836.24,
       "newCompanies": 35,
       "newClients": 38,
@@ -131,8 +131,8 @@
       "weekStart": "2026-06-15",
       "revenue": 232630,
       "deposits": 209998.97,
-      "mktgSent": 24736,
-      "mktgViewed": 4918,
+      "mktgSent": 24748,
+      "mktgViewed": 4922,
       "mktgClicked": 206,
       "newCompanies": 25,
       "newClients": 56,
@@ -150,7 +150,7 @@
       "mktgSent": 44627,
       "mktgViewed": 3778,
       "mktgClicked": 67,
-      "newLeads": 195,
+      "newLeads": 184,
       "newClients": 58,
       "newClientsByOwnerName": {
         "Mila Vidakovic": 11,
@@ -212,7 +212,7 @@
       "revenue": 257778.07,
       "deposits": 226758.27,
       "mktgSent": 107865,
-      "mktgViewed": 16499,
+      "mktgViewed": 16500,
       "mktgClicked": 203,
       "newLeads": 1177,
       "newClients": 86,
@@ -228,7 +228,7 @@
       "revenue": 323701.27,
       "deposits": 256662.07,
       "mktgSent": 106864,
-      "mktgViewed": 10262,
+      "mktgViewed": 10264,
       "mktgClicked": 109,
       "newLeads": 803,
       "newClients": 95,
@@ -245,8 +245,8 @@
       "revenue": 306234.89,
       "deposits": 267620.56,
       "mktgSent": 106753,
-      "mktgViewed": 9886,
-      "mktgClicked": 182,
+      "mktgViewed": 9922,
+      "mktgClicked": 183,
       "newLeads": 782,
       "newClients": 403,
       "newClientsByOwnerName": {
@@ -259,13 +259,13 @@
     },
     {
       "weekStart": "2026-08-10",
-      "revenue": 24810.3,
+      "revenue": 25895.64,
       "deposits": 55405.74,
       "mrrBrands": 59544.67,
       "mrrBrandStartup": 24185.58,
       "mrrBrandPro": 14950,
       "mrrBrandMax": 20409.08,
-      "newLeads": 67,
+      "newLeads": 78,
       "newClients": 171,
       "newClientsByOwnerName": {
         "Dan Kriss": 2,
@@ -285,7 +285,7 @@
   "weeksBySource": {
     "2026-05-11": {
       "stripe": {
-        "revenue": 263047.16,
+        "revenue": 261357.54,
         "deposits": 241836.24
       },
       "hubspot": {
@@ -378,8 +378,8 @@
         "deposits": 209998.97
       },
       "hubspot": {
-        "mktgSent": 24736,
-        "mktgViewed": 4918,
+        "mktgSent": 24748,
+        "mktgViewed": 4922,
         "mktgClicked": 206,
         "newCompanies": 25,
         "newClients": 56,
@@ -400,7 +400,7 @@
         "mktgSent": 44627,
         "mktgViewed": 3778,
         "mktgClicked": 67,
-        "newLeads": 195,
+        "newLeads": 184,
         "newClients": 58,
         "newClientsByOwnerName": {
           "Mila Vidakovic": 11,
@@ -474,7 +474,7 @@
       },
       "hubspot": {
         "mktgSent": 107865,
-        "mktgViewed": 16499,
+        "mktgViewed": 16500,
         "mktgClicked": 203,
         "newLeads": 1177,
         "newClients": 86,
@@ -493,7 +493,7 @@
       },
       "hubspot": {
         "mktgSent": 106864,
-        "mktgViewed": 10262,
+        "mktgViewed": 10264,
         "mktgClicked": 109,
         "newLeads": 803,
         "newClients": 95,
@@ -513,8 +513,8 @@
       },
       "hubspot": {
         "mktgSent": 106753,
-        "mktgViewed": 9886,
-        "mktgClicked": 182,
+        "mktgViewed": 9922,
+        "mktgClicked": 183,
         "newLeads": 782,
         "newClients": 403,
         "newClientsByOwnerName": {
@@ -528,7 +528,7 @@
     },
     "2026-08-10": {
       "stripe": {
-        "revenue": 24810.3,
+        "revenue": 25895.64,
         "deposits": 55405.74,
         "mrrBrands": 59544.67,
         "mrrBrandStartup": 24185.58,
@@ -536,7 +536,7 @@
         "mrrBrandMax": 20409.08
       },
       "hubspot": {
-        "newLeads": 67,
+        "newLeads": 78,
         "newClients": 171,
         "newClientsByOwnerName": {
           "Dan Kriss": 2,
