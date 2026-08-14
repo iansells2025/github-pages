@@ -1,18 +1,18 @@
 {
-  "updatedAt": "2026-08-14T20:58:06.656Z",
+  "updatedAt": "2026-08-14T21:52:36.362Z",
   "sources": {
     "stripe": {
       "ok": true,
       "weekCount": 14,
       "diagnostics": {
-        "chargeCount": 29828,
+        "chargeCount": 29836,
         "payoutCount": 63,
-        "activeSubscriptionCount": 366,
-        "mrrBrands": 59293.58,
-        "mrrBrandStartup": 24383.58,
+        "activeSubscriptionCount": 365,
+        "mrrBrands": 59194.58,
+        "mrrBrandStartup": 24284.58,
         "mrrBrandPro": 14950,
         "mrrBrandMax": 19960,
-        "brandSubCount": 337,
+        "brandSubCount": 336,
         "nonBrandSubCount": 29,
         "nonBrandMrrExcluded": 1422.45
       }
@@ -55,7 +55,7 @@
   "weeks": [
     {
       "weekStart": "2026-05-11",
-      "revenue": 51698.44,
+      "revenue": 51201.18,
       "deposits": 0,
       "newCompanies": 2,
       "newClients": 5,
@@ -130,8 +130,8 @@
       "weekStart": "2026-06-15",
       "revenue": 232349.19,
       "deposits": 209998.97,
-      "mktgSent": 26044,
-      "mktgViewed": 5303,
+      "mktgSent": 26056,
+      "mktgViewed": 5305,
       "mktgClicked": 223,
       "newCompanies": 25,
       "newClients": 56,
@@ -164,7 +164,7 @@
       "mktgSent": 55329,
       "mktgViewed": 5068,
       "mktgClicked": 40,
-      "newLeads": 235,
+      "newLeads": 226,
       "newClients": 60,
       "newClientsByOwnerName": {
         "Nick JoinBrands": 10,
@@ -226,7 +226,7 @@
       "revenue": 317323.38,
       "deposits": 256662.07,
       "mktgSent": 106864,
-      "mktgViewed": 10311,
+      "mktgViewed": 10312,
       "mktgClicked": 111,
       "newLeads": 803,
       "newClients": 95,
@@ -243,7 +243,7 @@
       "revenue": 300852.43,
       "deposits": 267620.56,
       "mktgSent": 106743,
-      "mktgViewed": 10356,
+      "mktgViewed": 10357,
       "mktgClicked": 199,
       "newLeads": 782,
       "newClients": 149,
@@ -257,13 +257,13 @@
     },
     {
       "weekStart": "2026-08-10",
-      "revenue": 261742.86,
+      "revenue": 263926.78,
       "deposits": 293204.13,
-      "mrrBrands": 59293.58,
-      "mrrBrandStartup": 24383.58,
+      "mrrBrands": 59194.58,
+      "mrrBrandStartup": 24284.58,
       "mrrBrandPro": 14950,
       "mrrBrandMax": 19960,
-      "newLeads": 624,
+      "newLeads": 633,
       "newClients": 183,
       "newClientsByOwnerName": {
         "Dee Mechev": 13,
@@ -283,7 +283,7 @@
   "weeksBySource": {
     "2026-05-11": {
       "stripe": {
-        "revenue": 51698.44,
+        "revenue": 51201.18,
         "deposits": 0
       },
       "hubspot": {
@@ -375,8 +375,8 @@
         "deposits": 209998.97
       },
       "hubspot": {
-        "mktgSent": 26044,
-        "mktgViewed": 5303,
+        "mktgSent": 26056,
+        "mktgViewed": 5305,
         "mktgClicked": 223,
         "newCompanies": 25,
         "newClients": 56,
@@ -415,7 +415,7 @@
         "mktgSent": 55329,
         "mktgViewed": 5068,
         "mktgClicked": 40,
-        "newLeads": 235,
+        "newLeads": 226,
         "newClients": 60,
         "newClientsByOwnerName": {
           "Nick JoinBrands": 10,
@@ -489,7 +489,7 @@
       },
       "hubspot": {
         "mktgSent": 106864,
-        "mktgViewed": 10311,
+        "mktgViewed": 10312,
         "mktgClicked": 111,
         "newLeads": 803,
         "newClients": 95,
@@ -509,7 +509,7 @@
       },
       "hubspot": {
         "mktgSent": 106743,
-        "mktgViewed": 10356,
+        "mktgViewed": 10357,
         "mktgClicked": 199,
         "newLeads": 782,
         "newClients": 149,
@@ -524,15 +524,15 @@
     },
     "2026-08-10": {
       "stripe": {
-        "revenue": 261742.86,
+        "revenue": 263926.78,
         "deposits": 293204.13,
-        "mrrBrands": 59293.58,
-        "mrrBrandStartup": 24383.58,
+        "mrrBrands": 59194.58,
+        "mrrBrandStartup": 24284.58,
         "mrrBrandPro": 14950,
         "mrrBrandMax": 19960
       },
       "hubspot": {
-        "newLeads": 624,
+        "newLeads": 633,
         "newClients": 183,
         "newClientsByOwnerName": {
           "Dee Mechev": 13,
