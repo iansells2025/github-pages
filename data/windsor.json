@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-08-15T20:15:57.682Z",
+  "updatedAt": "2026-08-15T21:16:01.944Z",
   "source": "windsor.ai",
   "endpoint": "blended",
   "weeks": [
@@ -9,7 +9,7 @@
     },
     {
       "weekStart": "2026-08-10",
-      "costs": 5450.88
+      "costs": 5450.82
     }
   ],
   "weeksBySource": {
@@ -20,7 +20,7 @@
     },
     "2026-08-10": {
       "googleads": {
-        "costs": 5450.8832
+        "costs": 5450.8195
       }
     }
   },
@@ -65,6 +65,6 @@
     "spend",
     "email"
   ],
-  "rowCount": 6991,
+  "rowCount": 6992,
   "usableRowCount": 113
 }
