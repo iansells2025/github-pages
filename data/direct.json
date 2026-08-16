@@ -1,11 +1,11 @@
 {
-  "updatedAt": "2026-08-16T13:13:46.530Z",
+  "updatedAt": "2026-08-16T13:57:15.074Z",
   "sources": {
     "stripe": {
       "ok": true,
       "weekCount": 14,
       "diagnostics": {
-        "chargeCount": 29772,
+        "chargeCount": 29781,
         "payoutCount": 63,
         "activeSubscriptionCount": 364,
         "mrrBrands": 58994.58,
@@ -127,8 +127,8 @@
       "weekStart": "2026-06-15",
       "revenue": 232349.19,
       "deposits": 209998.97,
-      "mktgSent": 26462,
-      "mktgViewed": 5402,
+      "mktgSent": 26472,
+      "mktgViewed": 5405,
       "mktgClicked": 226,
       "newCompanies": 25,
       "newClients": 56,
@@ -161,7 +161,7 @@
       "mktgSent": 55329,
       "mktgViewed": 5068,
       "mktgClicked": 40,
-      "newLeads": 98,
+      "newLeads": 95,
       "newClients": 60,
       "newClientsByOwnerName": {
         "Nick JoinBrands": 10,
@@ -254,13 +254,13 @@
     },
     {
       "weekStart": "2026-08-10",
-      "revenue": 296023.4,
+      "revenue": 296565.24,
       "deposits": 293204.13,
       "mrrBrands": 58994.58,
       "mrrBrandStartup": 24383.58,
       "mrrBrandPro": 14651,
       "mrrBrandMax": 19960,
-      "newLeads": 761,
+      "newLeads": 764,
       "newClients": 192,
       "newClientsByOwnerName": {
         "Mila Vidakovic": 11,
@@ -369,8 +369,8 @@
         "deposits": 209998.97
       },
       "hubspot": {
-        "mktgSent": 26462,
-        "mktgViewed": 5402,
+        "mktgSent": 26472,
+        "mktgViewed": 5405,
         "mktgClicked": 226,
         "newCompanies": 25,
         "newClients": 56,
@@ -409,7 +409,7 @@
         "mktgSent": 55329,
         "mktgViewed": 5068,
         "mktgClicked": 40,
-        "newLeads": 98,
+        "newLeads": 95,
         "newClients": 60,
         "newClientsByOwnerName": {
           "Nick JoinBrands": 10,
@@ -518,7 +518,7 @@
     },
     "2026-08-10": {
       "stripe": {
-        "revenue": 296023.4,
+        "revenue": 296565.24,
         "deposits": 293204.13,
         "mrrBrands": 58994.58,
         "mrrBrandStartup": 24383.58,
@@ -526,7 +526,7 @@
         "mrrBrandMax": 19960
       },
       "hubspot": {
-        "newLeads": 761,
+        "newLeads": 764,
         "newClients": 192,
         "newClientsByOwnerName": {
           "Mila Vidakovic": 11,
