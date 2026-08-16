@@ -1,26 +1,26 @@
 {
-  "updatedAt": "2026-08-16T02:22:40.038Z",
+  "updatedAt": "2026-08-16T03:43:21.732Z",
   "source": "windsor.ai",
   "endpoint": "blended",
   "weeks": [
     {
       "weekStart": "2026-08-03",
-      "costs": 896.23
+      "costs": 449.53
     },
     {
       "weekStart": "2026-08-10",
-      "costs": 5450.82
+      "costs": 5820.99
     }
   ],
   "weeksBySource": {
     "2026-08-03": {
       "googleads": {
-        "costs": 896.2315
+        "costs": 449.5333
       }
     },
     "2026-08-10": {
       "googleads": {
-        "costs": 5450.8195
+        "costs": 5820.9895
       }
     }
   },
@@ -42,17 +42,17 @@
     "googleads": {
       "account_name": "Join Brands - MA",
       "datasource": "google_ads",
-      "date": "2026-08-08",
+      "date": "2026-08-09",
       "source": "google",
       "campaign": "TDD_Search_Brand_US",
-      "spend": 172.5371
+      "spend": 165.2416
     },
     "intercom": {
       "account_name": "windsor",
       "datasource": "intercom",
-      "date": "2026-08-08",
+      "date": "2026-08-09",
       "source": "intercom",
-      "email": "sarinaarceo.ugc@gmail.com"
+      "email": "asmaahome7@gmail.com"
     }
   },
   "sampleRowKeys": [
@@ -65,6 +65,6 @@
     "spend",
     "email"
   ],
-  "rowCount": 6992,
-  "usableRowCount": 113
+  "rowCount": 7116,
+  "usableRowCount": 112
 }
