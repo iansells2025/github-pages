@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-08-17T13:17:30.554Z",
+  "updatedAt": "2026-08-17T14:06:29.272Z",
   "sources": {
     "stripe": {
       "ok": true,
@@ -7,19 +7,19 @@
       "diagnostics": {
         "chargeCount": 29796,
         "payoutCount": 63,
-        "activeSubscriptionCount": 363,
-        "mrrBrands": 58895.58,
-        "mrrBrandStartup": 24284.58,
+        "activeSubscriptionCount": 364,
+        "mrrBrands": 58994.58,
+        "mrrBrandStartup": 24383.58,
         "mrrBrandPro": 14651,
         "mrrBrandMax": 19960,
-        "brandSubCount": 335,
+        "brandSubCount": 336,
         "nonBrandSubCount": 28,
         "nonBrandMrrExcluded": 1372.5
       }
     },
     "hubspot": {
       "ok": true,
-      "weekCount": 15,
+      "weekCount": 16,
       "diagnostics": {
         "emailsTotal": 140,
         "emailsInLookback": 62,
@@ -45,7 +45,7 @@
         "ownersCount": 25,
         "contactsCreated": 5000,
         "companiesCreated": 304,
-        "dealsClosedWon": 1069,
+        "dealsClosedWon": 1070,
         "dealsWithUnknownOwner": 450,
         "landingPages": 34,
         "landingPagesNote": "Analytics integration pending — requires HubSpot Analytics API scope"
@@ -55,7 +55,7 @@
   "weeks": [
     {
       "weekStart": "2026-05-18",
-      "revenue": 253698.08,
+      "revenue": 251775.73,
       "deposits": 234298.58,
       "newCompanies": 18,
       "newClients": 47,
@@ -118,7 +118,7 @@
       "weekStart": "2026-06-15",
       "revenue": 232349.19,
       "deposits": 209998.97,
-      "mktgSent": 26692,
+      "mktgSent": 26703,
       "mktgViewed": 5482,
       "mktgClicked": 228,
       "newCompanies": 25,
@@ -135,7 +135,7 @@
       "revenue": 218426.53,
       "deposits": 239563.33,
       "mktgSent": 44627,
-      "mktgViewed": 3786,
+      "mktgViewed": 3787,
       "mktgClicked": 67,
       "newClients": 58,
       "newClientsByOwnerName": {
@@ -167,7 +167,7 @@
       "mktgSent": 163443,
       "mktgViewed": 14151,
       "mktgClicked": 319,
-      "newLeads": 749,
+      "newLeads": 745,
       "newClients": 51,
       "newClientsByOwnerName": {
         "Dan Kriss": 6,
@@ -178,10 +178,10 @@
     },
     {
       "weekStart": "2026-07-13",
-      "revenue": 237123.77,
+      "revenue": 236812.71,
       "deposits": 221695.56,
       "mktgSent": 104338,
-      "mktgViewed": 15934,
+      "mktgViewed": 15936,
       "mktgClicked": 243,
       "newLeads": 620,
       "newClients": 63,
@@ -227,7 +227,7 @@
     },
     {
       "weekStart": "2026-08-03",
-      "revenue": 298793.35,
+      "revenue": 298704.09,
       "deposits": 267620.56,
       "mktgSent": 106743,
       "mktgViewed": 10411,
@@ -244,10 +244,10 @@
     },
     {
       "weekStart": "2026-08-10",
-      "revenue": 304347.82,
+      "revenue": 304258.56,
       "deposits": 293204.13,
       "mktgSent": 53537,
-      "mktgViewed": 4843,
+      "mktgViewed": 4901,
       "mktgClicked": 47,
       "newLeads": 813,
       "newClients": 194,
@@ -260,13 +260,13 @@
     },
     {
       "weekStart": "2026-08-17",
-      "revenue": 17201.92,
+      "revenue": 18625.23,
       "deposits": 44931.13,
-      "mrrBrands": 58895.58,
-      "mrrBrandStartup": 24284.58,
+      "mrrBrands": 58994.58,
+      "mrrBrandStartup": 24383.58,
       "mrrBrandPro": 14651,
       "mrrBrandMax": 19960,
-      "newLeads": 56,
+      "newLeads": 60,
       "newClients": 5,
       "newClientsByOwnerName": {
         "Dee Mechev": 3,
@@ -280,12 +280,19 @@
       "newClientsByOwnerName": {
         "Chloe The Pom": 1
       }
+    },
+    {
+      "weekStart": "2026-09-28",
+      "newClients": 1,
+      "newClientsByOwnerName": {
+        "Chloe The Pom": 1
+      }
     }
   ],
   "weeksBySource": {
     "2026-05-18": {
       "stripe": {
-        "revenue": 253698.08,
+        "revenue": 251775.73,
         "deposits": 234298.58
       },
       "hubspot": {
@@ -362,7 +369,7 @@
         "deposits": 209998.97
       },
       "hubspot": {
-        "mktgSent": 26692,
+        "mktgSent": 26703,
         "mktgViewed": 5482,
         "mktgClicked": 228,
         "newCompanies": 25,
@@ -382,7 +389,7 @@
       },
       "hubspot": {
         "mktgSent": 44627,
-        "mktgViewed": 3786,
+        "mktgViewed": 3787,
         "mktgClicked": 67,
         "newClients": 58,
         "newClientsByOwnerName": {
@@ -420,7 +427,7 @@
         "mktgSent": 163443,
         "mktgViewed": 14151,
         "mktgClicked": 319,
-        "newLeads": 749,
+        "newLeads": 745,
         "newClients": 51,
         "newClientsByOwnerName": {
           "Dan Kriss": 6,
@@ -432,12 +439,12 @@
     },
     "2026-07-13": {
       "stripe": {
-        "revenue": 237123.77,
+        "revenue": 236812.71,
         "deposits": 221695.56
       },
       "hubspot": {
         "mktgSent": 104338,
-        "mktgViewed": 15934,
+        "mktgViewed": 15936,
         "mktgClicked": 243,
         "newLeads": 620,
         "newClients": 63,
@@ -490,7 +497,7 @@
     },
     "2026-08-03": {
       "stripe": {
-        "revenue": 298793.35,
+        "revenue": 298704.09,
         "deposits": 267620.56
       },
       "hubspot": {
@@ -510,12 +517,12 @@
     },
     "2026-08-10": {
       "stripe": {
-        "revenue": 304347.82,
+        "revenue": 304258.56,
         "deposits": 293204.13
       },
       "hubspot": {
         "mktgSent": 53537,
-        "mktgViewed": 4843,
+        "mktgViewed": 4901,
         "mktgClicked": 47,
         "newLeads": 813,
         "newClients": 194,
@@ -529,15 +536,15 @@
     },
     "2026-08-17": {
       "stripe": {
-        "revenue": 17201.92,
+        "revenue": 18625.23,
         "deposits": 44931.13,
-        "mrrBrands": 58895.58,
-        "mrrBrandStartup": 24284.58,
+        "mrrBrands": 58994.58,
+        "mrrBrandStartup": 24383.58,
         "mrrBrandPro": 14651,
         "mrrBrandMax": 19960
       },
       "hubspot": {
-        "newLeads": 56,
+        "newLeads": 60,
         "newClients": 5,
         "newClientsByOwnerName": {
           "Dee Mechev": 3,
@@ -547,6 +554,14 @@
       }
     },
     "2026-08-31": {
+      "hubspot": {
+        "newClients": 1,
+        "newClientsByOwnerName": {
+          "Chloe The Pom": 1
+        }
+      }
+    },
+    "2026-09-28": {
       "hubspot": {
         "newClients": 1,
         "newClientsByOwnerName": {
