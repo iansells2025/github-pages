@@ -156,24 +156,37 @@
 
   async function loadJsonFeed(url) {
     try {
-      const res = await fetch(url, { cache: 'no-store' });
+      // Bust GitHub Pages' CDN + any browser cache with a cache-busting
+      // querystring on the URL. Pages caches by URL, so `?_=<epoch>` gives
+      // a unique URL every refresh and always serves the newest file.
+      const res = await fetch(`${url}?_=${Date.now()}`, { cache: 'no-store' });
       if (!res.ok) return null;
       return await res.json();
     } catch { return null; }
   }
 
-  const windsorJson = await loadJsonFeed(WINDSOR_URL);
-  if (windsorJson) {
-    windsorData = Array.isArray(windsorJson.weeks) ? windsorJson.weeks : [];
-    windsorBySource = windsorJson.weeksBySource || {};
-    windsorUpdatedAt = windsorJson.updatedAt || null;
+  async function loadSyncedFeeds() {
+    const [windsorJson, directJson] = await Promise.all([
+      loadJsonFeed(WINDSOR_URL),
+      loadJsonFeed(DIRECT_URL),
+    ]);
+    if (windsorJson) {
+      windsorData = Array.isArray(windsorJson.weeks) ? windsorJson.weeks : [];
+      windsorBySource = windsorJson.weeksBySource || {};
+      windsorUpdatedAt = windsorJson.updatedAt || null;
+    } else {
+      windsorData = []; windsorBySource = {}; windsorUpdatedAt = null;
+    }
+    if (directJson) {
+      directData = Array.isArray(directJson.weeks) ? directJson.weeks : [];
+      directBySource = directJson.weeksBySource || {};
+      directUpdatedAt = directJson.updatedAt || null;
+    } else {
+      directData = []; directBySource = {}; directUpdatedAt = null;
+    }
   }
-  const directJson = await loadJsonFeed(DIRECT_URL);
-  if (directJson) {
-    directData = Array.isArray(directJson.weeks) ? directJson.weeks : [];
-    directBySource = directJson.weeksBySource || {};
-    directUpdatedAt = directJson.updatedAt || null;
-  }
+
+  await loadSyncedFeeds();
 
   /* Effective dataset, with priority: manual > direct API > Windsor baseline,
    * applied per metric (so any layer can fill in metrics the lower layer
@@ -198,23 +211,22 @@
 
   let data = buildEffectiveData();
 
-  // Show real data only. Empty dashboard = no synced sources yet AND no
-  // manual entries. If the user still has stale demo data from a
-  // previous version that auto-seeded, offer a one-time wipe.
+  // Show real data only. Silently wipe stale demo data from the previous
+   // auto-seeded version — no prompt (the prompt-based flow missed users
+   // who dismissed it or had the -decided flag set from earlier). Real
+   // sources never emit `gmv` + `videos` + `creators` together, so this
+   // is a safe signature for the old seed rows.
   function looksLikeDemo(rows) {
-    if (rows.length < 12) return false;
-    // Demo seed always wrote `creators`, `brands`, `gmv`, `videos`, etc.
-    // and salesCallsByRep with the auto-generated rep IDs. Real data
-    // from Stripe/HubSpot/Windsor never includes `gmv` or `videos`.
+    if (rows.length < 8) return false;
     return rows.some(r => r.gmv !== undefined && r.videos !== undefined && r.creators !== undefined);
   }
-  if (manualData.length > 0 && looksLikeDemo(manualData) && !localStorage.getItem('jb-marketing-demo-clear-decided')) {
-    if (confirm('Clear demo/sample data so the dashboard shows only real synced data? Your manually-entered weeks (if any) will also be cleared.')) {
-      manualData = [];
-      saveData(manualData);
-      data = buildEffectiveData();
-    }
-    localStorage.setItem('jb-marketing-demo-clear-decided', '1');
+  if (manualData.length > 0 && looksLikeDemo(manualData)) {
+    console.log('[dashboard] auto-clearing stale demo data from localStorage');
+    manualData = [];
+    saveData(manualData);
+    data = buildEffectiveData();
+    // Clean up the old decision flag too so it doesn't linger.
+    localStorage.removeItem('jb-marketing-demo-clear-decided');
   }
 
 
@@ -1273,6 +1285,26 @@
     }
   }
   renderFreshness();
+
+  /* ---------- Refresh button ---------- */
+  const refreshBtn = document.getElementById('refreshBtn');
+  refreshBtn?.addEventListener('click', async () => {
+    if (refreshBtn.dataset.busy === '1') return;
+    refreshBtn.dataset.busy = '1';
+    const originalText = refreshBtn.textContent;
+    refreshBtn.textContent = '↻ Refreshing…';
+    refreshBtn.disabled = true;
+    try {
+      await loadSyncedFeeds();
+      data = buildEffectiveData();
+      renderAll();
+      renderFreshness();
+    } finally {
+      refreshBtn.textContent = originalText;
+      refreshBtn.disabled = false;
+      refreshBtn.dataset.busy = '0';
+    }
+  });
 
   /* ---------- Initial render ---------- */
   renderAll();
