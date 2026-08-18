@@ -18,13 +18,13 @@
   function saveReps(reps) { localStorage.setItem(REPS_KEY, JSON.stringify(reps)); }
   function newRepId() { return 'r_' + Math.random().toString(36).slice(2, 9); }
 
-  let reps = loadReps();
-  if (!reps) {
-    reps = [
-      { id: newRepId(), name: 'Alex Chen',   color: REP_PALETTE[0] },
-      { id: newRepId(), name: 'Sam Patel',   color: REP_PALETTE[1] },
-      { id: newRepId(), name: 'Jordan Liu',  color: REP_PALETTE[2] },
-    ];
+  const DEMO_REP_NAMES = new Set(['Alex Chen', 'Sam Patel', 'Jordan Liu']);
+  let reps = loadReps() || [];
+  // Silently wipe demo-seeded reps if that's all localStorage has. Real reps
+  // (either user-added or auto-discovered from HubSpot below) survive.
+  if (reps.length > 0 && reps.every(r => DEMO_REP_NAMES.has(r.name))) {
+    console.log('[dashboard] auto-clearing demo sales reps');
+    reps = [];
     saveReps(reps);
   }
   function repColor(rep, idx) { return rep.color || REP_PALETTE[idx % REP_PALETTE.length]; }
@@ -187,6 +187,35 @@
   }
 
   await loadSyncedFeeds();
+
+  // Auto-discover sales reps from HubSpot's per-owner deal attribution.
+  // Any name that appears in newClientsByOwnerName and isn't already in
+  // the rep list is added with the next palette color. Runs on every load
+  // so newly-active owners show up automatically. Also runs after each
+  // refresh via discoverRepsFromFeeds().
+  function discoverRepsFromFeeds() {
+    const names = new Set();
+    for (const w of directData) {
+      if (w.newClientsByOwnerName) {
+        for (const name of Object.keys(w.newClientsByOwnerName)) {
+          if (name) names.add(name);
+        }
+      }
+    }
+    const existing = new Set(reps.map(r => r.name));
+    let added = false;
+    for (const name of names) {
+      if (!existing.has(name)) {
+        reps.push({ id: newRepId(), name, color: REP_PALETTE[reps.length % REP_PALETTE.length] });
+        added = true;
+      }
+    }
+    if (added) {
+      saveReps(reps);
+      console.log(`[dashboard] auto-discovered ${names.size} HubSpot owner(s) as reps`);
+    }
+  }
+  discoverRepsFromFeeds();
 
   /* Effective dataset, with priority: manual > direct API > Windsor baseline,
    * applied per metric (so any layer can fill in metrics the lower layer
@@ -594,9 +623,16 @@
     });
 
     const stackedRepDatasets = (breakdownKey, totalKey) => {
+      // HubSpot's direct-sync writes newClientsByOwnerName (keyed by rep
+      // display name) alongside the manual newClientsByRep (keyed by
+      // rep.id). Fold both together so auto-discovered HubSpot owners
+      // appear in the chart.
+      const nameKey = breakdownKey === 'newClientsByRep' ? 'newClientsByOwnerName' : null;
       const anyRepData = mainRows.some(r => {
         const m = r[breakdownKey];
-        return m && Object.values(m).some(v => Number(v) > 0);
+        if (m && Object.values(m).some(v => Number(v) > 0)) return true;
+        if (nameKey && r[nameKey] && Object.values(r[nameKey]).some(v => Number(v) > 0)) return true;
+        return false;
       });
       if (!anyRepData || reps.length === 0) {
         return [{
@@ -610,8 +646,9 @@
       return reps.map((rep, idx) => ({
         label: rep.name,
         data: mainRows.map(r => {
-          const m = r[breakdownKey] || {};
-          return Number(m[rep.id]) || 0;
+          const byId   = r[breakdownKey] || {};
+          const byName = nameKey ? (r[nameKey] || {}) : {};
+          return (Number(byId[rep.id]) || 0) + (Number(byName[rep.name]) || 0);
         }),
         backgroundColor: repColor(rep, idx),
         borderColor: repColor(rep, idx),
@@ -736,8 +773,11 @@
       let calls = 0;
       let newClients = 0;
       for (const r of mainRows) {
+        // Manual entries key by rep.id; HubSpot direct-sync keys by owner name.
+        // Count both so a rep discovered from HubSpot lights up the leaderboard.
         calls      += Number(r.salesCallsByRep?.[rep.id]) || 0;
         newClients += Number(r.newClientsByRep?.[rep.id]) || 0;
+        newClients += Number(r.newClientsByOwnerName?.[rep.name]) || 0;
       }
       return {
         rep, idx,
@@ -1296,6 +1336,7 @@
     refreshBtn.disabled = true;
     try {
       await loadSyncedFeeds();
+      discoverRepsFromFeeds();
       data = buildEffectiveData();
       renderAll();
       renderFreshness();
