@@ -1,11 +1,11 @@
 {
-  "updatedAt": "2026-08-18T07:16:35.626Z",
+  "updatedAt": "2026-08-18T08:05:45.777Z",
   "sources": {
     "stripe": {
       "ok": true,
       "weekCount": 14,
       "diagnostics": {
-        "chargeCount": 29920,
+        "chargeCount": 29918,
         "payoutCount": 63,
         "activeSubscriptionCount": 364,
         "mrrBrands": 58594.58,
@@ -55,7 +55,7 @@
   "weeks": [
     {
       "weekStart": "2026-05-18",
-      "revenue": 221597.03,
+      "revenue": 220580.35,
       "deposits": 200631.1,
       "newCompanies": 18,
       "newClients": 41,
@@ -86,8 +86,8 @@
       "weekStart": "2026-06-01",
       "revenue": 276378.87,
       "deposits": 243671.28,
-      "mktgSent": 10837,
-      "mktgViewed": 2284,
+      "mktgSent": 10840,
+      "mktgViewed": 2285,
       "mktgClicked": 95,
       "newCompanies": 114,
       "newClients": 110,
@@ -118,8 +118,8 @@
       "weekStart": "2026-06-15",
       "revenue": 232248.02,
       "deposits": 209998.97,
-      "mktgSent": 26905,
-      "mktgViewed": 5545,
+      "mktgSent": 26913,
+      "mktgViewed": 5550,
       "mktgClicked": 229,
       "newCompanies": 25,
       "newClients": 56,
@@ -167,7 +167,7 @@
       "mktgSent": 163443,
       "mktgViewed": 14154,
       "mktgClicked": 319,
-      "newLeads": 611,
+      "newLeads": 607,
       "newClients": 51,
       "newClientsByOwnerName": {
         "Dan Kriss": 6,
@@ -178,7 +178,7 @@
     },
     {
       "weekStart": "2026-07-13",
-      "revenue": 236717.49,
+      "revenue": 236431.83,
       "deposits": 221695.56,
       "mktgSent": 104338,
       "mktgViewed": 15943,
@@ -247,7 +247,7 @@
       "revenue": 303456.27,
       "deposits": 293204.13,
       "mktgSent": 53529,
-      "mktgViewed": 5201,
+      "mktgViewed": 5203,
       "mktgClicked": 50,
       "newLeads": 813,
       "newClients": 194,
@@ -260,13 +260,13 @@
     },
     {
       "weekStart": "2026-08-17",
-      "revenue": 64836.49,
+      "revenue": 65753.64,
       "deposits": 78643.49,
       "mrrBrands": 58594.58,
       "mrrBrandStartup": 24482.58,
       "mrrBrandPro": 14651,
       "mrrBrandMax": 19461,
-      "newLeads": 194,
+      "newLeads": 198,
       "newClients": 19,
       "newClientsByOwnerName": {
         "Dan Kriss": 8,
@@ -293,7 +293,7 @@
   "weeksBySource": {
     "2026-05-18": {
       "stripe": {
-        "revenue": 221597.03,
+        "revenue": 220580.35,
         "deposits": 200631.1
       },
       "hubspot": {
@@ -332,8 +332,8 @@
         "deposits": 243671.28
       },
       "hubspot": {
-        "mktgSent": 10837,
-        "mktgViewed": 2284,
+        "mktgSent": 10840,
+        "mktgViewed": 2285,
         "mktgClicked": 95,
         "newCompanies": 114,
         "newClients": 110,
@@ -370,8 +370,8 @@
         "deposits": 209998.97
       },
       "hubspot": {
-        "mktgSent": 26905,
-        "mktgViewed": 5545,
+        "mktgSent": 26913,
+        "mktgViewed": 5550,
         "mktgClicked": 229,
         "newCompanies": 25,
         "newClients": 56,
@@ -428,7 +428,7 @@
         "mktgSent": 163443,
         "mktgViewed": 14154,
         "mktgClicked": 319,
-        "newLeads": 611,
+        "newLeads": 607,
         "newClients": 51,
         "newClientsByOwnerName": {
           "Dan Kriss": 6,
@@ -440,7 +440,7 @@
     },
     "2026-07-13": {
       "stripe": {
-        "revenue": 236717.49,
+        "revenue": 236431.83,
         "deposits": 221695.56
       },
       "hubspot": {
@@ -523,7 +523,7 @@
       },
       "hubspot": {
         "mktgSent": 53529,
-        "mktgViewed": 5201,
+        "mktgViewed": 5203,
         "mktgClicked": 50,
         "newLeads": 813,
         "newClients": 194,
@@ -537,7 +537,7 @@
     },
     "2026-08-17": {
       "stripe": {
-        "revenue": 64836.49,
+        "revenue": 65753.64,
         "deposits": 78643.49,
         "mrrBrands": 58594.58,
         "mrrBrandStartup": 24482.58,
@@ -545,7 +545,7 @@
         "mrrBrandMax": 19461
       },
       "hubspot": {
-        "newLeads": 194,
+        "newLeads": 198,
         "newClients": 19,
         "newClientsByOwnerName": {
           "Dan Kriss": 8,
