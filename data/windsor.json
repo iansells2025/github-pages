@@ -1,17 +1,26 @@
 {
-  "updatedAt": "2026-08-18T00:55:44.754Z",
+  "updatedAt": "2026-08-18T02:13:40.590Z",
   "source": "windsor.ai",
   "endpoint": "blended",
   "weeks": [
     {
       "weekStart": "2026-08-10",
-      "costs": 6455.26
+      "costs": 5448.85
+    },
+    {
+      "weekStart": "2026-08-17",
+      "costs": 1413.31
     }
   ],
   "weeksBySource": {
     "2026-08-10": {
       "googleads": {
-        "costs": 6455.2604
+        "costs": 5448.8523
+      }
+    },
+    "2026-08-17": {
+      "googleads": {
+        "costs": 1413.3076
       }
     }
   },
@@ -33,17 +42,17 @@
     "googleads": {
       "account_name": "Join Brands - MA",
       "datasource": "google_ads",
-      "date": "2026-08-10",
+      "date": "2026-08-11",
       "source": "google",
       "campaign": "TDD_Search_Brand_US",
-      "spend": 227.5695
+      "spend": 440.6401
     },
     "intercom": {
       "account_name": "windsor",
       "datasource": "intercom",
-      "date": "2026-08-10",
+      "date": "2026-08-11",
       "source": "intercom",
-      "email": "lukecampbell277@gmail.com"
+      "email": "cassmay.boss.suite@gmail.com"
     }
   },
   "sampleRowKeys": [
@@ -56,6 +65,6 @@
     "spend",
     "email"
   ],
-  "rowCount": 6919,
+  "rowCount": 7151,
   "usableRowCount": 110
 }
