@@ -1,32 +1,32 @@
 {
-  "updatedAt": "2026-08-19T03:41:07.741Z",
+  "updatedAt": "2026-08-19T04:31:45.451Z",
   "source": "windsor.ai",
   "endpoint": "blended",
   "weeks": [
     {
       "weekStart": "2026-08-10",
-      "costs": 8459.22
+      "costs": 7165.6
     },
     {
       "weekStart": "2026-08-17",
-      "costs": 2057.22
+      "costs": 3476.78
     }
   ],
   "weeksBySource": {
     "2026-08-10": {
-      "googleads": {
-        "costs": 5448.8523
-      },
       "facebook": {
         "costs": 3010.37
+      },
+      "googleads": {
+        "costs": 4155.2329
       }
     },
     "2026-08-17": {
       "googleads": {
-        "costs": 1495.1149
+        "costs": 2914.4151
       },
       "facebook": {
-        "costs": 562.11
+        "costs": 562.36
       }
     }
   },
@@ -48,28 +48,28 @@
     "intercom"
   ],
   "fieldsBySource": {
-    "googleads": {
-      "account_name": "Join Brands - MA",
-      "datasource": "google_ads",
-      "date": "2026-08-11",
-      "source": "google",
-      "campaign": "TDD_Search_Brand_US",
-      "spend": 440.6401
-    },
     "facebook": {
-      "account_name": "JoinBrands",
+      "account_name": "Million Dollar Sellers",
       "datasource": "facebook",
       "date": "2026-08-11",
       "source": "facebook",
-      "campaign": "TDD - Remarketing - US - Onboarding Leads",
-      "spend": 36.3
+      "campaign": "[LL]MDS Lead Form - 18k list",
+      "spend": 84.2
+    },
+    "googleads": {
+      "account_name": "Join Brands - MA",
+      "datasource": "google_ads",
+      "date": "2026-08-12",
+      "source": "google",
+      "campaign": "TDD_Search_Brand_US",
+      "spend": 439.7414
     },
     "intercom": {
       "account_name": "windsor",
       "datasource": "intercom",
-      "date": "2026-08-11",
+      "date": "2026-08-12",
       "source": "intercom",
-      "email": "cassmay.boss.suite@gmail.com"
+      "email": "kimcollabs93@gmail.com"
     }
   },
   "sampleRowKeys": [
@@ -82,6 +82,6 @@
     "spend",
     "email"
   ],
-  "rowCount": 7169,
-  "usableRowCount": 201
+  "rowCount": 7471,
+  "usableRowCount": 200
 }
