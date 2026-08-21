@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Rules — outdeals</title>
+<meta name="description" content="How ranking, bidding and listings work on outdeals." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="styles.css" />
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='26' font-size='26'>%F0%9F%8F%B7</text></svg>" />
+</head>
+<body>
+
+<header class="topbar">
+  <div class="wrap topbar-inner">
+    <a class="brand" href="index.html">
+      <svg class="brand-mark" width="30" height="24" viewBox="0 0 30 24" aria-hidden="true">
+        <rect x="0" y="17" width="30" height="5" rx="2.5" />
+        <rect x="5" y="9" width="20" height="4" rx="2" />
+        <rect x="10" y="2" width="10" height="3.5" rx="1.75" />
+      </svg>
+      <span>outdeals<span class="dot">.</span></span>
+    </a>
+    <nav>
+      <a href="index.html">Leaderboard</a>
+      <a href="about.html">About</a>
+      <a href="rules.html" class="active">Rules</a>
+      <button id="themeBtn" class="icon-btn" title="Toggle dark mode" aria-label="Toggle dark mode">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg>
+      </button>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <article class="prose">
+    <h1>Rules</h1>
+    <p>outdeals is a public leaderboard for retail discounts. There are no ads, no affiliate
+    cuts, and no ranking algorithm. You pay to stand above every other deal on the board.
+    Rank is the bid — nothing else.</p>
+
+    <h2>How ranking works</h2>
+    <ul>
+      <li>Each retailer has its own board: <strong>Amazon</strong>, <strong>Target</strong>,
+      <strong>Walmart</strong> and <strong>Altamuta</strong>. A deal only competes against
+      other deals from the same retailer.</li>
+      <li>New listings are whole US dollars, <strong>$5 minimum</strong>,
+      <strong>$999,999 maximum</strong>, $1 at a time. Bids already on a board keep their
+      amount until they raise or get outranked.</li>
+      <li>Taking <strong>#1 costs at least $5 more</strong> than the current top bid on that
+      board. Paying less still puts you on the board at whatever rank that bid can take.
+      Equal bids stay in the order they were placed — the older bid keeps the higher rank.</li>
+      <li>Enter the same deal link again to raise that listing to any rank. The new bid must be
+      at least <strong>$1 above your current bid</strong>; you only pay the difference. Someone
+      else cannot take your rank by paying that difference — they pay their own bid in full.</li>
+      <li>Product links are keyed by their path, so two different deals from the same retailer
+      never share a bid. Tracking query strings (<code>utm_*</code>, <code>tag</code>,
+      <code>ref</code>, and similar) are stripped before the link is matched.</li>
+    </ul>
+
+    <h2>What you can list</h2>
+    <ul>
+      <li>A product or deal page on Amazon, Target, Walmart, or Altamuta.</li>
+      <li>One listing per product page. Bundles, storefronts, and category pages are fine as
+      long as the link points at a real, live offer.</li>
+      <li>Search result pages, cart links, coupon-code walls, and chat or invite links are not
+      allowed. The board is for deals, not funnels.</li>
+    </ul>
+
+    <h2>What gets removed</h2>
+    <ul>
+      <li>Dead links, expired promotions, and prices that no longer match what the listing claims.</li>
+      <li>Fake discounts — an inflated "list price" used to manufacture a percentage off.</li>
+      <li>Malware, scams, adult content, and anything illegal to sell.</li>
+      <li>Removals are not refunded. Check your link before you bid.</li>
+    </ul>
+
+    <h2>Money</h2>
+    <ul>
+      <li>Bids are one-time payments, not subscriptions. Nothing renews and nothing is charged
+      again unless you raise your own bid.</li>
+      <li>Bids are non-refundable — being outranked is the product working as designed, not a fault.</li>
+      <li>Prices shown on a listing are supplied by whoever placed the bid. Always confirm the
+      real price at the retailer before you buy.</li>
+    </ul>
+
+    <h2>This build</h2>
+    <p>This is a demonstration clone. The board runs entirely in your browser: listings and bids
+    are saved to <code>localStorage</code>, so what you place is visible only to you and
+    disappears when you clear site data. The checkout is simulated — no card details are
+    collected and no money moves. <button type="button" data-reset>Reset the board</button> to
+    return to the seeded demo state.</p>
+  </article>
+  <footer class="site">
+    <span>outdeals — a demo clone. Bids are stored in your browser only.</span>
+    <span class="spacer"></span>
+    <a href="rules.html">Rules</a>
+    <a href="about.html">About</a>
+    <button type="button" data-reset>Reset board</button>
+  </footer>
+</main>
+
+<script src="seed.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
