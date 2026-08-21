@@ -1,28 +1,22 @@
-/* outdeals — a pay-to-rank leaderboard for retail deals.
-   Everything runs in the browser: state lives in localStorage, so bids you
-   place are visible to you only and no money ever moves. */
+/* outdeals — one global leaderboard for retail deals.
+   Every listing competes on a single board and carries the retailer board it
+   came from, plus its rank within that board. The rules live in
+   ../shared/engine.js; where the data lives is backend.js's problem. */
 
 (function () {
   "use strict";
 
-  var STORE_KEY = "outdeals.v1";
-  var MIN_BID = 5;
-  var MAX_BID = 999999;
-  var TOP_PREMIUM = 5; // taking #1 costs at least this much over the current top bid
-  var PAGE_SIZE = 12;
+  var E = window.OUTDEALS_ENGINE;
+  var backend = window.OUTDEALS_BACKEND();
+  var PAGE_SIZE = 25;
 
-  var RETAILERS = [
-    { id: "amazon", name: "Amazon", host: "amazon.com", color: "#e08b18", initials: "AZ",
-      match: /(^|\.)amazon\.(com|ca|co\.uk|de)$/, example: "amazon.com/dp/B0CHX3QBCH" },
-    { id: "target", name: "Target", host: "target.com", color: "#cc0000", initials: "TG",
-      match: /(^|\.)target\.com$/, example: "target.com/p/…/-/A-88259231" },
-    { id: "walmart", name: "Walmart", host: "walmart.com", color: "#0071dc", initials: "WM",
-      match: /(^|\.)walmart\.com$/, example: "walmart.com/ip/…/1567890123" },
-    { id: "altamuta", name: "Altamuta", host: "altamuta.com", color: "#7b5bd6", initials: "AL",
-      match: /(^|\.)altamuta\.com$/, example: "altamuta.com/deal/…" }
-  ];
-
-  var TRACKING_PARAMS = /^(utm_|gclid|fbclid|msclkid|ref_?$|ref=|tag$|linkCode$|ascsubtag$|psc$|th$|sourceid$|irgwc$|clickid$|athbdg$|athcpid$|athena)/i;
+  var ui = {
+    board: "all",
+    limit: PAGE_SIZE,
+    data: null,
+    highlight: null,
+    busy: false
+  };
 
   // ---------- helpers ----------
 
@@ -30,10 +24,6 @@
   function $$(sel, root) { return Array.prototype.slice.call((root || document).querySelectorAll(sel)); }
   function money(n) { return "$" + Number(n).toLocaleString("en-US"); }
   function price(n) { return "$" + Number(n).toFixed(2).replace(/\.00$/, ""); }
-  function retailer(id) {
-    for (var i = 0; i < RETAILERS.length; i++) if (RETAILERS[i].id === id) return RETAILERS[i];
-    return null;
-  }
 
   function ago(ts) {
     var s = Math.max(0, Math.round((Date.now() - ts) / 1000));
@@ -46,224 +36,6 @@
     return d + (d === 1 ? " day ago" : " days ago");
   }
 
-  /* Strip protocol, www, tracking query strings and trailing slashes so the same
-     deal entered twice always resolves to the same listing. */
-  function normalizeUrl(raw) {
-    var s = String(raw || "").trim();
-    if (!s) return null;
-    s = s.replace(/^https?:\/\//i, "").replace(/^www\./i, "");
-    var hashless = s.split("#")[0];
-    var parts = hashless.split("?");
-    var path = parts[0].replace(/\/+$/, "");
-    var host = path.split("/")[0].toLowerCase();
-    if (!host || host.indexOf(".") === -1) return null;
-
-    var rest = path.slice(host.length);
-    var kept = [];
-    if (parts[1]) {
-      parts[1].split("&").forEach(function (pair) {
-        if (pair && !TRACKING_PARAMS.test(pair) && !TRACKING_PARAMS.test(pair.split("=")[0])) kept.push(pair);
-      });
-    }
-
-    var r = null;
-    for (var i = 0; i < RETAILERS.length; i++) if (RETAILERS[i].match.test(host)) { r = RETAILERS[i]; break; }
-    if (!r) return { host: host, path: rest, key: host + rest, retailer: null };
-
-    // Platform links are keyed by their product path, so two deals never share a bid.
-    if (r.id === "amazon") {
-      var asin = rest.match(/\/(?:dp|gp\/product|gp\/aw\/d)\/([A-Z0-9]{10})/i);
-      if (asin) rest = "/dp/" + asin[1].toUpperCase();
-    } else if (r.id === "target") {
-      var tcode = rest.match(/\/A-(\d+)/i);
-      if (tcode) rest = rest.toLowerCase();
-    } else if (r.id === "walmart") {
-      rest = rest.toLowerCase();
-    } else {
-      rest = rest.toLowerCase();
-    }
-    if (kept.length) rest += "?" + kept.join("&");
-
-    return { host: r.host, path: rest, key: r.host + rest, retailer: r };
-  }
-
-  function titleFromPath(path) {
-    var seg = String(path || "").split("?")[0].split("/").filter(Boolean);
-    for (var i = seg.length - 1; i >= 0; i--) {
-      var s = seg[i];
-      if (/^(dp|ip|p|deal|A-\d+|\d+|[A-Z0-9]{10})$/i.test(s)) continue;
-      return s.replace(/[-_]+/g, " ").replace(/\b\w/g, function (c) { return c.toUpperCase(); }).slice(0, 70);
-    }
-    return "Untitled deal";
-  }
-
-  // ---------- state ----------
-
-  var state = { listings: [], activity: [], visitors: 0, revenue: 0, launched: 0 };
-
-  function newId() { return "l" + Math.random().toString(36).slice(2, 10); }
-
-  function seed() {
-    var now = Date.now();
-    var hour = 3600 * 1000;
-    var listings = (window.OUTDEALS_SEED || []).map(function (row) {
-      var parsed = normalizeUrl(row.url);
-      var at = now - row.age * hour;
-      return {
-        id: newId(),
-        category: parsed.retailer.id,
-        key: parsed.key,
-        host: parsed.host,
-        path: parsed.path,
-        title: row.title,
-        now: row.now,
-        was: row.was,
-        bid: row.bid,
-        createdAt: at,
-        bidAt: at,
-        mine: false
-      };
-    });
-    var activity = listings.slice().sort(function (a, b) { return b.bidAt - a.bidAt; }).slice(0, 8)
-      .map(function (l) { return { id: l.id, title: l.title, category: l.category, bid: l.bid, at: l.bidAt }; });
-    var revenue = listings.reduce(function (sum, l) { return sum + l.bid; }, 0);
-    return {
-      listings: listings,
-      activity: activity,
-      visitors: 214877,
-      revenue: revenue,
-      launched: now - 52 * hour
-    };
-  }
-
-  function load() {
-    try {
-      var raw = localStorage.getItem(STORE_KEY);
-      if (raw) {
-        var parsed = JSON.parse(raw);
-        if (parsed && Array.isArray(parsed.listings) && parsed.listings.length) return parsed;
-      }
-    } catch (e) { /* corrupt or unavailable storage — fall through to a fresh board */ }
-    var fresh = seed();
-    save(fresh);
-    return fresh;
-  }
-
-  function save(s) {
-    try { localStorage.setItem(STORE_KEY, JSON.stringify(s || state)); } catch (e) { /* private mode */ }
-  }
-
-  // ---------- ranking ----------
-
-  function board(category) {
-    return state.listings
-      .filter(function (l) { return l.category === category; })
-      .sort(function (a, b) { return b.bid - a.bid || a.bidAt - b.bidAt; });
-  }
-
-  function topBid(category) {
-    var b = board(category);
-    return b.length ? b[0] : null;
-  }
-
-  function findListing(category, key) {
-    for (var i = 0; i < state.listings.length; i++) {
-      var l = state.listings[i];
-      if (l.category === category && l.key === key) return l;
-    }
-    return null;
-  }
-
-  /* Where a bid of `amount` would land, given the tie rule that an existing
-     equal bid keeps the higher rank. */
-  function rankFor(category, amount, ignoreId) {
-    var above = board(category).filter(function (l) {
-      return l.id !== ignoreId && l.bid >= amount;
-    });
-    return above.length + 1;
-  }
-
-  /* The rules engine. Returns {ok:true, charge, rank} or {ok:false, message}. */
-  function validate(category, key, amount, existing) {
-    if (!Number.isFinite(amount) || Math.floor(amount) !== amount) {
-      return { ok: false, message: "Bids are whole US dollars — no cents." };
-    }
-    if (amount < MIN_BID) return { ok: false, message: "New spots start at " + money(MIN_BID) + "." };
-    if (amount > MAX_BID) return { ok: false, message: "The maximum bid is " + money(MAX_BID) + "." };
-
-    var top = topBid(category);
-    var isTop = top && existing && top.id === existing.id;
-
-    if (existing) {
-      if (amount < existing.bid + 1) {
-        return { ok: false, message: "That listing is already at " + money(existing.bid) +
-          ". Raising it costs at least " + money(existing.bid + 1) + " — you only pay the difference." };
-      }
-    }
-
-    // Taking #1 from someone else always carries the premium.
-    if (top && !isTop && amount > top.bid && amount < top.bid + TOP_PREMIUM) {
-      return { ok: false, message: "Taking #1 costs at least " + money(top.bid + TOP_PREMIUM) +
-        ". Bid " + money(top.bid) + " or less to join the board below #1." };
-    }
-
-    return {
-      ok: true,
-      charge: existing ? amount - existing.bid : amount,
-      rank: rankFor(category, amount, existing ? existing.id : null)
-    };
-  }
-
-  function commit(category, parsed, amount, extra) {
-    var existing = findListing(category, parsed.key);
-    var check = validate(category, parsed.key, amount, existing);
-    if (!check.ok) return check;
-
-    if (existing) {
-      existing.bid = amount;
-      existing.bidAt = Date.now();
-      existing.mine = true;
-      if (extra.title) existing.title = extra.title;
-      if (extra.now != null) existing.now = extra.now;
-      if (extra.was != null) existing.was = extra.was;
-    } else {
-      existing = {
-        id: newId(),
-        category: category,
-        key: parsed.key,
-        host: parsed.host,
-        path: parsed.path,
-        title: extra.title || titleFromPath(parsed.path),
-        now: extra.now,
-        was: extra.was,
-        bid: amount,
-        createdAt: Date.now(),
-        bidAt: Date.now(),
-        mine: true
-      };
-      state.listings.push(existing);
-    }
-
-    state.revenue += check.charge;
-    state.activity.unshift({
-      id: existing.id, title: existing.title, category: category,
-      bid: amount, at: existing.bidAt
-    });
-    state.activity = state.activity.slice(0, 40);
-    save();
-    var placed = board(category).findIndex(function (x) { return x.id === existing.id; }) + 1;
-    return { ok: true, charge: check.charge, listing: existing, rank: placed };
-  }
-
-  // ---------- rendering ----------
-
-  var ui = {
-    category: "amazon",
-    limit: PAGE_SIZE,
-    lastBidId: null,
-    pending: null
-  };
-
   function el(tag, cls, text) {
     var n = document.createElement(tag);
     if (cls) n.className = cls;
@@ -271,110 +43,158 @@
     return n;
   }
 
-  function avatar(l) {
-    var r = retailer(l.category);
+  function avatar(board) {
+    var r = E.retailer(board);
     var a = el("div", "avatar", r ? r.initials : "??");
     a.style.background = r ? r.color : "#888";
     a.setAttribute("aria-hidden", "true");
     return a;
   }
 
-  function discount(l) {
-    if (!l.now || !l.was || l.was <= l.now) return null;
-    return Math.round((1 - l.now / l.was) * 100);
+  function boardTag(l) {
+    var r = E.retailer(l.board);
+    var tag = el("span", "board-tag");
+    var dot = el("span", "board-dot");
+    dot.style.background = r ? r.color : "#888";
+    tag.appendChild(dot);
+    tag.appendChild(document.createTextNode(
+      (l.boardName || l.board) + (l.boardRank ? " #" + l.boardRank : "")
+    ));
+    tag.title = (l.boardName || l.board) + " board" + (l.boardRank ? " — ranked #" + l.boardRank + " there" : "");
+    return tag;
+  }
+
+  function toast(msg, kind) {
+    var t = $("#toast");
+    if (!t) return;
+    t.textContent = msg;
+    t.className = "toast show" + (kind ? " " + kind : "");
+    clearTimeout(t._timer);
+    t._timer = setTimeout(function () { t.className = "toast"; }, kind === "error" ? 8000 : 4000);
+  }
+
+  function showError(msg) {
+    var box = $("#formError");
+    if (!box) return;
+    box.textContent = msg || "";
+    box.hidden = !msg;
+  }
+
+  // ---------- rendering ----------
+
+  function renderModeBanner() {
+    var b = $("#modeBanner");
+    if (!b) return;
+    if (backend.mode === "live") { b.hidden = true; return; }
+    b.hidden = false;
   }
 
   function renderTabs() {
     var host = $("#tabs");
-    if (!host) return;
+    if (!host || !ui.data) return;
+    var counts = ui.data.counts || {};
     host.innerHTML = "";
-    RETAILERS.forEach(function (r) {
-      var count = state.listings.filter(function (l) { return l.category === r.id; }).length;
+
+    var tabs = [{ id: "all", name: "All deals" }].concat(
+      E.RETAILERS.map(function (r) { return { id: r.id, name: r.name, color: r.color }; })
+    );
+
+    tabs.forEach(function (t) {
       var b = el("button", "tab");
       b.type = "button";
       b.setAttribute("role", "tab");
-      b.setAttribute("aria-selected", String(r.id === ui.category));
-      b.appendChild(document.createTextNode(r.name + " deals"));
-      b.appendChild(el("span", "count", String(count)));
+      b.setAttribute("aria-selected", String(t.id === ui.board));
+      if (t.color) {
+        var dot = el("span", "board-dot");
+        dot.style.background = t.color;
+        b.appendChild(dot);
+      }
+      b.appendChild(document.createTextNode(t.name));
+      b.appendChild(el("span", "count", String(counts[t.id] == null ? 0 : counts[t.id])));
       b.addEventListener("click", function () {
-        ui.category = r.id;
+        if (ui.board === t.id) return;
+        ui.board = t.id;
         ui.limit = PAGE_SIZE;
-        delete $("#bidAmount").dataset.touched;
-        renderAll();
         var url = new URL(location.href);
-        url.searchParams.set("board", r.id);
+        if (t.id === "all") url.searchParams.delete("board");
+        else url.searchParams.set("board", t.id);
         history.replaceState(null, "", url);
+        refresh();
       });
       host.appendChild(b);
     });
   }
 
+  function suggestedBid() {
+    var top = ui.data && ui.data.top;
+    return top ? top.bid + E.TOP_PREMIUM : E.MIN_BID;
+  }
+
   function renderHero() {
-    var top = topBid(ui.category);
-    var r = retailer(ui.category);
-    var target = top ? top.bid + TOP_PREMIUM : MIN_BID;
     var input = $("#bidAmount");
-    if (input && !input.dataset.touched) input.value = String(target);
+    if (!input) return;
+    if (!input.dataset.touched) input.value = String(suggestedBid());
     var out = $("#heroAmount");
-    if (out) out.textContent = money(input ? Number(input.value || target) : target);
+    if (out) out.textContent = money(Number(input.value) || suggestedBid());
     var min = $("#heroMin");
-    if (min) min.textContent = money(MIN_BID);
-    var label = $("#heroBoard");
-    if (label) label.textContent = r.name;
-    var ph = $("#dealUrl");
-    if (ph) ph.placeholder = "Your " + r.name + " deal link — " + r.example;
+    if (min) min.textContent = money(E.MIN_BID);
   }
 
   function renderBoard() {
     var host = $("#board");
-    if (!host) return;
-    host.innerHTML = "";
-    var rows = board(ui.category);
-    var r = retailer(ui.category);
+    if (!host || !ui.data) return;
+    var rows = ui.data.listings;
 
-    var head = $("#boardSub");
-    if (head) {
-      head.textContent = rows.length
-        ? rows.length + " deal" + (rows.length === 1 ? "" : "s") + " ranked by bid"
-        : "no deals yet";
-    }
     var title = $("#boardTitle");
-    if (title) title.textContent = r.name + " deals";
+    if (title) title.textContent = ui.board === "all" ? "The board" : E.retailer(ui.board).name + " deals";
+    var sub = $("#boardSub");
+    if (sub) {
+      sub.textContent = rows.length
+        ? (ui.board === "all"
+            ? ui.data.total + " deals, ranked by bid"
+            : ui.data.total + " of " + (ui.data.counts.all || 0) + " deals, keeping their place on the main board")
+        : "nothing here yet";
+    }
 
+    host.innerHTML = "";
     if (!rows.length) {
-      host.appendChild(el("div", "empty", "No one has claimed a spot on this board yet. " + money(MIN_BID) + " takes #1."));
+      host.appendChild(el("div", "empty",
+        "No deals here yet. " + money(E.MIN_BID) + " puts one on the board."));
       return;
     }
 
-    rows.slice(0, ui.limit).forEach(function (l, i) {
-      var row = el("div", "listing" + (i === 0 ? " top" : "") + (l.mine ? " mine" : "") +
-        (l.id === ui.lastBidId ? " just-bid" : ""));
+    rows.slice(0, ui.limit).forEach(function (l) {
+      var row = el("div", "listing" +
+        (l.rank === 1 ? " top" : "") +
+        (l.mine ? " mine" : "") +
+        (l.id === ui.highlight ? " just-bid" : ""));
 
-      row.appendChild(el("div", "rank", "#" + (i + 1)));
-      row.appendChild(avatar(l));
+      row.appendChild(el("div", "rank", "#" + l.rank));
+      row.appendChild(avatar(l.board));
 
       var body = el("div", "body");
       var a = el("a", "title", l.title);
-      a.href = "https://" + l.host + l.path;
+      a.href = l.url || ("https://" + l.host + l.path);
       a.target = "_blank";
       a.rel = "nofollow noopener sponsored";
       body.appendChild(a);
 
-      var sub = el("div", "sub");
-      sub.appendChild(el("span", null, l.host));
-      if (l.now != null) sub.appendChild(el("span", "price-now", price(l.now)));
-      if (l.was != null && l.now != null && l.was > l.now) sub.appendChild(el("span", "price-was", price(l.was)));
-      var off = discount(l);
-      if (off) sub.appendChild(el("span", "badge", off + "% off"));
-      if (l.mine) sub.appendChild(el("span", "badge", "your listing"));
-      body.appendChild(sub);
+      var meta = el("div", "sub");
+      meta.appendChild(boardTag(l));
+      if (l.priceNow != null) meta.appendChild(el("span", "price-now", price(l.priceNow)));
+      if (l.priceWas != null && l.priceNow != null && l.priceWas > l.priceNow) {
+        meta.appendChild(el("span", "price-was", price(l.priceWas)));
+        meta.appendChild(el("span", "badge", Math.round((1 - l.priceNow / l.priceWas) * 100) + "% off"));
+      }
+      if (l.mine) meta.appendChild(el("span", "badge", "your listing"));
+      body.appendChild(meta);
       row.appendChild(body);
 
       var right = el("div", "right");
       right.appendChild(el("div", "bid", money(l.bid)));
-      var btn = el("button", "btn-outbid", i === 0 ? "Take #1" : "Outbid");
+      var btn = el("button", "btn-outbid", l.rank === 1 ? "Take #1" : "Outbid");
       btn.type = "button";
-      btn.addEventListener("click", function () { prefillOutbid(l, i === 0); });
+      btn.addEventListener("click", function () { prefill(l); });
       right.appendChild(btn);
       row.appendChild(right);
 
@@ -388,140 +208,132 @@
     }
   }
 
-  function renderTrending() {
+  function renderTrending(rows) {
     var host = $("#trending");
     if (!host) return;
     host.innerHTML = "";
-    var rows = state.listings.slice().sort(function (a, b) { return b.bid - a.bid; }).slice(0, 6);
-    rows.forEach(function (l) {
+    rows.slice(0, 6).forEach(function (l) {
       var row = el("div", "mini-row");
-      row.appendChild(avatar(l));
-      row.appendChild(el("span", "name", l.title));
+      row.appendChild(avatar(l.board));
+      var name = el("span", "name", l.title);
+      row.appendChild(name);
+      row.appendChild(boardTag(l));
       // Clicks scale with the bid — the whole point of paying for the top spot.
-      var clicks = Math.round(60 + Math.sqrt(l.bid) * 62 + (l.id.charCodeAt(1) % 40));
+      var clicks = Math.round(60 + Math.sqrt(l.bid) * 62 + (l.rank * 7) % 40);
       row.appendChild(el("span", "meta", clicks.toLocaleString("en-US") + " clicks/h"));
       host.appendChild(row);
     });
   }
 
-  function renderActivity() {
+  function renderActivity(activity) {
     var host = $("#activity");
     if (!host) return;
     host.innerHTML = "";
-    state.activity.slice(0, 8).forEach(function (a) {
-      var l = state.listings.filter(function (x) { return x.id === a.id; })[0];
+    (activity || []).slice(0, 8).forEach(function (a) {
       var row = el("div", "mini-row");
-      row.appendChild(avatar(l || { category: a.category }));
+      row.appendChild(avatar(a.board));
       row.appendChild(el("span", "name", a.title));
-      var rank = l ? board(l.category).findIndex(function (x) { return x.id === l.id; }) + 1 : null;
-      row.appendChild(el("span", null, rank ? "at #" + rank + " · " + money(a.bid) : money(a.bid)));
+      row.appendChild(boardTag({ board: a.board, boardName: a.boardName }));
+      row.appendChild(el("span", null, (a.rank ? "at #" + a.rank + " · " : "") + money(a.amount)));
       row.appendChild(el("span", "meta", ago(a.at)));
       host.appendChild(row);
     });
   }
 
-  function renderStats() {
-    var online = 380 + (Math.floor(Date.now() / 9000) % 240);
+  function renderStats(stats) {
+    if (!stats) return;
     var o = $("#onlineCount");
-    if (o) o.textContent = online.toLocaleString("en-US");
+    if (o) o.textContent = Math.max(1, Math.round((stats.visitors || 0) / 400) + 3).toLocaleString("en-US");
     var v = $("#visitorCount");
-    if (v) v.textContent = state.visitors.toLocaleString("en-US");
+    if (v) v.textContent = (stats.visitors || 0).toLocaleString("en-US");
     $$("[data-stat]").forEach(function (n) {
       var k = n.getAttribute("data-stat");
-      if (k === "visitors") n.textContent = state.visitors.toLocaleString("en-US");
-      if (k === "revenue") n.textContent = Math.round(state.revenue).toLocaleString("en-US");
-      if (k === "listings") n.textContent = state.listings.length.toLocaleString("en-US");
-      if (k === "top") {
-        var best = state.listings.slice().sort(function (a, b) { return b.bid - a.bid; })[0];
-        n.textContent = best ? Math.round(best.bid).toLocaleString("en-US") : "0";
-      }
-      if (k === "topName") {
-        var b2 = state.listings.slice().sort(function (a, b) { return b.bid - a.bid; })[0];
-        n.textContent = b2 ? b2.title : "—";
-      }
+      if (k === "visitors") n.textContent = (stats.visitors || 0).toLocaleString("en-US");
+      if (k === "revenue") n.textContent = Math.round(stats.revenue || 0).toLocaleString("en-US");
+      if (k === "onboard") n.textContent = Math.round(stats.onBoard || 0).toLocaleString("en-US");
+      if (k === "listings") n.textContent = (stats.listings || 0).toLocaleString("en-US");
+      if (k === "top") n.textContent = stats.top ? Math.round(stats.top.bid).toLocaleString("en-US") : "0";
+      if (k === "topName") n.textContent = stats.top ? stats.top.title : "—";
     });
   }
 
-  function renderAll() {
-    renderTabs();
-    renderHero();
-    renderBoard();
-    renderTrending();
-    renderActivity();
-    renderStats();
+  // ---------- data ----------
+
+  function refresh() {
+    return backend.board(ui.board, 100).then(function (data) {
+      ui.data = data;
+      renderTabs();
+      renderHero();
+      renderBoard();
+      return backend.board("all", 100);
+    }).then(function (all) {
+      renderTrending(all.listings);
+      return Promise.all([backend.activity(), backend.stats()]);
+    }).then(function (res) {
+      renderActivity(res[0]);
+      renderStats(res[1]);
+    }).catch(function (err) {
+      var host = $("#board");
+      if (host && !ui.data) {
+        host.innerHTML = "";
+        host.appendChild(el("div", "empty",
+          "Could not reach the board: " + err.message + " — try again in a moment."));
+      }
+      toast("Could not reach the server: " + err.message, "error");
+    });
   }
 
-  // ---------- interactions ----------
+  // ---------- bidding ----------
 
-  function toast(msg) {
-    var t = $("#toast");
-    if (!t) return;
-    t.textContent = msg;
-    t.classList.add("show");
-    clearTimeout(t._timer);
-    t._timer = setTimeout(function () { t.classList.remove("show"); }, 3200);
-  }
-
-  function showError(msg) {
-    var box = $("#formError");
-    if (!box) return;
-    box.textContent = msg || "";
-    box.hidden = !msg;
-  }
-
-  function prefillOutbid(listing, isTop) {
-    ui.category = listing.category;
-    var top = topBid(listing.category);
-    var amount = isTop ? listing.bid + TOP_PREMIUM : Math.max(listing.bid + 1, MIN_BID);
-    $("#dealUrl").value = "https://" + listing.host + listing.path;
+  function prefill(listing) {
+    $("#dealUrl").value = listing.url || ("https://" + listing.host + listing.path);
     var input = $("#bidAmount");
-    input.value = String(amount);
+    var top = ui.data && ui.data.top;
+    var isTop = top && listing.id === top.id;
+    input.value = String(isTop ? listing.bid + E.TOP_PREMIUM : Math.max(listing.bid + 1, E.MIN_BID));
     input.dataset.touched = "1";
-    renderAll();
+    renderHero();
     showError("");
     window.scrollTo({ top: 0, behavior: "smooth" });
     $("#dealUrl").focus();
   }
 
   function readForm() {
-    var raw = $("#dealUrl").value;
-    var parsed = normalizeUrl(raw);
-    if (!parsed) return { error: "Enter the link to the deal you want to rank." };
-    if (!parsed.retailer) {
-      return { error: "Only Amazon, Target, Walmart, and Altamuta product links can be listed — " +
-        parsed.host + " is not one of them." };
-    }
-    var amount = Math.floor(Number($("#bidAmount").value));
-    var titleEl = $("#dealTitle"), nowEl = $("#dealPrice"), wasEl = $("#dealWas");
+    var titleEl = $("#dealTitle"), nowEl = $("#dealPrice"), wasEl = $("#dealWas"), emailEl = $("#dealEmail");
     return {
-      parsed: parsed,
-      amount: amount,
-      extra: {
-        title: titleEl && titleEl.value.trim() ? titleEl.value.trim().slice(0, 90) : null,
-        now: nowEl && nowEl.value ? Number(nowEl.value) : null,
-        was: wasEl && wasEl.value ? Number(wasEl.value) : null
-      }
+      url: $("#dealUrl").value,
+      amount: Math.floor(Number($("#bidAmount").value)),
+      title: titleEl && titleEl.value.trim() ? titleEl.value.trim() : null,
+      priceNow: nowEl && nowEl.value ? Number(nowEl.value) : null,
+      priceWas: wasEl && wasEl.value ? Number(wasEl.value) : null,
+      email: emailEl && emailEl.value.trim() ? emailEl.value.trim() : null
     };
   }
 
-  function openCheckout(form) {
-    var category = form.parsed.retailer.id;
-    var existing = findListing(category, form.parsed.key);
-    var check = validate(category, form.parsed.key, form.amount, existing);
-    if (!check.ok) { showError(check.message); return; }
+  function openCheckout(payload) {
     showError("");
-
-    ui.pending = { form: form, category: category, existing: existing, check: check };
-
-    $("#coDeal").textContent = form.extra.title || (existing && existing.title) || titleFromPath(form.parsed.path);
-    $("#coBoard").textContent = form.parsed.retailer.name + " deals";
-    $("#coRank").textContent = "#" + check.rank;
-    $("#coBid").textContent = money(form.amount);
-    $("#coCharge").textContent = money(check.charge);
-    $("#coLine").textContent = existing
-      ? "You already hold this spot at " + money(existing.bid) + ", so you only pay the difference."
-      : "New listing — you pay the full bid.";
-    $("#checkout").hidden = false;
+    ui.busy = true;
+    backend.quote(payload).then(function (q) {
+      ui.busy = false;
+      ui.pending = { payload: payload, quote: q };
+      $("#coDeal").textContent = payload.title || (q.existing && q.existing.title) || "Your deal";
+      $("#coBoard").textContent = q.boardName + " board";
+      $("#coRank").textContent = "#" + q.rank + " overall · #" + q.boardRank + " on " + q.boardName;
+      $("#coBid").textContent = money(payload.amount);
+      $("#coCharge").textContent = money(q.charge);
+      $("#coLine").textContent = q.existing
+        ? "You already hold this spot at " + money(q.existing.bid) + ", so you only pay the difference."
+        : "New listing — you pay the full bid.";
+      $("#coConfirm").textContent = backend.mode === "live"
+        ? "Continue to payment · " + money(q.charge)
+        : "Pay " + money(q.charge) + " (demo)";
+      $("#coDemoNote").hidden = backend.mode === "live";
+      $("#coLiveNote").hidden = backend.mode !== "live";
+      $("#checkout").hidden = false;
+    }).catch(function (err) {
+      ui.busy = false;
+      showError(err.message);
+    });
   }
 
   function closeCheckout() {
@@ -530,35 +342,110 @@
   }
 
   function confirmCheckout() {
-    if (!ui.pending) return;
-    var p = ui.pending;
-    var result = commit(p.category, p.form.parsed, p.form.amount, p.form.extra);
-    closeCheckout();
-    if (!result.ok) { showError(result.message); return; }
+    if (!ui.pending || ui.busy) return;
+    var btn = $("#coConfirm");
+    var label = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = "Working…";
+    ui.busy = true;
 
-    ui.category = p.category;
-    ui.lastBidId = result.listing.id;
-    ui.limit = Math.max(ui.limit, result.rank);
+    backend.checkout(ui.pending.payload).then(function (result) {
+      ui.busy = false;
+      if (result.mode === "redirect") {
+        // The bid is pending until the payment processor confirms it.
+        location.href = result.url;
+        return;
+      }
+      closeCheckout();
+      btn.disabled = false;
+      btn.textContent = label;
+      clearForm();
+      ui.highlight = result.listingId;
+      refresh().then(function () {
+        toast(result.rank === 1
+          ? "You're #1 on the board for " + money(result.amount) + "."
+          : "Listed at #" + result.rank + " overall, #" + result.boardRank + " on " +
+            E.retailer(result.board).name + ".");
+      });
+    }).catch(function (err) {
+      ui.busy = false;
+      btn.disabled = false;
+      btn.textContent = label;
+      closeCheckout();
+      showError(err.message);
+    });
+  }
+
+  function clearForm() {
     $("#dealUrl").value = "";
-    if ($("#dealTitle")) $("#dealTitle").value = "";
-    if ($("#dealPrice")) $("#dealPrice").value = "";
-    if ($("#dealWas")) $("#dealWas").value = "";
+    ["#dealTitle", "#dealPrice", "#dealWas"].forEach(function (sel) {
+      if ($(sel)) $(sel).value = "";
+    });
     delete $("#bidAmount").dataset.touched;
-    renderAll();
-    toast(result.rank === 1
-      ? "You're #1 on " + retailer(p.category).name + " deals for " + money(p.form.amount) + "."
-      : "Listed at #" + result.rank + " for " + money(p.form.amount) + ".");
-    var row = $$(".listing")[result.rank - 1];
-    if (row) row.scrollIntoView({ behavior: "smooth", block: "center" });
   }
 
   function step(delta) {
     var input = $("#bidAmount");
-    var v = Math.floor(Number(input.value) || MIN_BID) + delta;
-    input.value = String(Math.min(MAX_BID, Math.max(MIN_BID, v)));
+    var v = Math.floor(Number(input.value) || E.MIN_BID) + delta;
+    input.value = String(Math.min(E.MAX_BID, Math.max(E.MIN_BID, v)));
     input.dataset.touched = "1";
     renderHero();
   }
+
+  /* Coming back from the payment page. The webhook that applies the bid can
+     land a moment after the redirect, so poll briefly before reporting. */
+  function handleReturn() {
+    var url = new URL(location.href);
+    var bidId = url.searchParams.get("bid");
+    var status = url.searchParams.get("status");
+    if (!bidId) return;
+
+    url.searchParams.delete("bid");
+    url.searchParams.delete("status");
+    history.replaceState(null, "", url);
+
+    if (status === "canceled") {
+      toast("Checkout canceled — nothing was charged.");
+      return;
+    }
+
+    var tries = 0;
+    toast("Confirming your payment…");
+    (function poll() {
+      backend.bidStatus(bidId).then(function (b) {
+        if (b.status === "applied") {
+          if (b.listingId) ui.highlight = b.listingId;
+          refresh().then(function () {
+            // Mark the row as theirs now that we know which listing they bought.
+            var row = (ui.data.listings || []).filter(function (l) { return l.id === b.listingId; })[0];
+            if (row && backend.markMine) {
+              backend.markMine(row.host + row.path);
+              row.mine = true; // already decorated, so flip it here rather than refetching
+              renderBoard();
+            }
+            toast(b.rank === 1
+              ? "You're #1 on the board for " + money(b.amount) + "."
+              : "Listed at #" + b.rank + " overall, #" + b.boardRank + " on " +
+                (E.retailer(b.board) || {}).name + ".");
+          });
+          return;
+        }
+        if (b.status === "refunded" || b.status === "superseded") {
+          refresh();
+          toast("Someone changed that listing while you were paying, so the bid was refunded in full. " +
+            "Nothing was charged — check the new price and bid again.", "error");
+          return;
+        }
+        if (++tries < 12) return setTimeout(poll, 1200);
+        toast("Payment received. The board updates as soon as the processor confirms it — " +
+          "refresh in a moment.", "error");
+      }).catch(function (err) {
+        toast("Could not check that payment: " + err.message, "error");
+      });
+    })();
+  }
+
+  // ---------- shared chrome ----------
 
   function initTheme() {
     var saved = null;
@@ -575,23 +462,27 @@
 
   function initShared() {
     initTheme();
+    renderModeBanner();
+
     var bar = $(".topbar");
     if (bar) {
       window.addEventListener("scroll", function () {
         bar.classList.toggle("scrolled", window.scrollY > 4);
       }, { passive: true });
     }
+
     $$("[data-reset]").forEach(function (b) {
+      if (backend.mode === "live") { b.hidden = true; return; }
       b.addEventListener("click", function () {
-        if (!confirm("Reset the board to its demo state? Your bids in this browser will be cleared.")) return;
-        try { localStorage.removeItem(STORE_KEY); } catch (e) {}
+        if (!confirm("Reset the demo board? Bids you placed in this browser will be cleared.")) return;
+        backend.reset();
         location.reload();
       });
     });
+
     $$("[data-showmore]").forEach(function (b) {
       b.addEventListener("click", function () {
-        var card = b.closest(".card");
-        var collapsed = card.classList.toggle("collapsed");
+        var collapsed = b.closest(".card").classList.toggle("collapsed");
         b.textContent = collapsed ? "Show more" : "Show less";
       });
     });
@@ -599,7 +490,7 @@
 
   function initBoardPage() {
     var fromUrl = new URL(location.href).searchParams.get("board");
-    if (fromUrl && retailer(fromUrl)) ui.category = fromUrl;
+    if (fromUrl && (fromUrl === "all" || E.retailer(fromUrl))) ui.board = fromUrl;
 
     $("#bidUp").addEventListener("click", function () { step(1); });
     $("#bidDown").addEventListener("click", function () { step(-1); });
@@ -610,9 +501,9 @@
 
     $("#bidForm").addEventListener("submit", function (e) {
       e.preventDefault();
-      var form = readForm();
-      if (form.error) { showError(form.error); return; }
-      openCheckout(form);
+      var payload = readForm();
+      if (!payload.url.trim()) return showError("Enter the link to the deal you want to rank.");
+      openCheckout(payload);
     });
 
     $("#advancedToggle").addEventListener("click", function () {
@@ -623,33 +514,26 @@
 
     $("#coCancel").addEventListener("click", closeCheckout);
     $("#coConfirm").addEventListener("click", confirmCheckout);
-    $("#checkout").addEventListener("click", function (e) {
-      if (e.target === this) closeCheckout();
-    });
+    $("#checkout").addEventListener("click", function (e) { if (e.target === this) closeCheckout(); });
     document.addEventListener("keydown", function (e) {
       if (e.key === "Escape" && !$("#checkout").hidden) closeCheckout();
     });
-
     $("#loadMore").addEventListener("click", function () {
       ui.limit += PAGE_SIZE;
       renderBoard();
     });
 
-    renderAll();
+    // Email receipts only make sense when a real processor is involved.
+    var emailField = $("#emailField");
+    if (emailField) emailField.hidden = backend.mode !== "live";
 
-    // Keep relative timestamps and the live counters honest.
-    setInterval(function () {
-      state.visitors += Math.floor(Math.random() * 4);
-      renderActivity();
-      renderStats();
-      save();
-    }, 5000);
+    refresh().then(handleReturn);
+    setInterval(function () { if (!ui.busy && !ui.pending) refresh(); }, 30000);
   }
 
   document.addEventListener("DOMContentLoaded", function () {
-    state = load();
     initShared();
     if ($("#bidForm")) initBoardPage();
-    else renderStats();
+    else backend.stats().then(renderStats).catch(function () { /* stats are decorative here */ });
   });
 })();

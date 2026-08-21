@@ -45,15 +45,17 @@
   <article class="prose">
     <h1>About</h1>
     <p>outdeals started as <a href="rules.html">a simple idea</a>: no ads, no affiliate cuts,
-    no ranking algorithm. Brands and deal hunters outbid each other to rank #1 on a retailer's
-    board — that's it.</p>
+    no ranking algorithm. Brands and deal hunters outbid each other to rank #1 — that's it.</p>
 
-    <h2>Why a board per retailer</h2>
-    <p>Shoppers arrive already knowing where they want to buy. Someone hunting an Amazon
-    lightning deal is not in the market for a Walmart rollback, so a single blended list would
-    have made every bid fight for the wrong attention. Four boards — Amazon, Target, Walmart
-    and Altamuta — keep each bid competing only against deals a shopper is actually choosing
-    between.</p>
+    <h2>One board, four retailers</h2>
+    <p>Everything files into a single leaderboard. An Amazon lightning deal, a Target clearance
+    and a Walmart rollback all compete for the same #1 spot, because a shopper scanning for
+    something worth buying does not care which logo is on it.</p>
+    <p>What the retailer does decide is context, so every listing carries its board as a tag —
+    and its rank <em>within</em> that board next to it. A deal showing <em>Target #1</em> at
+    overall #7 is the best Target deal on the site even though six other deals outbid it. The
+    tabs above the board filter to one retailer without renumbering anything: the ranks you see
+    are always the real, global ones.</p>
 
     <h2>The board so far</h2>
     <div class="statgrid">
@@ -63,11 +65,11 @@
       </div>
       <div class="stat">
         <div class="num"><span class="cur">$</span><span data-stat="revenue">0</span></div>
-        <div class="label">total bid across all four boards</div>
+        <div class="label">collected from bids</div>
       </div>
       <div class="stat">
         <div class="num"><span data-stat="listings">0</span></div>
-        <div class="label">deals listed</div>
+        <div class="label">deals on the board</div>
       </div>
       <div class="stat">
         <div class="num"><span class="cur">$</span><span data-stat="top">0</span></div>
@@ -80,15 +82,24 @@
     sales. Raise your own listing and you pay only the difference between your old bid and your
     new one. Get outranked and your bid stays where it is until you decide to raise it — that is
     the whole business model, and there is nothing else behind it.</p>
+    <p>Payments run through Stripe Checkout. A bid is held pending while you are on the payment
+    page and only joins the board once the charge is confirmed, so nothing ranks that was not
+    paid for. If the same deal is listed or raised by someone else while you are paying, your
+    payment is refunded in full instead of buying a spot you did not agree to.</p>
 
-    <h2>What this build is</h2>
-    <p>This is a working demonstration clone, not a live marketplace. The leaderboard, the
-    ranking rules, the raise-your-own-listing pricing and the activity feed all run for real —
-    but entirely in your browser. Listings and bids are stored in <code>localStorage</code>, the
-    starting board is seeded demo data, and the checkout step takes no card and moves no money.
-    Anything you place is yours alone and vanishes when you clear site data.</p>
-    <p>Read the <a href="rules.html">rules</a> for exactly how ranking, raises and removals work.</p>
+    <h2>Running it yourself</h2>
+    <p>The board is two pieces: a static front end (this page) and an API server that owns
+    submissions, ranking and payments. Both share one rules engine, so they can never disagree
+    about what a bid buys.</p>
+    <p>Served without a server behind it — as on GitHub Pages — the page falls back to demo mode:
+    the seeded board plus your own bids, kept in <code>localStorage</code>, with a checkout that
+    takes no money. Point <code>deals/config.js</code> at a deployed API and the same page becomes
+    the real thing. The server's README covers deployment, environment variables and the Stripe
+    webhook.</p>
+    <p>Read the <a href="rules.html">rules</a> for exactly how ranking, raises, refunds and
+    removals work.</p>
   </article>
+
   <footer class="site">
     <span>outdeals — a demo clone. Bids are stored in your browser only.</span>
     <span class="spacer"></span>
@@ -98,7 +109,10 @@
   </footer>
 </main>
 
-<script src="seed.js"></script>
+<script src="../shared/engine.js"></script>
+<script src="../shared/seed.js"></script>
+<script src="config.js"></script>
+<script src="backend.js"></script>
 <script src="app.js"></script>
 </body>
 </html>

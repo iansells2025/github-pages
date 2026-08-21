@@ -37,27 +37,30 @@
 <main class="wrap">
   <article class="prose">
     <h1>Rules</h1>
-    <p>outdeals is a public leaderboard for retail discounts. There are no ads, no affiliate
+    <p>outdeals is one public leaderboard for retail discounts. There are no ads, no affiliate
     cuts, and no ranking algorithm. You pay to stand above every other deal on the board.
     Rank is the bid — nothing else.</p>
 
     <h2>How ranking works</h2>
     <ul>
-      <li>Each retailer has its own board: <strong>Amazon</strong>, <strong>Target</strong>,
-      <strong>Walmart</strong> and <strong>Altamuta</strong>. A deal only competes against
-      other deals from the same retailer.</li>
+      <li><strong>One board.</strong> Every deal — Amazon, Target, Walmart, Altamuta — files into
+      the same ranking and competes with all the others. Each listing is tagged with the retailer
+      board it came from and its rank within that board, so <em>Amazon #2</em> tells you where a
+      deal stands among Amazon deals while its big number tells you where it stands overall.
+      The retailer tabs filter the board; they do not create separate contests.</li>
       <li>New listings are whole US dollars, <strong>$5 minimum</strong>,
-      <strong>$999,999 maximum</strong>, $1 at a time. Bids already on a board keep their
+      <strong>$999,999 maximum</strong>, $1 at a time. Bids already on the board keep their
       amount until they raise or get outranked.</li>
-      <li>Taking <strong>#1 costs at least $5 more</strong> than the current top bid on that
-      board. Paying less still puts you on the board at whatever rank that bid can take.
-      Equal bids stay in the order they were placed — the older bid keeps the higher rank.</li>
+      <li>Taking <strong>#1 costs at least $5 more</strong> than the current top bid. Paying less
+      still puts you on the board at whatever rank that bid can take. Equal bids stay in the order
+      they were placed — the older bid keeps the higher rank.</li>
       <li>Enter the same deal link again to raise that listing to any rank. The new bid must be
       at least <strong>$1 above your current bid</strong>; you only pay the difference. Someone
       else cannot take your rank by paying that difference — they pay their own bid in full.</li>
       <li>Product links are keyed by their path, so two different deals from the same retailer
       never share a bid. Tracking query strings (<code>utm_*</code>, <code>tag</code>,
-      <code>ref</code>, and similar) are stripped before the link is matched.</li>
+      <code>ref</code>, <code>gclid</code> and similar) are stripped before the link is matched,
+      and the rules are enforced on the server — the page cannot talk it into a cheaper spot.</li>
     </ul>
 
     <h2>What you can list</h2>
@@ -81,18 +84,27 @@
     <ul>
       <li>Bids are one-time payments, not subscriptions. Nothing renews and nothing is charged
       again unless you raise your own bid.</li>
-      <li>Bids are non-refundable — being outranked is the product working as designed, not a fault.</li>
+      <li><strong>Nothing reaches the board until the payment clears.</strong> Your bid is held as
+      pending while you are at the payment page and is applied only when our payment provider
+      confirms the charge.</li>
+      <li><strong>If the board moves while you are paying, you are refunded in full.</strong> A
+      payment buys exactly the position it was quoted for. If someone else lists or raises that
+      same deal between your quote and your payment, the bid is refunded automatically rather
+      than applied at a price you did not agree to.</li>
+      <li>Bids are otherwise non-refundable — being outranked is the product working as designed,
+      not a fault.</li>
       <li>Prices shown on a listing are supplied by whoever placed the bid. Always confirm the
       real price at the retailer before you buy.</li>
     </ul>
 
-    <h2>This build</h2>
-    <p>This is a demonstration clone. The board runs entirely in your browser: listings and bids
-    are saved to <code>localStorage</code>, so what you place is visible only to you and
-    disappears when you clear site data. The checkout is simulated — no card details are
-    collected and no money moves. <button type="button" data-reset>Reset the board</button> to
-    return to the seeded demo state.</p>
+    <h2>Demo mode</h2>
+    <p>If this page is served without an API server behind it, a banner says so and the board runs
+    entirely in your browser: listings live in <code>localStorage</code>, only you can see what you
+    place, and the checkout takes no card and moves no money. The ranking rules above behave
+    identically either way — they come from the same shared rules engine.
+    <button type="button" data-reset>Reset the demo board</button> to return to the seeded state.</p>
   </article>
+
   <footer class="site">
     <span>outdeals — a demo clone. Bids are stored in your browser only.</span>
     <span class="spacer"></span>
@@ -102,7 +114,10 @@
   </footer>
 </main>
 
-<script src="seed.js"></script>
+<script src="../shared/engine.js"></script>
+<script src="../shared/seed.js"></script>
+<script src="config.js"></script>
+<script src="backend.js"></script>
 <script src="app.js"></script>
 </body>
 </html>

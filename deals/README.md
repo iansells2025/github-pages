@@ -1,46 +1,64 @@
 # outdeals
 
 A pay-to-rank leaderboard for retail discounts — an [outbid.lol](https://outbid.lol)-style board
-rebuilt for consumer products instead of startups. Four separate boards: **Amazon**, **Target**,
-**Walmart** and **Altamuta**. The highest bid on a board ranks #1. There is no algorithm.
+rebuilt for consumer products. **One board.** Amazon, Target, Walmart and Altamuta deals all file
+into the same ranking, and every listing is tagged with the retailer board it came from plus its
+rank within that board. The highest bid is #1. There is no algorithm.
 
 Live at `<pages-url>/deals/`.
 
-## Files
+## The pieces
 
-| File | What it does |
+| Path | What it is |
 | --- | --- |
-| `index.html` | Leaderboard, bid form, board tabs, trending + activity feeds |
-| `rules.html` | Ranking, listing, removal and payment rules |
-| `about.html` | What the project is, plus live counters off the board state |
-| `app.js` | URL normalization, the ranking/rules engine, rendering, checkout |
-| `seed.js` | The demo listings the board starts with |
-| `styles.css` | Light + dark theme |
+| `deals/index.html` | Leaderboard, bid form, board filters, trending + activity |
+| `deals/rules.html` · `about.html` | The model, written out |
+| `deals/app.js` | UI: rendering, bidding, checkout, return-from-payment |
+| `deals/backend.js` | Live API client, and the offline demo fallback behind one interface |
+| `deals/config.js` | **Point this at your API server** to go live |
+| `shared/engine.js` | The ranking rules — shared by the browser and the server |
+| `shared/seed.js` | Demo listings a fresh board starts with |
+| `server/` | Node + Express + SQLite + Stripe API ([README](../server/README.md)) |
 
-No build step, no dependencies, no framework — drop the folder on any static host.
+## Two modes
+
+**Demo mode** (default, and what GitHub Pages serves, since Pages cannot host a backend): the
+board lives in this browser's `localStorage` and the checkout takes no money. A banner says so.
+
+**Live mode**: set `apiBase` in `deals/config.js` to your deployed server and the same page
+becomes the real thing — submissions and ranking in a database, payments through Stripe
+Checkout, one board shared by every visitor.
+
+Both modes run the exact same rules engine, so ranking behaves identically either way.
 
 ## Ranking rules
 
 - Whole US dollars, **$5 minimum**, **$999,999 maximum**, $1 increments.
-- Rank is bid, descending. **Equal bids keep the order they were placed** — the older bid ranks higher.
-- **Taking #1 costs at least $5 more** than that board's current top bid. Bidding less still lands you
-  on the board at whatever rank the amount earns.
-- Re-enter the same deal link to **raise your own listing**: at least $1 over your current bid, and you
-  pay only the difference.
-- Listings are keyed by normalized host + path, so two products from one retailer never share a bid.
-  Tracking parameters (`utm_*`, `tag`, `ref`, `gclid`, …) are stripped before matching.
+- **One global ranking** by bid, descending. **Equal bids keep the order they were placed** — the
+  older bid ranks higher.
+- **Taking #1 costs at least $5 more** than the current top bid. Bidding less still lands you on
+  the board at whatever rank the amount earns.
+- Re-enter the same deal link to **raise your own listing**: at least $1 over your current bid,
+  and you pay only the difference.
+- Retailer tabs **filter** the board — they do not renumber it. A row filtered to Target still
+  shows its real global rank alongside its Target rank.
+- Listings are keyed by normalized host + path, so two products from one retailer never share a
+  bid. Tracking parameters (`utm_*`, `tag`, `ref`, `gclid`, …) are stripped before matching.
 - Only Amazon, Target, Walmart and Altamuta product links are accepted.
 
-## What is real and what is not
+In live mode all of this is enforced server-side. The browser copy is for instant feedback only.
 
-The leaderboard, the ranking rules, the raise-only-pay-the-difference pricing, URL normalization and the
-activity feed all work for real. Everything else is a front-end demo:
+## Money
 
-- **State is `localStorage`.** Bids are per-browser and private to whoever placed them. There is no server
-  and no shared board.
-- **Checkout is simulated.** No card is collected and no payment is taken.
-- **Counters are synthetic.** Visitors, online count and clicks/hour are derived from board state, not analytics.
+Bids are one-time payments for a position — no subscription, no cut of your sales. A bid is held
+pending while the payer is at the payment page and joins the board only when the charge is
+confirmed, so nothing ranks that was not paid for. If the same deal is listed or raised by
+someone else mid-checkout, the payment is refunded in full rather than buying a spot at a price
+the payer never agreed to.
 
-Making this a live product means adding a backend (listings + bids in a database), a real payment processor
-for the bid charges, and moderation for dead links and inflated list prices. The rules engine in `app.js`
-(`validate` / `commit`) is the part that would move server-side unchanged.
+## Still missing for a real launch
+
+- Link/price verification (dead links and inflated "list prices" are moderation-only today).
+- Chargeback handling — see the server README.
+- Accounts, if you ever want a listing to be raisable only by whoever created it. The current
+  model deliberately lets anyone raise any listing.
