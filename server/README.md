@@ -29,7 +29,7 @@ free — never set it in production.** With neither Stripe keys nor that flag, `
 returns 503 rather than taking bids it cannot charge for.
 
 ```bash
-npm test      # 29 tests: rules engine + full payment lifecycle over the real routes
+npm test      # 41 tests: rules engine, payment lifecycle, chargebacks, link checking
 ```
 
 ## Deploy
@@ -61,12 +61,14 @@ means rewriting `src/store.js` alone; nothing else touches SQL.
 | `STRIPE_WEBHOOK_SECRET` | Signing secret for `/api/webhook` |
 | `ALLOW_DEV_PAYMENTS` | Local testing only — free spots, no charge |
 | `SEED_ON_EMPTY` | Fill a brand-new database with the demo listings (default on) |
-| `ADMIN_TOKEN` | Required by `POST /api/admin/remove` |
+| `ADMIN_TOKEN` | Required by every `/api/admin/*` route |
+| `CHECK_LINKS_INTERVAL_MIN` | Run a background link check every N minutes (0 = off) |
 
 ### Stripe setup
 
 1. Add a webhook endpoint pointing at `https://your-api/api/webhook`.
-2. Subscribe it to `checkout.session.completed` and `checkout.session.expired`.
+2. Subscribe it to `checkout.session.completed`, `checkout.session.expired`,
+   `charge.dispute.created` and `charge.refunded`.
 3. Put its signing secret in `STRIPE_WEBHOOK_SECRET`.
 
 Without the webhook secret, payments succeed and **no bid is ever applied** — the server logs a
@@ -82,8 +84,11 @@ warning at boot. Locally: `stripe listen --forward-to localhost:8787/api/webhook
 | `GET /api/stats` | Listings, money collected, distinct visitors, top listing |
 | `POST /api/quote` | `{url, amount}` → charge, rank, board rank. Touches nothing |
 | `POST /api/checkout` | `{url, amount, title?, priceNow?, priceWas?, email?}` → `{bidId, checkoutUrl}`. Creates a **pending** bid |
-| `POST /api/webhook` | Stripe events. Applies or refunds a paid bid |
+| `POST /api/webhook` | Stripe events. Applies, refunds or reverses a bid |
 | `GET /api/bids/:id` | Status of one bid — what the page polls after checkout |
+| `GET /api/admin/flagged` | The review queue — listings a check found gone, or whose payment was reversed |
+| `POST /api/admin/unflag` | `{url}`. Clears a flag you have judged a false positive |
+| `POST /api/admin/check` | `{limit}`. Runs a link check now |
 | `POST /api/admin/remove` | `{url, reason}` with `x-admin-token`. Takes a listing off the board |
 
 ## How a bid becomes a rank
@@ -110,6 +115,34 @@ Two properties this buys:
 Webhook replays are idempotent via the `webhook_events` table, and `applyPaidBid` is a no-op on
 an already-applied bid, so Stripe's at-least-once delivery cannot double-charge or double-apply.
 
+## Chargebacks and refunds
+
+A payment that comes back cannot keep buying a rank. On `charge.dispute.created` or
+`charge.refunded`, the bid behind that payment intent is marked `reversed` and:
+
+- if it is still the listing's current bid, the listing rolls back to its `basis` — the bid the
+  previous, undisputed payment bought — or comes off the board entirely if that payment created it;
+- if later bids stacked on top of it, unwinding is ambiguous, so the listing is **flagged for
+  review** rather than silently rewritten.
+
+Reversed bids stop counting toward revenue in `/api/stats`.
+
+## Link checking
+
+```bash
+npm run check-links                     # or POST /api/admin/check, or CHECK_LINKS_INTERVAL_MIN
+```
+
+Big retailers block datacentre traffic, so a non-200 is weak evidence — a 403 from Amazon means
+"you look like a bot", not "this deal is gone". Results are bucketed as `ok`, `dead` (404/410),
+`blocked` (401/403/429) or `error` (timeout, 5xx, DNS), and **only `dead` flags a listing**. Even
+then it goes to the review queue rather than being removed: bids are non-refundable on removal, so
+a false positive costs someone real money.
+
+```bash
+curl -H "x-admin-token: $ADMIN_TOKEN" https://your-api/api/admin/flagged
+```
+
 ## Moderation
 
 ```bash
@@ -124,9 +157,11 @@ Removal is a soft delete (`status='removed'`), so the payment history behind a l
 
 - **No accounts.** A listing is identified by its URL and anyone can raise it, which is how the
   ranking model works. The payer gets an `ownerToken` so their own browser can mark the row.
-- **No automatic link checking.** Dead links and inflated list prices are caught by moderation,
-  not code. A crawler that verifies price and availability is the obvious next piece.
-- **No fraud/chargeback handling.** `charge.dispute.created` is not subscribed to; a disputed
-  payment leaves its listing on the board until someone removes it by hand.
+- **No price verification.** The checker tells you whether a URL still resolves, not whether the
+  listing's claimed price is honest. Catching an inflated "list price" needs per-retailer
+  scraping or an affiliate product API, and stays a moderation job until then.
+- **No automatic removals.** Everything the checker and the dispute handler find lands in the
+  review queue for a human. Deliberate: bids are non-refundable on removal.
 - **In-memory rate limiting only.** Fine for one process; put a real limiter at the edge if this
   gets attention.
+- **No email.** Receipts come from Stripe; nothing notifies a bidder that they were outranked.

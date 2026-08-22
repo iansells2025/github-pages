@@ -6,6 +6,7 @@ const engine = require("../../shared/engine.js");
 const { open } = require("./db.js");
 const { Store } = require("./store.js");
 const { createPayments } = require("./payments.js");
+const { runCheck } = require("./checker.js");
 
 const DAY = 24 * 3600 * 1000;
 
@@ -113,6 +114,18 @@ function createApp(options) {
       } else if (event.type === "checkout.session.expired") {
         const bidId = (event.data.object.metadata || {}).bidId;
         if (bidId) store.setBidStatus(bidId, "expired");
+      } else if (event.type === "charge.dispute.created" || event.type === "charge.refunded") {
+        // A payment that came back cannot keep buying a rank.
+        const obj = event.data.object;
+        const pi = obj.payment_intent || (obj.charge && obj.charge.payment_intent);
+        const bid = pi ? store.bidByPaymentIntent(pi) : null;
+        if (bid) {
+          const result = store.reverseBid(bid.id,
+            event.type === "charge.dispute.created" ? "payment disputed" : "payment refunded at the processor");
+          console.warn("reversed bid " + bid.id + " (" + event.type + "): " + result.action);
+        } else {
+          console.warn("reversal for an unknown payment intent: " + pi);
+        }
       }
       res.json({ received: true });
     } catch (err) {
@@ -304,10 +317,32 @@ document.getElementById("cancel").onclick = function () { location.href = ${JSON
   }
 
   // ---- moderation ----
-  app.post("/api/admin/remove", (req, res) => {
+  function requireAdmin(req, res, next) {
     if (!config.adminToken || req.get("x-admin-token") !== config.adminToken) {
       return res.status(401).json({ error: "Unauthorized." });
     }
+    next();
+  }
+
+  /* The review queue: listings a link check found gone, or whose payment was
+     reversed. Nothing here is removed automatically. */
+  app.get("/api/admin/flagged", requireAdmin, (req, res) => {
+    res.json({ flagged: store.flagged() });
+  });
+
+  app.post("/api/admin/unflag", requireAdmin, (req, res) => {
+    const parsed = engine.normalizeUrl((req.body || {}).url);
+    if (!parsed) return res.status(400).json({ error: "Bad url." });
+    res.json({ unflagged: store.unflag(parsed.key) });
+  });
+
+  app.post("/api/admin/check", requireAdmin, async (req, res, next) => {
+    try {
+      res.json(await runCheck(store, { limit: Number((req.body || {}).limit) || 25, delayMs: 250 }));
+    } catch (err) { next(err); }
+  });
+
+  app.post("/api/admin/remove", requireAdmin, (req, res) => {
     const parsed = engine.normalizeUrl((req.body || {}).url);
     if (!parsed) return res.status(400).json({ error: "Bad url." });
     const removed = store.removeListing(parsed.key, (req.body || {}).reason);
@@ -332,6 +367,14 @@ if (require.main === module) {
   const app = createApp({ config });
   const store = app.locals.store;
   setInterval(() => store.expireStalePending(DAY), 3600 * 1000).unref();
+  const checkEvery = Number(process.env.CHECK_LINKS_INTERVAL_MIN || 0);
+  if (checkEvery > 0) {
+    setInterval(() => {
+      runCheck(store, { limit: 25, delayMs: 2000 })
+        .then((s) => console.log("link check: " + JSON.stringify(s)))
+        .catch((err) => console.error("link check failed", err));
+    }, checkEvery * 60 * 1000).unref();
+  }
   app.listen(config.port, () => {
     console.log("outdeals api on :" + config.port + " — payments: " + app.locals.payments.mode +
       (app.locals.payments.mode === "stripe" && !app.locals.payments.webhookConfigured

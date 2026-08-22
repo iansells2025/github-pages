@@ -264,6 +264,87 @@ class Store {
     return run();
   }
 
+  /* A disputed or externally refunded payment must not keep buying a rank.
+
+     If the bid being reversed is still the listing's current bid, roll the
+     listing back to what it was worth before that payment — its `basis` — or
+     take it off the board entirely if the payment created it. If later bids
+     stacked on top, unwinding is ambiguous, so the listing is flagged for a
+     human instead of silently rewritten. */
+  reverseBid(bidId, reason) {
+    const run = this.db.transaction(() => {
+      const bid = this.getBid(bidId);
+      if (!bid) return { ok: false, code: "unknown_bid" };
+      if (bid.status !== "applied") {
+        this.setBidStatus(bidId, "reversed", { note: reason });
+        return { ok: true, action: "none", note: "bid was never applied" };
+      }
+
+      const listing = this.db.prepare("SELECT * FROM listings WHERE key = ?").get(bid.listing_key);
+      const now = Date.now();
+      this.db.prepare("UPDATE bids SET status = 'reversed', note = ?, updated_at = ? WHERE id = ?")
+        .run(reason || "payment reversed", now, bidId);
+
+      if (!listing) return { ok: true, action: "none", note: "listing already gone" };
+
+      if (listing.bid !== bid.amount) {
+        this.db.prepare("UPDATE listings SET flagged = 1, check_status = 'disputed', check_note = ? WHERE id = ?")
+          .run("a payment behind this listing was reversed; later bids stacked on it — needs review", listing.id);
+        return { ok: true, action: "flagged", listingId: listing.id };
+      }
+
+      if (bid.basis > 0) {
+        this.db.prepare("UPDATE listings SET bid = ?, bid_at = ?, flagged = 1, check_status = 'disputed', check_note = ? WHERE id = ?")
+          .run(bid.basis, now, "rolled back after a reversed payment", listing.id);
+        return { ok: true, action: "rolled_back", listingId: listing.id, to: bid.basis };
+      }
+
+      this.db.prepare("UPDATE listings SET status = 'removed', flagged = 1, check_status = 'disputed', check_note = ? WHERE id = ?")
+        .run(reason || "payment reversed", listing.id);
+      return { ok: true, action: "removed", listingId: listing.id };
+    });
+    return run();
+  }
+
+  bidByPaymentIntent(pi) {
+    return this.db.prepare("SELECT * FROM bids WHERE payment_intent = ?").get(pi) || null;
+  }
+
+  // ---------- link checking ----------
+
+  /* Listings that have never been checked, or whose last check is stale. */
+  dueForCheck(limit, staleMs) {
+    const cutoff = Date.now() - (staleMs || 24 * 3600 * 1000);
+    return this.db.prepare(
+      `SELECT * FROM listings WHERE status = 'live' AND (last_checked IS NULL OR last_checked < ?)
+       ORDER BY last_checked IS NOT NULL, bid DESC LIMIT ?`
+    ).all(cutoff, Math.min(Number(limit) || 50, 500)).map(rowToListing);
+  }
+
+  recordCheck(listingId, status, note) {
+    // Only a definitive "gone" flags a listing. A retailer blocking the checker
+    // says nothing about whether the deal is live.
+    const flag = status === "dead" ? 1 : 0;
+    this.db.prepare(
+      `UPDATE listings SET last_checked = ?, check_status = ?, check_note = ?,
+         flagged = CASE WHEN ? = 1 THEN 1 ELSE flagged END WHERE id = ?`
+    ).run(Date.now(), status, note || null, flag, listingId);
+  }
+
+  flagged() {
+    return this.db.prepare(
+      "SELECT * FROM listings WHERE flagged = 1 AND status = 'live' ORDER BY bid DESC"
+    ).all().map((r) => Object.assign(rowToListing(r), {
+      checkStatus: r.check_status, checkNote: r.check_note, lastChecked: r.last_checked
+    }));
+  }
+
+  unflag(key) {
+    return this.db.prepare(
+      "UPDATE listings SET flagged = 0, check_note = NULL WHERE key = ? AND status = 'live'"
+    ).run(key).changes;
+  }
+
   expireStalePending(maxAgeMs) {
     const cutoff = Date.now() - (maxAgeMs || 24 * 3600 * 1000);
     return this.db.prepare(

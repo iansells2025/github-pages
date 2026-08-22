@@ -75,6 +75,24 @@ CREATE TABLE IF NOT EXISTS visits (
 );
 `;
 
+/* Columns added after the first release. SQLite has no "ADD COLUMN IF NOT
+   EXISTS", so check what is already there and add the rest. */
+const MIGRATIONS = [
+  { table: "listings", column: "last_checked", ddl: "ALTER TABLE listings ADD COLUMN last_checked INTEGER" },
+  { table: "listings", column: "check_status", ddl: "ALTER TABLE listings ADD COLUMN check_status TEXT" },
+  { table: "listings", column: "check_note", ddl: "ALTER TABLE listings ADD COLUMN check_note TEXT" },
+  { table: "listings", column: "flagged", ddl: "ALTER TABLE listings ADD COLUMN flagged INTEGER NOT NULL DEFAULT 0" }
+];
+
+function migrate(db) {
+  MIGRATIONS.forEach((m) => {
+    const cols = db.prepare("PRAGMA table_info(" + m.table + ")").all().map((c) => c.name);
+    if (!cols.includes(m.column)) db.exec(m.ddl);
+  });
+  db.exec("CREATE INDEX IF NOT EXISTS listings_flagged ON listings(flagged, status)");
+  db.exec("CREATE INDEX IF NOT EXISTS listings_checked ON listings(status, last_checked)");
+}
+
 function open(dbPath) {
   if (dbPath !== ":memory:") {
     fs.mkdirSync(path.dirname(path.resolve(dbPath)), { recursive: true });
@@ -83,7 +101,8 @@ function open(dbPath) {
   db.pragma("journal_mode = WAL");
   db.pragma("foreign_keys = ON");
   db.exec(SCHEMA);
+  migrate(db);
   return db;
 }
 
-module.exports = { open, SCHEMA };
+module.exports = { open, migrate, SCHEMA };

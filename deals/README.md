@@ -56,9 +56,19 @@ confirmed, so nothing ranks that was not paid for. If the same deal is listed or
 someone else mid-checkout, the payment is refunded in full rather than buying a spot at a price
 the payer never agreed to.
 
+## Moderation
+
+A link checker (`npm run check-links` in `server/`) probes listing URLs and queues anything that
+returns a definitive 404/410 for review. A retailer blocking the checker does **not** count as a
+dead deal, and nothing is ever removed automatically — bids are non-refundable on removal, so a
+false positive costs someone real money. Disputed or refunded payments reverse the bid behind
+them and roll the listing back to what was actually paid for.
+
 ## Still missing for a real launch
 
-- Link/price verification (dead links and inflated "list prices" are moderation-only today).
-- Chargeback handling — see the server README.
-- Accounts, if you ever want a listing to be raisable only by whoever created it. The current
-  model deliberately lets anyone raise any listing.
+- **Price verification.** The checker sees whether a URL resolves, not whether the claimed
+  discount is honest. Catching an inflated "list price" needs per-retailer scraping or an
+  affiliate product API.
+- **Accounts**, if you ever want a listing raisable only by whoever created it. The current model
+  deliberately lets anyone raise any listing.
+- **Notifications.** Nothing tells a bidder they have been outranked.

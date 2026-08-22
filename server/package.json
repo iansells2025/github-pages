@@ -8,7 +8,8 @@
   "scripts": {
     "start": "node src/server.js",
     "dev": "ALLOW_DEV_PAYMENTS=1 node --watch src/server.js",
-    "test": "node --test test/*.test.js"
+    "test": "node --test test/*.test.js",
+    "check-links": "node src/checker.js"
   },
   "dependencies": {
     "better-sqlite3": "^13.0.3",
