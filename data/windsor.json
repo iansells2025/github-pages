@@ -1,29 +1,29 @@
 {
-  "updatedAt": "2026-08-22T03:36:59.743Z",
+  "updatedAt": "2026-08-22T04:26:50.030Z",
   "source": "windsor.ai",
   "endpoint": "blended",
   "weeks": [
     {
       "weekStart": "2026-08-10",
-      "costs": 3324.07
+      "costs": 2389.25
     },
     {
       "weekStart": "2026-08-17",
-      "costs": 7394.38
+      "costs": 8498.75
     }
   ],
   "weeksBySource": {
     "2026-08-10": {
-      "googleads": {
-        "costs": 1941.8094
-      },
       "facebook": {
         "costs": 1382.26
+      },
+      "googleads": {
+        "costs": 1006.9872
       }
     },
     "2026-08-17": {
       "googleads": {
-        "costs": 5344.9603
+        "costs": 6449.3273
       },
       "facebook": {
         "costs": 2049.42
@@ -48,14 +48,6 @@
     "intercom"
   ],
   "fieldsBySource": {
-    "googleads": {
-      "account_name": "Join Brands - MA",
-      "datasource": "google_ads",
-      "date": "2026-08-14",
-      "source": "google",
-      "campaign": "TDD_Search_Brand_US",
-      "spend": 405.0256
-    },
     "facebook": {
       "account_name": "Million Dollar Sellers",
       "datasource": "facebook",
@@ -64,12 +56,20 @@
       "campaign": "[LL]MDS Lead Form - 18k list",
       "spend": 60.84
     },
+    "googleads": {
+      "account_name": "Join Brands - MA",
+      "datasource": "google_ads",
+      "date": "2026-08-15",
+      "source": "google",
+      "campaign": "TDD_Search_Brand_US",
+      "spend": 197.1706
+    },
     "intercom": {
       "account_name": "windsor",
       "datasource": "intercom",
-      "date": "2026-08-14",
+      "date": "2026-08-15",
       "source": "intercom",
-      "email": "pierina.gonzalez.paz@gmail.com"
+      "email": "cristybels@gmail.com"
     }
   },
   "sampleRowKeys": [
@@ -82,6 +82,6 @@
     "spend",
     "email"
   ],
-  "rowCount": 6983,
+  "rowCount": 7141,
   "usableRowCount": 200
 }
