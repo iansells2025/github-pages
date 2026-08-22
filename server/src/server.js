@@ -48,6 +48,12 @@ function rateLimiter(limit, windowMs) {
   };
 }
 
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, (c) => (
+    { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]
+  ));
+}
+
 function visitorHash(req) {
   const ua = req.get("user-agent") || "";
   return crypto.createHash("sha256").update((req.ip || "") + "|" + ua).digest("hex").slice(0, 32);
@@ -129,6 +135,9 @@ function createApp(options) {
       }
       res.json({ received: true });
     } catch (err) {
+      // Release the idempotency marker so Stripe's retry can try again; keeping it
+      // would turn a transient failure into a payment that never buys its rank.
+      store.forgetWebhook(event.id);
       console.error("webhook handling failed", err);
       res.status(500).json({ error: "handler failed" });
     }
@@ -281,10 +290,10 @@ button{font:inherit;font-weight:600;border:0;border-radius:999px;padding:14px 22
 .pay{background:#e0836c;color:#fff}.cancel{background:transparent;border:1px solid #ddd;color:#5f5b52}
 .warn{background:#fdf3e7;border-radius:12px;padding:12px 16px;font-size:15px}</style>
 <h1>Test checkout</h1>
-<p>${bid.title} — <b>${engine.money(bid.amount)}</b> bid, charging <b>${engine.money(bid.charge)}</b>.</p>
+<p>${escapeHtml(bid.title)} — <b>${escapeHtml(engine.money(bid.amount))}</b> bid, charging <b>${escapeHtml(engine.money(bid.charge))}</b>.</p>
 <p class="warn">Stripe is not configured on this server, so this stand-in stands in for the real
 Checkout page. No card is collected and no money moves.</p>
-<button class="pay" id="pay">Pay ${engine.money(bid.charge)}</button>
+<button class="pay" id="pay">Pay ${escapeHtml(engine.money(bid.charge))}</button>
 <button class="cancel" id="cancel">Cancel</button>
 <script>
 document.getElementById("pay").onclick = async function () {

@@ -78,7 +78,7 @@ class Store {
 
   activity(limit) {
     return this.db.prepare("SELECT * FROM activity ORDER BY at DESC, id DESC LIMIT ?")
-      .all(Math.min(Number(limit) || 20, 100))
+      .all(Math.min(Math.max(Number(limit) || 20, 1), 100))
       .map((a) => ({
         listingId: a.listing_id, title: a.title, board: a.board,
         boardName: (engine.retailer(a.board) || {}).name || a.board,
@@ -190,6 +190,10 @@ class Store {
     this.db.prepare(
       "UPDATE bids SET status = ?, note = COALESCE(?, note), payment_intent = COALESCE(?, payment_intent), updated_at = ? WHERE id = ?"
     ).run(status, e.note || null, e.paymentIntent || null, Date.now(), bidId);
+  }
+
+  forgetWebhook(eventId) {
+    this.db.prepare("DELETE FROM webhook_events WHERE id = ?").run(eventId);
   }
 
   seenWebhook(eventId, type) {
@@ -318,7 +322,7 @@ class Store {
     return this.db.prepare(
       `SELECT * FROM listings WHERE status = 'live' AND (last_checked IS NULL OR last_checked < ?)
        ORDER BY last_checked IS NOT NULL, bid DESC LIMIT ?`
-    ).all(cutoff, Math.min(Number(limit) || 50, 500)).map(rowToListing);
+    ).all(cutoff, Math.min(Math.max(Number(limit) || 50, 1), 500)).map(rowToListing);
   }
 
   recordCheck(listingId, status, note) {

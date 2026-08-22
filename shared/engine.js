@@ -71,12 +71,15 @@
     return { host: r.host, path: rest, key: r.host + rest, retailer: r, board: r.id };
   }
 
+  /* Falls back to the URL path when no title is supplied. Runs the result through
+     cleanTitle so a path-derived title is scrubbed exactly like a supplied one. */
   function titleFromPath(path) {
     var seg = String(path || "").split("?")[0].split("/").filter(Boolean);
     for (var i = seg.length - 1; i >= 0; i--) {
       var s = seg[i];
       if (/^(dp|ip|p|deal|A-\d+|\d+|[A-Z0-9]{10})$/i.test(s)) continue;
-      return s.replace(/[-_]+/g, " ").replace(/\b\w/g, function (c) { return c.toUpperCase(); }).slice(0, MAX_TITLE);
+      return cleanTitle(s.replace(/[-_]+/g, " ").replace(/\b\w/g, function (c) { return c.toUpperCase(); })) ||
+        "Untitled deal";
     }
     return "Untitled deal";
   }

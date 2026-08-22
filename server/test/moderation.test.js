@@ -227,3 +227,93 @@ test("removing a flagged listing takes it off the board for good", async (t) => 
   assert.equal((await h.call("GET", "/api/board")).body.total, 0);
   assert.equal((await h.call("GET", "/api/admin/flagged", null, h.admin)).body.flagged.length, 0);
 });
+
+// ---------- hardening regressions ----------
+
+test("a title taken from the URL path is scrubbed like a supplied one", () => {
+  const parsed = require("../../shared/engine.js")
+    .normalizeUrl("altamuta.com/deal/<img src=x onerror=alert(1)>");
+  const title = require("../../shared/engine.js").titleFromPath(parsed.path);
+  assert.ok(!/[<>]/.test(title),
+    "angle brackets must not survive into a stored title — the dev checkout page renders it as HTML");
+});
+
+test("a listing title cannot inject markup into the test checkout page", async (t) => {
+  const db = open(":memory:");
+  const app = createApp({
+    db,
+    config: {
+      seedOnEmpty: false, allowedOrigins: ["*"], allowDevPayments: true,
+      apiBaseUrl: "http://api.test", siteUrl: "http://site.test/deals/index.html"
+    }
+  });
+  const server = app.listen(0);
+  t.after(() => { server.close(); db.close(); });
+  const base = "http://127.0.0.1:" + server.address().port;
+
+  const co = await (await fetch(base + "/api/checkout", {
+    method: "POST", headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ url: 'altamuta.com/deal/<script>alert(1)</script>', amount: 50 })
+  })).json();
+
+  const html = await (await fetch(base + "/api/dev/checkout/" + co.bidId)).text();
+  assert.ok(!html.includes("<script>alert(1)</script>"), "raw markup reached the page");
+  assert.ok(html.includes("&lt;") || !html.includes("alert(1)</"),
+    "the title must be escaped where it is rendered");
+});
+
+test("a failed webhook handler leaves the event retryable", async (t) => {
+  const db = open(":memory:");
+  let failNext = true;
+  const app = createApp({
+    db,
+    payments: {
+      mode: "stripe", webhookConfigured: true,
+      async createCheckout(args) { return { url: "u", sessionId: "cs_" + args.bid.id }; },
+      async refund() { return { ok: true, id: "re" }; },
+      verifyWebhook(raw) { return JSON.parse(raw.toString("utf8")); }
+    },
+    config: { seedOnEmpty: false, allowedOrigins: ["*"] }
+  });
+  const store = new Store(db);
+  // Make the first apply throw, as a transient database error would.
+  const realApply = store.applyPaidBid.bind(store);
+  app.locals.store.applyPaidBid = function (...args) {
+    if (failNext) { failNext = false; throw new Error("database is locked"); }
+    return realApply(...args);
+  };
+  const server = app.listen(0);
+  t.after(() => { server.close(); db.close(); });
+  const base = "http://127.0.0.1:" + server.address().port;
+
+  const co = await (await fetch(base + "/api/checkout", {
+    method: "POST", headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ url: "target.com/p/retry/-/A-1", amount: 50 })
+  })).json();
+
+  const event = {
+    id: "evt_retry", type: "checkout.session.completed",
+    data: { object: { id: "cs_x", payment_status: "paid", payment_intent: "pi_x", metadata: { bidId: co.bidId } } }
+  };
+  const send = () => fetch(base + "/api/webhook", {
+    method: "POST", headers: { "Content-Type": "application/json", "stripe-signature": "t" },
+    body: JSON.stringify(event)
+  });
+
+  assert.equal((await send()).status, 500, "handler failed");
+  const retry = await send();
+  assert.equal(retry.status, 200);
+  assert.notEqual((await retry.json()).duplicate, true,
+    "the retry must be processed, not swallowed as a duplicate");
+
+  const board = await (await fetch(base + "/api/board")).json();
+  assert.equal(board.total, 1, "the paid bid reached the board on retry");
+});
+
+test("a negative limit cannot turn LIMIT into unbounded", async (t) => {
+  const h = harness();
+  t.after(h.close);
+  const res = await h.call("GET", "/api/activity?limit=-1");
+  assert.ok(Array.isArray(res.body.activity));
+  assert.ok(res.body.activity.length <= 100);
+});
