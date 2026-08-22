@@ -2,13 +2,13 @@
 
 const test = require("node:test");
 const assert = require("node:assert");
-const { open } = require("../src/db.js");
+const { createDb } = require("../src/sql.js");
 const { Store } = require("../src/store.js");
 const { createApp } = require("../src/server.js");
 const { probe, runCheck, classify } = require("../src/checker.js");
 
-function harness() {
-  const db = open(":memory:");
+async function harness() {
+  const db = await createDb({ url: null });
   const refunds = [];
   const payments = {
     mode: "stripe",
@@ -22,7 +22,7 @@ function harness() {
     config: { seedOnEmpty: false, allowedOrigins: ["*"], adminToken: "admin-secret" }
   });
   const store = new Store(db);
-  store.seed([
+  await store.seed([
     { url: "amazon.com/dp/B000000001", title: "Existing Deal", now: 10, was: 20, bid: 500, age: 10 }
   ]);
   const server = app.listen(0);
@@ -50,13 +50,13 @@ function harness() {
     data: { object: { id: "dp_1", payment_intent: pi } }
   });
 
-  return { db, store, call, admin, webhook, paid, dispute, refunds, close: () => { server.close(); db.close(); } };
+  return { db, store, call, admin, webhook, paid, dispute, refunds, close: async () => { server.close(); await db.close(); } };
 }
 
 // ---------- chargebacks ----------
 
 test("a disputed payment for a new listing takes it off the board", async (t) => {
-  const h = harness();
+  const h = await harness();
   t.after(h.close);
   const co = await h.call("POST", "/api/checkout", { url: "target.com/p/x/-/A-5", amount: 600, title: "Disputed Deal" });
   await h.paid(co.body.bidId);
@@ -71,7 +71,7 @@ test("a disputed payment for a new listing takes it off the board", async (t) =>
 });
 
 test("a disputed raise rolls the listing back to what was actually paid for", async (t) => {
-  const h = harness();
+  const h = await harness();
   t.after(h.close);
   const first = await h.call("POST", "/api/checkout", { url: "walmart.com/ip/y/6", amount: 600 });
   await h.paid(first.body.bidId);
@@ -89,7 +89,7 @@ test("a disputed raise rolls the listing back to what was actually paid for", as
 });
 
 test("a dispute on a superseded bid in the chain flags rather than rewrites", async (t) => {
-  const h = harness();
+  const h = await harness();
   t.after(h.close);
   const first = await h.call("POST", "/api/checkout", { url: "altamuta.com/deal/z", amount: 600 });
   await h.paid(first.body.bidId);
@@ -108,7 +108,7 @@ test("a dispute on a superseded bid in the chain flags rather than rewrites", as
 });
 
 test("an external refund reverses the bid the same way", async (t) => {
-  const h = harness();
+  const h = await harness();
   t.after(h.close);
   const co = await h.call("POST", "/api/checkout", { url: "target.com/p/r/-/A-7", amount: 700 });
   await h.paid(co.body.bidId);
@@ -121,7 +121,7 @@ test("an external refund reverses the bid the same way", async (t) => {
 });
 
 test("reversed bids stop counting as revenue", async (t) => {
-  const h = harness();
+  const h = await harness();
   t.after(h.close);
   const keep = await h.call("POST", "/api/checkout", { url: "target.com/p/keep/-/A-8", amount: 600 });
   const lose = await h.call("POST", "/api/checkout", { url: "walmart.com/ip/lose/9", amount: 700 });
@@ -134,7 +134,7 @@ test("reversed bids stop counting as revenue", async (t) => {
 });
 
 test("a dispute for an unknown payment is ignored, not fatal", async (t) => {
-  const h = harness();
+  const h = await harness();
   t.after(h.close);
   const res = await h.dispute("pi_never_seen");
   assert.equal(res.received, true);
@@ -167,7 +167,7 @@ test("probe reports timeouts as errors rather than deaths", async () => {
 });
 
 test("only a 404 flags a listing for review", async (t) => {
-  const h = harness();
+  const h = await harness();
   t.after(h.close);
   const co = await h.call("POST", "/api/checkout", { url: "walmart.com/ip/blocked/1", amount: 600 });
   await h.paid(co.body.bidId);
@@ -193,7 +193,7 @@ test("only a 404 flags a listing for review", async (t) => {
 });
 
 test("checks are not repeated until they go stale", async (t) => {
-  const h = harness();
+  const h = await harness();
   t.after(h.close);
   const opts = { limit: 10, fetch: async () => ({ status: 200 }) };
   assert.equal((await runCheck(h.store, opts)).checked, 1);
@@ -202,7 +202,7 @@ test("checks are not repeated until they go stale", async (t) => {
 });
 
 test("the review queue needs the admin token and unflagging clears it", async (t) => {
-  const h = harness();
+  const h = await harness();
   t.after(h.close);
   await runCheck(h.store, { limit: 10, fetch: async () => ({ status: 404 }) });
 
@@ -218,7 +218,7 @@ test("the review queue needs the admin token and unflagging clears it", async (t
 });
 
 test("removing a flagged listing takes it off the board for good", async (t) => {
-  const h = harness();
+  const h = await harness();
   t.after(h.close);
   await runCheck(h.store, { limit: 10, fetch: async () => ({ status: 410 }) });
   const removed = await h.call("POST", "/api/admin/remove",
@@ -239,7 +239,7 @@ test("a title taken from the URL path is scrubbed like a supplied one", () => {
 });
 
 test("a listing title cannot inject markup into the test checkout page", async (t) => {
-  const db = open(":memory:");
+  const db = await createDb({ url: null });
   const app = createApp({
     db,
     config: {
@@ -248,7 +248,7 @@ test("a listing title cannot inject markup into the test checkout page", async (
     }
   });
   const server = app.listen(0);
-  t.after(() => { server.close(); db.close(); });
+  t.after(async () => { server.close(); await db.close(); });
   const base = "http://127.0.0.1:" + server.address().port;
 
   const co = await (await fetch(base + "/api/checkout", {
@@ -263,7 +263,7 @@ test("a listing title cannot inject markup into the test checkout page", async (
 });
 
 test("a failed webhook handler leaves the event retryable", async (t) => {
-  const db = open(":memory:");
+  const db = await createDb({ url: null });
   let failNext = true;
   const app = createApp({
     db,
@@ -283,7 +283,7 @@ test("a failed webhook handler leaves the event retryable", async (t) => {
     return realApply(...args);
   };
   const server = app.listen(0);
-  t.after(() => { server.close(); db.close(); });
+  t.after(async () => { server.close(); await db.close(); });
   const base = "http://127.0.0.1:" + server.address().port;
 
   const co = await (await fetch(base + "/api/checkout", {
@@ -311,7 +311,7 @@ test("a failed webhook handler leaves the event retryable", async (t) => {
 });
 
 test("a negative limit cannot turn LIMIT into unbounded", async (t) => {
-  const h = harness();
+  const h = await harness();
   t.after(h.close);
   const res = await h.call("GET", "/api/activity?limit=-1");
   assert.ok(Array.isArray(res.body.activity));

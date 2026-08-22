@@ -4,7 +4,9 @@
   "private": true,
   "description": "Submissions, ranking and payments backend for the outdeals board",
   "main": "src/server.js",
-  "engines": { "node": ">=20" },
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
     "start": "node src/server.js",
     "dev": "ALLOW_DEV_PAYMENTS=1 node --watch src/server.js",
@@ -12,8 +14,9 @@
     "check-links": "node src/checker.js"
   },
   "dependencies": {
-    "better-sqlite3": "^13.0.3",
+    "@electric-sql/pglite": "^0.3.11",
     "express": "^5.2.1",
+    "pg": "^8.16.3",
     "stripe": "^22.5.0"
   }
 }

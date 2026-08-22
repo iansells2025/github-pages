@@ -2,15 +2,15 @@
 
 const test = require("node:test");
 const assert = require("node:assert");
-const { open } = require("../src/db.js");
+const { createDb } = require("../src/sql.js");
 const { Store } = require("../src/store.js");
 const { createApp } = require("../src/server.js");
 
 /* Each test gets its own in-memory board and a fake payment provider, so the
    suite exercises the real routes and the real SQL without touching Stripe. */
-function harness(opts) {
+async function harness(opts) {
   const o = opts || {};
-  const db = open(":memory:");
+  const db = await createDb({ url: null });
   const refunds = [];
   const payments = {
     mode: "stripe",
@@ -34,7 +34,7 @@ function harness(opts) {
   });
   const store = new Store(db);
   if (o.seed !== false) {
-    store.seed([
+    await store.seed([
       { url: "amazon.com/dp/B000000001", title: "Top Amazon Deal", now: 10, was: 20, bid: 500, age: 10 },
       { url: "target.com/p/thing/-/A-1", title: "Target Thing", now: 5, was: 9, bid: 300, age: 8 },
       { url: "walmart.com/ip/thing/2", title: "Walmart Thing", now: 7, was: 14, bid: 100, age: 6 },
@@ -65,11 +65,11 @@ function harness(opts) {
     data: { object: { id: sessionId || "cs_" + bidId, payment_status: "paid", payment_intent: "pi_" + bidId, metadata: { bidId } } }
   });
 
-  return { app, db, store, server, call, webhook, paid, refunds, close: () => { server.close(); db.close(); } };
+  return { app, db, store, server, call, webhook, paid, refunds, close: async () => { server.close(); await db.close(); } };
 }
 
 test("board returns one global ranking with each row tagged by its board", async (t) => {
-  const h = harness();
+  const h = await harness();
   t.after(h.close);
   const { body } = await h.call("GET", "/api/board?board=all");
   assert.equal(body.total, 4);
@@ -83,7 +83,7 @@ test("board returns one global ranking with each row tagged by its board", async
 });
 
 test("filtering by board keeps the global rank numbers", async (t) => {
-  const h = harness();
+  const h = await harness();
   t.after(h.close);
   const { body } = await h.call("GET", "/api/board?board=amazon");
   assert.deepEqual(body.listings.map((l) => l.rank), [1, 4]);
@@ -92,7 +92,7 @@ test("filtering by board keeps the global rank numbers", async (t) => {
 });
 
 test("board rejects unknown filters and never leaks owner tokens", async (t) => {
-  const h = harness();
+  const h = await harness();
   t.after(h.close);
   assert.equal((await h.call("GET", "/api/board?board=costco")).status, 400);
   const { body } = await h.call("GET", "/api/board");
@@ -100,7 +100,7 @@ test("board rejects unknown filters and never leaks owner tokens", async (t) => 
 });
 
 test("quote prices a new listing and refuses a bid just under #1", async (t) => {
-  const h = harness();
+  const h = await harness();
   t.after(h.close);
   const near = await h.call("POST", "/api/quote", { url: "walmart.com/ip/new/9", amount: 502 });
   assert.equal(near.status, 400);
@@ -114,7 +114,7 @@ test("quote prices a new listing and refuses a bid just under #1", async (t) => 
 });
 
 test("quote on an existing listing charges only the difference", async (t) => {
-  const h = harness();
+  const h = await harness();
   t.after(h.close);
   const { body } = await h.call("POST", "/api/quote", { url: "https://www.amazon.com/dp/B000000002?tag=x", amount: 150 });
   assert.equal(body.charge, 50);
@@ -123,7 +123,7 @@ test("quote on an existing listing charges only the difference", async (t) => {
 });
 
 test("unsupported retailers are refused at quote and checkout", async (t) => {
-  const h = harness();
+  const h = await harness();
   t.after(h.close);
   const q = await h.call("POST", "/api/quote", { url: "bestbuy.com/site/x", amount: 50 });
   assert.equal(q.status, 400);
@@ -132,7 +132,7 @@ test("unsupported retailers are refused at quote and checkout", async (t) => {
 });
 
 test("a bid reaches the board only after the payment webhook", async (t) => {
-  const h = harness();
+  const h = await harness();
   t.after(h.close);
   const co = await h.call("POST", "/api/checkout", {
     url: "target.com/p/new/-/A-77", amount: 600, title: "Brand New Deal", priceNow: 20, priceWas: 50
@@ -160,7 +160,7 @@ test("a bid reaches the board only after the payment webhook", async (t) => {
 });
 
 test("an unpaid checkout session is ignored", async (t) => {
-  const h = harness();
+  const h = await harness();
   t.after(h.close);
   const co = await h.call("POST", "/api/checkout", { url: "target.com/p/new/-/A-78", amount: 600 });
   await h.webhook({
@@ -172,7 +172,7 @@ test("an unpaid checkout session is ignored", async (t) => {
 });
 
 test("replayed webhooks apply a bid exactly once", async (t) => {
-  const h = harness();
+  const h = await harness();
   t.after(h.close);
   const co = await h.call("POST", "/api/checkout", { url: "walmart.com/ip/dup/3", amount: 600 });
   const event = {
@@ -191,7 +191,7 @@ test("replayed webhooks apply a bid exactly once", async (t) => {
 });
 
 test("a raise that the board outran is refunded, not applied", async (t) => {
-  const h = harness();
+  const h = await harness();
   t.after(h.close);
   // Two bidders quote the same listing at $100, then both pay.
   const first = await h.call("POST", "/api/checkout", { url: "amazon.com/dp/B000000002", amount: 150 });
@@ -212,13 +212,13 @@ test("a raise that the board outran is refunded, not applied", async (t) => {
 });
 
 test("checkout is refused when payments are not configured", async (t) => {
-  const db = open(":memory:");
+  const db = await createDb({ url: null });
   const app = createApp({
     db,
     config: { seedOnEmpty: false, stripeSecretKey: "", allowDevPayments: false, allowedOrigins: ["*"] }
   });
   const server = app.listen(0);
-  t.after(() => { server.close(); db.close(); });
+  t.after(async () => { server.close(); await db.close(); });
   const base = "http://127.0.0.1:" + server.address().port;
 
   const health = await (await fetch(base + "/api/health")).json();
@@ -233,7 +233,7 @@ test("checkout is refused when payments are not configured", async (t) => {
 });
 
 test("a bad webhook signature is rejected", async (t) => {
-  const db = open(":memory:");
+  const db = await createDb({ url: null });
   const app = createApp({
     db,
     payments: {
@@ -245,7 +245,7 @@ test("a bad webhook signature is rejected", async (t) => {
     config: { seedOnEmpty: false, allowedOrigins: ["*"] }
   });
   const server = app.listen(0);
-  t.after(() => { server.close(); db.close(); });
+  t.after(async () => { server.close(); await db.close(); });
   const res = await fetch("http://127.0.0.1:" + server.address().port + "/api/webhook", {
     method: "POST", headers: { "Content-Type": "application/json" }, body: "{}"
   });
@@ -254,7 +254,7 @@ test("a bad webhook signature is rejected", async (t) => {
 });
 
 test("stats count real money and real listings", async (t) => {
-  const h = harness();
+  const h = await harness();
   t.after(h.close);
   await h.call("GET", "/api/board"); // visits are counted when the board is viewed
   const co = await h.call("POST", "/api/checkout", { url: "target.com/p/stat/-/A-9", amount: 700 });
@@ -268,7 +268,7 @@ test("stats count real money and real listings", async (t) => {
 });
 
 test("admin removal needs the token and takes the listing off the board", async (t) => {
-  const h = harness();
+  const h = await harness();
   t.after(h.close);
   const denied = await h.call("POST", "/api/admin/remove", { url: "amazon.com/dp/B000000001" });
   assert.equal(denied.status, 401);
@@ -282,7 +282,7 @@ test("admin removal needs the token and takes the listing off the board", async 
 });
 
 test("checkout rejects bids that break the rules before charging anything", async (t) => {
-  const h = harness();
+  const h = await harness();
   t.after(h.close);
   for (const amount of [4, 1000000, 12.5, 502]) {
     const res = await h.call("POST", "/api/checkout", { url: "walmart.com/ip/x/44", amount });

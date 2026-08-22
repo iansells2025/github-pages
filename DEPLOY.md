@@ -2,167 +2,185 @@
 
 Two pieces, deployed separately:
 
+- **API** — `server/`, running as a Vercel Function backed by Postgres.
 - **Front end** — static files in `deals/`, served by GitHub Pages.
-- **API** — `server/`, a Node process with a SQLite file on a Fly.io volume.
 
 Do the API first: the front end needs its URL.
 
-Everything below runs in **Stripe test mode**, so you can put real bids through the
-whole flow with a test card and no money moves. Switching to live keys is the last
-section.
+Everything below runs in **Stripe test mode**, so you can put bids through the
+whole flow with a test card and no money moves. Switching to live keys is the
+last section.
+
+> **Vercel plan.** The Hobby plan is for non-commercial use, and this site takes
+> payments. Use a Pro project for anything beyond testing. Hobby also caps cron
+> at one run per day, which is what `vercel.json` is set to.
 
 ---
 
-## 1. Deploy the API to Fly
+## 1. Create the database
 
-Prerequisites: a [Fly.io](https://fly.io) account and `flyctl`
-(`curl -L https://fly.io/install.sh | sh`), plus a Stripe account.
+Any Postgres works — [Neon](https://neon.tech) has a free tier and is what the
+connection settings assume. Vercel's own Postgres or Supabase are equivalent.
 
-```bash
-cd /path/to/github-pages          # the repo root, NOT server/
-fly auth login
+Copy the **pooled** connection string (Neon's host contains `-pooler`). This
+matters: each serverless invocation opens its own connection, and a direct
+endpoint will run out. It looks like:
+
+```
+postgresql://user:pass@ep-xxx-pooler.region.aws.neon.tech/outdeals?sslmode=require
 ```
 
-Pick an app name — it decides your URL (`https://<name>.fly.dev`) and must be
-globally unique. Then edit **`fly.toml`**: set `app`, and set `API_BASE_URL` to
-that same `https://<name>.fly.dev`.
+You do not need to create any tables. The app creates its schema on first boot.
+
+## 2. Deploy the API
+
+Import the repository at [vercel.com/new](https://vercel.com/new). Settings:
+
+- **Framework preset:** Other
+- **Root directory:** the repository root (not `server/`) — the function needs
+  `shared/` too, and the root `package.json` is an npm workspace that installs
+  the API's dependencies.
+- **Build command:** leave empty. There is nothing to build.
+
+Add environment variables (Settings → Environment Variables):
+
+| Variable | Value |
+| --- | --- |
+| `DATABASE_URL` | the pooled connection string from step 1 |
+| `SITE_URL` | `https://iansells2025.github.io/github-pages/deals/index.html` |
+| `ALLOWED_ORIGINS` | `https://iansells2025.github.io` |
+| `STRIPE_SECRET_KEY` | `sk_test_…` |
+| `ADMIN_TOKEN` | `openssl rand -hex 32` |
+| `CRON_SECRET` | `openssl rand -hex 32` |
+| `SEED_ON_EMPTY` | `1` while testing, `0` before launch |
+
+Deploy. You now have a URL — add one more variable and redeploy so Stripe's
+return links point at the right place:
+
+| Variable | Value |
+| --- | --- |
+| `API_BASE_URL` | `https://<your-project>.vercel.app` |
+
+Check it:
 
 ```bash
-fly apps create <your-app-name>
-
-# The board lives in this volume. Same region as `primary_region` in fly.toml.
-fly volumes create outdeals_data --region iad --size 1
-
-# Secrets — never put these in fly.toml, it is committed.
-fly secrets set \
-  STRIPE_SECRET_KEY=sk_test_... \
-  ADMIN_TOKEN="$(openssl rand -hex 32)"
-
-fly deploy
-```
-
-`fly deploy` builds `server/Dockerfile` with the repo root as context — that is
-why `fly.toml` lives at the root. Check it came up:
-
-```bash
-curl https://<your-app-name>.fly.dev/api/health
+curl https://<your-project>.vercel.app/api/health
 # {"ok":true,"payments":"stripe","webhook":false,"listings":35}
 ```
 
-`"payments":"stripe"` means your key was read. `"webhook":false` is expected —
+`"payments":"stripe"` means the key was read. `"webhook":false` is expected —
 that is the next step, and **until it is done, payments will succeed and no bid
-will ever be applied.** The server logs the same warning at boot.
+will ever be applied.**
 
-### Traps
+## 3. Point Stripe at it
 
-- **Do not scale past one machine.** The volume attaches to a single machine and
-  SQLite takes a single writer. `fly launch` sometimes creates two; if you see
-  two in `fly status`, `fly scale count 1`.
-- **`fly launch` will offer to overwrite `fly.toml`.** Decline — the committed one
-  has the volume mount, the health check and the single-machine deploy strategy.
-- **The volume is not a backup.** See *Backups* below.
+Stripe dashboard → Developers → Webhooks → **Add endpoint**:
 
-## 2. Point Stripe at it
-
-In the Stripe dashboard → Developers → Webhooks → **Add endpoint**:
-
-- URL: `https://<your-app-name>.fly.dev/api/webhook`
+- URL: `https://<your-project>.vercel.app/api/webhook`
 - Events: `checkout.session.completed`, `checkout.session.expired`,
   `charge.dispute.created`, `charge.refunded`
 
-Copy the endpoint's **signing secret** (`whsec_...`) and give it to the app:
+Copy the signing secret (`whsec_…`) into `STRIPE_WEBHOOK_SECRET` and redeploy.
+`/api/health` should then report `"webhook":true`.
 
-```bash
-fly secrets set STRIPE_WEBHOOK_SECRET=whsec_...   # this restarts the machine
-curl https://<your-app-name>.fly.dev/api/health   # "webhook":true
-```
+Send a test event from the Stripe dashboard. A **400 saying the body was not
+delivered raw** means the platform parsed it before the app saw it — the
+function sets `bodyParser: false` for exactly this reason, so check that
+`api/index.js` deployed intact.
 
-## 3. Publish the front end
+## 4. Publish the front end
 
 Edit **`deals/config.js`**:
 
 ```js
-window.OUTDEALS_CONFIG = { apiBase: "https://<your-app-name>.fly.dev" };
+window.OUTDEALS_CONFIG = { apiBase: "https://<your-project>.vercel.app" };
 ```
 
-Then — and this is the step that actually makes it public — **merge the branch
-into `main`**. GitHub Pages serves from `main`; the work currently sits on
-`claude/product-deals-bidding-site-xdulbs`, so nothing is live until it lands.
-
-Confirm in the repo's **Settings → Pages** that the source is `main`, folder `/`
-(root). The board is then at:
+Then **merge the branch into `main`**. GitHub Pages serves from `main`, so
+nothing is public until it lands. Confirm in **Settings → Pages** that the
+source is `main`, folder `/` (root). The board is then at:
 
 ```
 https://iansells2025.github.io/github-pages/deals/
 ```
 
-If your Pages URL differs from that, update `SITE_URL` and `ALLOWED_ORIGINS` in
-`fly.toml` to match and redeploy — a mismatch means payers get returned to the
-wrong place, and the browser is blocked from calling the API at all.
+If your Pages URL differs, update `SITE_URL` and `ALLOWED_ORIGINS` to match and
+redeploy — a mismatch sends payers back to the wrong place and blocks the
+browser from calling the API at all.
 
-## 4. Test the real flow
+## 5. Test the real flow
 
-Open the board. The demo-mode banner should be **gone** — if it is still there,
+Open the board. The demo-mode banner should be **gone**; if it is still there,
 the page is not seeing `apiBase`.
 
-Place a bid. At Stripe's checkout use test card `4242 4242 4242 4242`, any future
-expiry, any CVC. You should be returned to the board and see your listing at the
-rank you paid for within a second or two.
+Place a bid. Use test card `4242 4242 4242 4242`, any future expiry, any CVC.
+You should land back on the board at the rank you paid for within a second.
 
-Worth testing deliberately, since these are the paths that carry money:
+Worth testing deliberately, since these carry money:
 
 | Test | Expected |
 | --- | --- |
 | Bid $1 over the current #1 | Refused — taking #1 costs at least $5 more |
 | Enter the same deal link again and raise | Charged only the difference |
 | Cancel at Stripe's checkout | "Nothing was charged", board unchanged |
-| Refund the payment in the Stripe dashboard | Listing rolls back or disappears within seconds |
-
-Check what the server actually recorded:
+| Refund the payment in the Stripe dashboard | Listing rolls back or disappears |
 
 ```bash
-curl https://<your-app-name>.fly.dev/api/stats
-curl -H "x-admin-token: $ADMIN_TOKEN" https://<your-app-name>.fly.dev/api/admin/flagged
+curl https://<your-project>.vercel.app/api/stats
+curl -H "x-admin-token: $ADMIN_TOKEN" https://<your-project>.vercel.app/api/admin/flagged
 ```
 
-## 5. Going live
+## 6. Going live
 
-1. Swap in live keys: `fly secrets set STRIPE_SECRET_KEY=sk_live_...`
-2. Add a **separate** webhook endpoint in live mode — the signing secret differs
-   from the test one — and set `STRIPE_WEBHOOK_SECRET` to it.
-3. Set `SEED_ON_EMPTY = "0"` in `fly.toml` so the board does not start with demo
-   listings, and wipe the test board: `fly ssh console -C "rm /data/outdeals.db"`,
-   then redeploy.
-4. Have terms of service and a support contact reachable from the site before you
-   take a real payment.
+1. Swap in live keys: `STRIPE_SECRET_KEY=sk_live_…`
+2. Add a **separate** webhook endpoint in live mode — its signing secret differs
+   from the test one — and update `STRIPE_WEBHOOK_SECRET`.
+3. Set `SEED_ON_EMPTY=0` and clear the test board:
+   `psql "$DATABASE_URL" -c "TRUNCATE listings, bids, activity, webhook_events, visits"`
+4. Optionally set `MIGRATE_ON_BOOT=0` — the tables exist by now, and it saves a
+   round trip on every cold start.
+5. Have terms of service and a support contact reachable from the site before
+   taking a real payment.
 
 ---
 
 ## Operations
 
-**Logs.** `fly logs`. Webhook handling, reversals and link-check summaries all
-log here.
+**Logs.** Vercel dashboard → your project → Logs. Webhook handling, payment
+reversals and cron summaries all appear there.
 
-**Backups.** The entire board is one file. A volume snapshot is not enough on its
-own — take a copy off the machine:
+**Backups.** Whatever your Postgres provider gives you — Neon has
+point-in-time restore. This is the main reason to be on a managed database
+rather than a file on a disk.
+
+**Scheduled work.** `vercel.json` calls `/api/cron/maintenance` daily, which
+expires abandoned checkouts and link-checks a batch of listings. Run it by hand
+with:
 
 ```bash
-fly ssh console -C "sqlite3 /data/outdeals.db '.backup /data/backup.db'"
-fly sftp get /data/backup.db ./outdeals-backup-$(date +%F).db
+curl -X POST -H "x-admin-token: $ADMIN_TOKEN" \
+  https://<your-project>.vercel.app/api/cron/maintenance
 ```
 
-Do this before every deploy until you trust it.
-
-**Moderation.** Flagged listings (dead links, reversed payments) are queued, never
-removed automatically:
+**Moderation.** Flagged listings (dead links, reversed payments) are queued,
+never removed automatically:
 
 ```bash
-curl -H "x-admin-token: $TOKEN" https://<app>.fly.dev/api/admin/flagged
+curl -H "x-admin-token: $TOKEN" https://<app>.vercel.app/api/admin/flagged
 curl -X POST -H "x-admin-token: $TOKEN" -H "Content-Type: application/json" \
   -d '{"url":"amazon.com/dp/B0…","reason":"dead link"}' \
-  https://<app>.fly.dev/api/admin/remove
+  https://<app>.vercel.app/api/admin/remove
 ```
 
-**Cost.** One `shared-cpu-1x` 512MB machine plus a 1GB volume is a few dollars a
-month at the time of writing. The machine is deliberately always-on so the
-periodic link check and pending-bid expiry actually run.
+**Local development.** No database required — the app falls back to PGlite, an
+embedded Postgres, so `npm run dev` works with nothing installed:
+
+```bash
+npm install
+ALLOW_DEV_PAYMENTS=1 PGLITE_DIR=./server/data/pglite npm run dev
+```
+
+`ALLOW_DEV_PAYMENTS=1` replaces Stripe with a local stand-in that mimics the
+same redirect-out / redirect-back flow. **It hands out spots for free — never
+set it in production.** With neither Stripe keys nor that flag, `/api/checkout`
+returns 503 rather than taking bids it cannot charge for.

@@ -1,7 +1,7 @@
 # outdeals API
 
 Submissions, ranking and payments for the [outdeals board](../deals). Node + Express +
-SQLite + Stripe Checkout. No ORM, no build step.
+Postgres + Stripe Checkout, deployed as a Vercel Function. No ORM, no build step.
 
 The ranking rules live in [`../shared/engine.js`](../shared/engine.js) and are shared verbatim
 with the browser, so the page and the server can never disagree about what a bid buys. The
@@ -11,11 +11,14 @@ cannot talk it into a cheaper spot.
 ## Run it locally
 
 ```bash
-cd server
-npm install
-cp .env.example .env          # optional; the defaults below work as-is
-ALLOW_DEV_PAYMENTS=1 npm run dev
+npm install                   # from the repo root — it is an npm workspace
+ALLOW_DEV_PAYMENTS=1 PGLITE_DIR=./server/data/pglite npm run dev
 ```
+
+No database to install: without a `DATABASE_URL` the app runs on
+[PGlite](https://pglite.dev), Postgres compiled to WASM. `PGLITE_DIR` keeps that
+board between restarts; omit it and it lives in memory. The test suite uses the
+same thing, so tests exercise the exact SQL production runs.
 
 Then point the front end at it by editing `deals/config.js`:
 
@@ -29,30 +32,38 @@ free — never set it in production.** With neither Stripe keys nor that flag, `
 returns 503 rather than taking bids it cannot charge for.
 
 ```bash
-npm test      # 41 tests: rules engine, payment lifecycle, chargebacks, link checking
+npm test      # 51 tests: rules engine, payment lifecycle, chargebacks,
+              # link checking, and the serverless entry point
 ```
 
 ## Deploy
 
-Any host that runs a Node process with a persistent disk — Fly.io, Render, Railway, a VPS.
-There is a `Dockerfile` at the repo root of this folder's parent build context:
+See [DEPLOY.md](../DEPLOY.md) for the full runbook. In short: a Postgres
+(Neon or similar), the repository imported into Vercel with the repo root as the
+project root, and a handful of environment variables.
 
-```bash
-docker build -f server/Dockerfile -t outdeals-api .   # run from the repo root
-docker run -p 8787:8787 -v outdeals-data:/data --env-file server/.env outdeals-api
-```
+The function lives at [`api/index.js`](../api/index.js) — it boots this same
+Express app once per instance and hands every `/api/*` request to it, so there
+is one code path and one test suite behind both the serverless deployment and
+`npm run dev`.
 
-SQLite keeps the whole board in one file (`DB_PATH`), so **mount a volume** — a container
-filesystem loses every listing on redeploy. One process only: SQLite in WAL mode handles this
-workload comfortably, but do not run several replicas against one file. Moving to Postgres
-means rewriting `src/store.js` alone; nothing else touches SQL.
+Two things worth knowing:
+
+- **Use a pooled connection string.** Each invocation opens its own connection;
+  a direct Postgres endpoint runs out. Neon's pooled host contains `-pooler`.
+- **Body parsing must stay off.** Stripe signs the exact request bytes, so
+  `api/index.js` sets `bodyParser: false`. If that is ever lost, the webhook
+  returns a 400 that says the body was not delivered raw, rather than a
+  confusing signature error.
 
 ### Environment
 
 | Variable | Purpose |
 | --- | --- |
 | `PORT` | Listen port (default 8787) |
-| `DB_PATH` | SQLite file (default `./data/outdeals.db`) |
+| `DATABASE_URL` | Pooled Postgres connection string. Empty runs on PGlite |
+| `PGLITE_DIR` | Persist the local PGlite board between restarts |
+| `MIGRATE_ON_BOOT` | `0` skips the idempotent schema DDL once tables exist |
 | `SITE_URL` | Where payers are returned after checkout — the board's full URL |
 | `API_BASE_URL` | This server's public origin |
 | `ALLOWED_ORIGINS` | Comma-separated CORS allowlist, or `*` |
@@ -62,7 +73,8 @@ means rewriting `src/store.js` alone; nothing else touches SQL.
 | `ALLOW_DEV_PAYMENTS` | Local testing only — free spots, no charge |
 | `SEED_ON_EMPTY` | Fill a brand-new database with the demo listings (default on) |
 | `ADMIN_TOKEN` | Required by every `/api/admin/*` route |
-| `CHECK_LINKS_INTERVAL_MIN` | Run a background link check every N minutes (0 = off) |
+| `CHECK_LINKS_INTERVAL_MIN` | Long-running process only; Vercel uses the cron route instead |
+| `CRON_SECRET` | Bearer token Vercel sends when triggering `/api/cron/maintenance` |
 
 ### Stripe setup
 
@@ -89,6 +101,7 @@ warning at boot. Locally: `stripe listen --forward-to localhost:8787/api/webhook
 | `GET /api/admin/flagged` | The review queue — listings a check found gone, or whose payment was reversed |
 | `POST /api/admin/unflag` | `{url}`. Clears a flag you have judged a false positive |
 | `POST /api/admin/check` | `{limit}`. Runs a link check now |
+| `ALL /api/cron/maintenance` | Expires abandoned checkouts and link-checks a batch. Called by Vercel Cron with `CRON_SECRET`, or by hand with the admin token |
 | `POST /api/admin/remove` | `{url, reason}` with `x-admin-token`. Takes a listing off the board |
 
 ## How a bid becomes a rank
@@ -99,7 +112,8 @@ POST /api/checkout   → bid row written as `pending`, Stripe session created
    ↓ (payer is redirected to Stripe)
 POST /api/webhook    → signature verified, event id recorded (replays are no-ops)
    ↓
-applyPaidBid()       → one SQL transaction: upsert listing, log activity, mark bid `applied`
+applyPaidBid()       → one transaction, bid row locked FOR UPDATE:
+                       upsert listing, log activity, mark bid `applied`
 ```
 
 Two properties this buys:
@@ -114,6 +128,13 @@ Two properties this buys:
 
 Webhook replays are idempotent via the `webhook_events` table, and `applyPaidBid` is a no-op on
 an already-applied bid, so Stripe's at-least-once delivery cannot double-charge or double-apply.
+The marker is released if the handler throws, so a transient failure leaves the event retryable
+rather than silently swallowing a payment.
+
+Concurrency is enforced by the database, not by luck: the bid row is locked `FOR UPDATE` for the
+whole transaction, so two deliveries landing on separate instances cannot both apply it, and the
+unique index on `listings.key` decides the winner when two payments race to create the same
+listing.
 
 ## Chargebacks and refunds
 
@@ -162,6 +183,6 @@ Removal is a soft delete (`status='removed'`), so the payment history behind a l
   scraping or an affiliate product API, and stays a moderation job until then.
 - **No automatic removals.** Everything the checker and the dispute handler find lands in the
   review queue for a human. Deliberate: bids are non-refundable on removal.
-- **In-memory rate limiting only.** Fine for one process; put a real limiter at the edge if this
-  gets attention.
+- **In-memory rate limiting only.** On serverless each instance keeps its own counter, so the
+  effective limit is looser than it looks. Put a real limiter at the edge if this gets attention.
 - **No email.** Receipts come from Stripe; nothing notifies a bidder that they were outranked.

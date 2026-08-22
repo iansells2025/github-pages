@@ -18,16 +18,17 @@ Live at `<pages-url>/deals/`.
 | `deals/config.js` | **Point this at your API server** to go live |
 | `shared/engine.js` | The ranking rules — shared by the browser and the server |
 | `shared/seed.js` | Demo listings a fresh board starts with |
-| `server/` | Node + Express + SQLite + Stripe API ([README](../server/README.md)) |
+| `server/` | Node + Express + Postgres + Stripe API ([README](../server/README.md)) |
+| `api/index.js` | Vercel Function wrapper around that same app |
 
 ## Two modes
 
 **Demo mode** (default, and what GitHub Pages serves, since Pages cannot host a backend): the
 board lives in this browser's `localStorage` and the checkout takes no money. A banner says so.
 
-**Live mode**: set `apiBase` in `deals/config.js` to your deployed server and the same page
-becomes the real thing — submissions and ranking in a database, payments through Stripe
-Checkout, one board shared by every visitor.
+**Live mode**: set `apiBase` in `deals/config.js` to your deployed API and the same page becomes
+the real thing — submissions and ranking in Postgres, payments through Stripe Checkout, one board
+shared by every visitor. [DEPLOY.md](../DEPLOY.md) has the runbook.
 
 Both modes run the exact same rules engine, so ranking behaves identically either way.
 

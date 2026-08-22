@@ -3,7 +3,7 @@
 const crypto = require("crypto");
 const express = require("express");
 const engine = require("../../shared/engine.js");
-const { open } = require("./db.js");
+const { createDb } = require("./sql.js");
 const { Store } = require("./store.js");
 const { createPayments } = require("./payments.js");
 const { runCheck } = require("./checker.js");
@@ -19,7 +19,7 @@ function loadConfig(env) {
   const e = env || process.env;
   return {
     port: Number(e.PORT || 8787),
-    dbPath: e.DB_PATH || "./data/outdeals.db",
+    databaseUrl: e.DATABASE_URL || "",
     siteUrl: (e.SITE_URL || "http://localhost:8099/deals/index.html").replace(/\/$/, ""),
     apiBaseUrl: (e.API_BASE_URL || "http://localhost:8787").replace(/\/$/, ""),
     allowedOrigins: (e.ALLOWED_ORIGINS || "*").split(",").map((s) => s.trim()).filter(Boolean),
@@ -28,6 +28,7 @@ function loadConfig(env) {
     allowDevPayments: bool(e.ALLOW_DEV_PAYMENTS, false),
     seedOnEmpty: bool(e.SEED_ON_EMPTY, true),
     adminToken: e.ADMIN_TOKEN || "",
+    cronSecret: e.CRON_SECRET || "",
     trustProxy: bool(e.TRUST_PROXY, false)
   };
 }
@@ -48,6 +49,17 @@ function rateLimiter(limit, windowMs) {
   };
 }
 
+/* Stripe signs the exact bytes of the request. Express's raw parser gives us a
+   Buffer; a serverless platform that parsed the body first leaves an empty one.
+   Returning null here lets the route say which of those happened, instead of
+   surfacing it as a mystifying signature failure. */
+function rawBodyOf(req) {
+  const b = req.body;
+  if (Buffer.isBuffer(b) && b.length) return b;
+  if (typeof b === "string" && b.length) return Buffer.from(b, "utf8");
+  return null;
+}
+
 function escapeHtml(s) {
   return String(s).replace(/[&<>"']/g, (c) => (
     { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]
@@ -59,19 +71,14 @@ function visitorHash(req) {
   return crypto.createHash("sha256").update((req.ip || "") + "|" + ua).digest("hex").slice(0, 32);
 }
 
+/* Takes an already-connected db — creating one is async, and a serverless
+   entry point wants to do that once per instance rather than per request. */
 function createApp(options) {
   const config = Object.assign(loadConfig(), options && options.config);
-  const db = (options && options.db) || open(config.dbPath);
+  const db = options && options.db;
+  if (!db) throw new Error("createApp requires a db — use boot() to build one");
   const store = new Store(db);
   const payments = (options && options.payments) || createPayments(config);
-
-  if (config.seedOnEmpty) {
-    try {
-      store.seed(require("../../shared/seed.js"));
-    } catch (err) {
-      console.warn("seed skipped:", err.message);
-    }
-  }
 
   const app = express();
   app.set("trust proxy", config.trustProxy);
@@ -95,13 +102,22 @@ function createApp(options) {
   // Stripe needs the unparsed body to verify the signature, so this route is
   // mounted before the JSON parser.
   app.post("/api/webhook", express.raw({ type: "application/json", limit: "1mb" }), async (req, res) => {
+    const raw = rawBodyOf(req);
+    if (!raw) {
+      console.error("webhook body was not delivered raw — signature cannot be verified");
+      return res.status(400).json({
+        error: "Webhook body was not delivered raw, so the signature cannot be verified. " +
+          "The platform parsed it first — disable body parsing for this function."
+      });
+    }
+
     let event;
     try {
-      event = payments.verifyWebhook(req.body, req.get("stripe-signature"));
+      event = payments.verifyWebhook(raw, req.get("stripe-signature"));
     } catch (err) {
       return res.status(400).json({ error: "Signature verification failed: " + err.message });
     }
-    if (store.seenWebhook(event.id, event.type)) return res.json({ received: true, duplicate: true });
+    if (await store.seenWebhook(event.id, event.type)) return res.json({ received: true, duplicate: true });
 
     try {
       if (event.type === "checkout.session.completed") {
@@ -110,23 +126,23 @@ function createApp(options) {
         if (session.payment_status !== "paid") {
           return res.json({ received: true, ignored: "unpaid session" });
         }
-        const result = store.applyPaidBid(bidId, session.payment_intent);
+        const result = await store.applyPaidBid(bidId, session.payment_intent);
         if (!result.ok && result.code === "superseded") {
           const refund = await payments.refund(session.payment_intent, "board moved during checkout");
-          store.setBidStatus(bidId, "refunded", {
+          await store.setBidStatus(bidId, "refunded", {
             note: refund.ok ? "auto-refunded " + refund.id : "refund failed: " + refund.error
           });
         }
       } else if (event.type === "checkout.session.expired") {
         const bidId = (event.data.object.metadata || {}).bidId;
-        if (bidId) store.setBidStatus(bidId, "expired");
+        if (bidId) await store.setBidStatus(bidId, "expired");
       } else if (event.type === "charge.dispute.created" || event.type === "charge.refunded") {
         // A payment that came back cannot keep buying a rank.
         const obj = event.data.object;
         const pi = obj.payment_intent || (obj.charge && obj.charge.payment_intent);
-        const bid = pi ? store.bidByPaymentIntent(pi) : null;
+        const bid = pi ? await store.bidByPaymentIntent(pi) : null;
         if (bid) {
-          const result = store.reverseBid(bid.id,
+          const result = await store.reverseBid(bid.id,
             event.type === "charge.dispute.created" ? "payment disputed" : "payment refunded at the processor");
           console.warn("reversed bid " + bid.id + " (" + event.type + "): " + result.action);
         } else {
@@ -137,7 +153,7 @@ function createApp(options) {
     } catch (err) {
       // Release the idempotency marker so Stripe's retry can try again; keeping it
       // would turn a transient failure into a payment that never buys its rank.
-      store.forgetWebhook(event.id);
+      await store.forgetWebhook(event.id);
       console.error("webhook handling failed", err);
       res.status(500).json({ error: "handler failed" });
     }
@@ -146,40 +162,51 @@ function createApp(options) {
   app.use(express.json({ limit: "16kb" }));
   app.use("/api/", rateLimiter(240, 60 * 1000));
 
-  app.get("/api/health", (req, res) => {
-    res.json({
-      ok: true,
-      payments: payments.mode,
-      webhook: payments.webhookConfigured,
-      listings: store.boardCounts().all
-    });
+  app.get("/api/health", async (req, res, next) => {
+    try {
+      res.json({
+        ok: true,
+        payments: payments.mode,
+        webhook: payments.webhookConfigured,
+        listings: (await store.boardCounts()).all
+      });
+    } catch (err) { next(err); }
   });
 
-  app.get("/api/board", (req, res) => {
-    const board = String(req.query.board || "all");
-    if (board !== "all" && !engine.retailer(board)) {
-      return res.status(400).json({ error: "Unknown board." });
-    }
-    const limit = Math.min(Math.max(Number(req.query.limit) || 25, 1), 100);
-    const offset = Math.max(Number(req.query.offset) || 0, 0);
-    const rows = store.ranked(board);
-    store.recordVisit(visitorHash(req));
-    res.json({
-      board,
-      total: rows.length,
-      counts: store.boardCounts(),
-      boards: engine.RETAILERS.map((r) => ({ id: r.id, name: r.name, color: r.color, initials: r.initials, example: r.example })),
-      top: rows.length ? store.ranked("all")[0] : null,
-      listings: rows.slice(offset, offset + limit),
-      rules: { minBid: engine.MIN_BID, maxBid: engine.MAX_BID, topPremium: engine.TOP_PREMIUM }
-    });
+  app.get("/api/board", async (req, res, next) => {
+    try {
+      const board = String(req.query.board || "all");
+      if (board !== "all" && !engine.retailer(board)) {
+        return res.status(400).json({ error: "Unknown board." });
+      }
+      const limit = Math.min(Math.max(Number(req.query.limit) || 25, 1), 100);
+      const offset = Math.max(Number(req.query.offset) || 0, 0);
+      // One pass over the board serves both the filtered rows and the overall #1.
+      const all = await store.ranked("all");
+      const rows = board === "all" ? all : all.filter((l) => l.board === board);
+      await store.recordVisit(visitorHash(req));
+      res.json({
+        board,
+        total: rows.length,
+        counts: await store.boardCounts(),
+        boards: engine.RETAILERS.map((r) => ({ id: r.id, name: r.name, color: r.color, initials: r.initials, example: r.example })),
+        top: all.length ? all[0] : null,
+        listings: rows.slice(offset, offset + limit),
+        rules: { minBid: engine.MIN_BID, maxBid: engine.MAX_BID, topPremium: engine.TOP_PREMIUM }
+      });
+    } catch (err) { next(err); }
   });
 
-  app.get("/api/activity", (req, res) => res.json({ activity: store.activity(req.query.limit) }));
+  app.get("/api/activity", async (req, res, next) => {
+    try { res.json({ activity: await store.activity(req.query.limit) }); }
+    catch (err) { next(err); }
+  });
 
-  app.get("/api/stats", (req, res) => res.json(store.stats()));
+  app.get("/api/stats", async (req, res, next) => {
+    try { res.json(await store.stats()); } catch (err) { next(err); }
+  });
 
-  app.post("/api/quote", rateLimiter(60, 60 * 1000), (req, res) => {
+  app.post("/api/quote", rateLimiter(60, 60 * 1000), async (req, res, next) => {
     const parsed = engine.normalizeUrl(req.body && req.body.url);
     if (!parsed) return res.status(400).json({ error: "Enter the link to the deal you want to rank." });
     if (!parsed.retailer) {
@@ -188,10 +215,12 @@ function createApp(options) {
           " product links can be listed — " + parsed.host + " is not one of them."
       });
     }
-    const amount = Number(req.body.amount);
-    const quote = store.quote(parsed, amount);
-    if (!quote.ok) return res.status(400).json({ error: quote.message, code: quote.code });
-    res.json(Object.assign({ url: "https://" + parsed.host + parsed.path }, quote));
+    try {
+      const amount = Number(req.body.amount);
+      const quote = await store.quote(parsed, amount);
+      if (!quote.ok) return res.status(400).json({ error: quote.message, code: quote.code });
+      res.json(Object.assign({ url: "https://" + parsed.host + parsed.path }, quote));
+    } catch (err) { next(err); }
   });
 
   app.post("/api/checkout", rateLimiter(20, 60 * 1000), async (req, res, next) => {
@@ -205,13 +234,13 @@ function createApp(options) {
       });
     }
     const amount = Number(body.amount);
-    const quote = store.quote(parsed, amount);
+    const quote = await store.quote(parsed, amount);
     if (!quote.ok) return res.status(400).json({ error: quote.message, code: quote.code });
 
     const email = typeof body.email === "string" && /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(body.email.trim())
       ? body.email.trim().slice(0, 200) : null;
 
-    const bid = store.createBid({
+    const bid = await store.createBid({
       key: parsed.key,
       board: parsed.board,
       amount: amount,
@@ -235,7 +264,7 @@ function createApp(options) {
         successUrl: back + "&status=success",
         cancelUrl: back + "&status=canceled"
       });
-      store.attachSession(bid.id, session.sessionId);
+      await store.attachSession(bid.id, session.sessionId);
       res.json({
         bidId: bid.id,
         ownerToken: bid.owner_token,
@@ -248,17 +277,18 @@ function createApp(options) {
         provider: payments.mode
       });
     } catch (err) {
-      store.setBidStatus(bid.id, "failed", { note: err.message });
+      await store.setBidStatus(bid.id, "failed", { note: err.message });
       if (err.status === 503) return res.status(503).json({ error: err.message });
       next(err);
     }
   });
 
-  app.get("/api/bids/:id", (req, res) => {
-    const bid = store.getBid(req.params.id);
+  app.get("/api/bids/:id", async (req, res, next) => {
+    try {
+    const bid = await store.getBid(req.params.id);
     if (!bid) return res.status(404).json({ error: "Unknown bid." });
-    const listing = store.listingByKey(bid.listing_key);
-    const ranked = store.ranked("all");
+    const listing = await store.listingByKey(bid.listing_key);
+    const ranked = await store.ranked("all");
     const row = listing ? ranked.find((l) => l.id === listing.id) : null;
     res.json({
       id: bid.id,
@@ -273,12 +303,14 @@ function createApp(options) {
       boardRank: row ? row.boardRank : null,
       listingId: listing ? listing.id : null
     });
+    } catch (err) { next(err); }
   });
 
   // ---- local stand-in checkout, only when Stripe is not configured ----
   if (payments.mode === "dev") {
-    app.get("/api/dev/checkout/:id", (req, res) => {
-      const bid = store.getBid(req.params.id);
+    app.get("/api/dev/checkout/:id", async (req, res, next) => {
+      try {
+      const bid = await store.getBid(req.params.id);
       if (!bid) return res.status(404).send("Unknown bid");
       const back = config.siteUrl + (config.siteUrl.includes("?") ? "&" : "?") + "bid=" + bid.id;
       res.set("Content-Type", "text/html; charset=utf-8").send(`<!DOCTYPE html>
@@ -307,21 +339,24 @@ document.getElementById("pay").onclick = async function () {
 };
 document.getElementById("cancel").onclick = function () { location.href = ${JSON.stringify(back)} + "&status=canceled"; };
 </script>`);
+      } catch (err) { next(err); }
     });
 
-    app.post("/api/dev/confirm", (req, res) => {
-      const bidId = (req.body || {}).bidId;
-      const bid = store.getBid(bidId);
-      if (!bid) return res.status(404).json({ ok: false, error: "Unknown bid." });
-      if (store.seenWebhook("dev_" + bidId, "dev.paid")) {
-        return res.json({ ok: true, duplicate: true, status: store.getBid(bidId).status });
-      }
-      const result = store.applyPaidBid(bidId, "dev_pi_" + bidId);
-      if (!result.ok && result.code === "superseded") {
-        store.setBidStatus(bidId, "refunded", { note: "auto-refunded (test mode)" });
-        return res.status(409).json({ ok: false, code: "superseded", error: "The board moved while you were paying — refunded, nothing charged." });
-      }
-      res.json({ ok: result.ok, rank: result.rank, status: store.getBid(bidId).status });
+    app.post("/api/dev/confirm", async (req, res, next) => {
+      try {
+        const bidId = (req.body || {}).bidId;
+        const bid = await store.getBid(bidId);
+        if (!bid) return res.status(404).json({ ok: false, error: "Unknown bid." });
+        if (await store.seenWebhook("dev_" + bidId, "dev.paid")) {
+          return res.json({ ok: true, duplicate: true, status: (await store.getBid(bidId)).status });
+        }
+        const result = await store.applyPaidBid(bidId, "dev_pi_" + bidId);
+        if (!result.ok && result.code === "superseded") {
+          await store.setBidStatus(bidId, "refunded", { note: "auto-refunded (test mode)" });
+          return res.status(409).json({ ok: false, code: "superseded", error: "The board moved while you were paying — refunded, nothing charged." });
+        }
+        res.json({ ok: result.ok, rank: result.rank, status: (await store.getBid(bidId)).status });
+      } catch (err) { next(err); }
     });
   }
 
@@ -335,14 +370,14 @@ document.getElementById("cancel").onclick = function () { location.href = ${JSON
 
   /* The review queue: listings a link check found gone, or whose payment was
      reversed. Nothing here is removed automatically. */
-  app.get("/api/admin/flagged", requireAdmin, (req, res) => {
-    res.json({ flagged: store.flagged() });
+  app.get("/api/admin/flagged", requireAdmin, async (req, res, next) => {
+    try { res.json({ flagged: await store.flagged() }); } catch (err) { next(err); }
   });
 
-  app.post("/api/admin/unflag", requireAdmin, (req, res) => {
+  app.post("/api/admin/unflag", requireAdmin, async (req, res, next) => {
     const parsed = engine.normalizeUrl((req.body || {}).url);
     if (!parsed) return res.status(400).json({ error: "Bad url." });
-    res.json({ unflagged: store.unflag(parsed.key) });
+    try { res.json({ unflagged: await store.unflag(parsed.key) }); } catch (err) { next(err); }
   });
 
   app.post("/api/admin/check", requireAdmin, async (req, res, next) => {
@@ -351,11 +386,26 @@ document.getElementById("cancel").onclick = function () { location.href = ${JSON
     } catch (err) { next(err); }
   });
 
-  app.post("/api/admin/remove", requireAdmin, (req, res) => {
+  app.post("/api/admin/remove", requireAdmin, async (req, res, next) => {
     const parsed = engine.normalizeUrl((req.body || {}).url);
     if (!parsed) return res.status(400).json({ error: "Bad url." });
-    const removed = store.removeListing(parsed.key, (req.body || {}).reason);
-    res.json({ removed });
+    try { res.json({ removed: await store.removeListing(parsed.key) }); } catch (err) { next(err); }
+  });
+
+  /* Vercel Cron calls this — serverless has no long-lived process to run an
+     interval in. Authenticated with CRON_SECRET, which Vercel sends as a
+     bearer token; the admin token is accepted too so it can be run by hand. */
+  app.all("/api/cron/maintenance", async (req, res, next) => {
+    const auth = req.get("authorization") || "";
+    const bearer = auth.replace(/^Bearer\s+/i, "");
+    const ok = (config.cronSecret && bearer === config.cronSecret) ||
+      (config.adminToken && req.get("x-admin-token") === config.adminToken);
+    if (!ok) return res.status(401).json({ error: "Unauthorized." });
+    try {
+      const expired = await store.expireStalePending(DAY);
+      const checked = await runCheck(store, { limit: Number(req.query.limit) || 25, delayMs: 250 });
+      res.json({ expired, ...checked });
+    } catch (err) { next(err); }
   });
 
   app.use((req, res) => res.status(404).json({ error: "Not found." }));
@@ -371,24 +421,60 @@ document.getElementById("cancel").onclick = function () { location.href = ${JSON
   return app;
 }
 
-if (require.main === module) {
-  const config = loadConfig();
-  const app = createApp({ config });
-  const store = app.locals.store;
-  setInterval(() => store.expireStalePending(DAY), 3600 * 1000).unref();
-  const checkEvery = Number(process.env.CHECK_LINKS_INTERVAL_MIN || 0);
-  if (checkEvery > 0) {
-    setInterval(() => {
-      runCheck(store, { limit: 25, delayMs: 2000 })
-        .then((s) => console.log("link check: " + JSON.stringify(s)))
-        .catch((err) => console.error("link check failed", err));
-    }, checkEvery * 60 * 1000).unref();
+/* Connect, migrate, seed, and build the app. Serverless entry points call this
+   once per instance; the long-running server calls it at startup. */
+async function boot(options) {
+  const o = options || {};
+  const config = Object.assign(loadConfig(), o.config);
+  // Without a DATABASE_URL this runs on PGlite. Point PGLITE_DIR at a folder to
+  // keep a local board between restarts; in memory otherwise.
+  const db = o.db || await createDb({
+    url: config.databaseUrl || undefined,
+    dataDir: process.env.PGLITE_DIR || undefined,
+    // The schema is CREATE ... IF NOT EXISTS, so re-running it is harmless — but
+    // it costs a round trip on every cold start. Set MIGRATE_ON_BOOT=0 once the
+    // tables exist.
+    migrate: !/^(0|false|no)$/i.test(process.env.MIGRATE_ON_BOOT || "")
+  });
+  const app = createApp({ db, payments: o.payments, config });
+
+  if (config.seedOnEmpty) {
+    try {
+      await app.locals.store.seed(require("../../shared/seed.js"));
+    } catch (err) {
+      console.warn("seed skipped:", err.message);
+    }
   }
-  app.listen(config.port, () => {
-    console.log("outdeals api on :" + config.port + " — payments: " + app.locals.payments.mode +
-      (app.locals.payments.mode === "stripe" && !app.locals.payments.webhookConfigured
-        ? " (WARNING: STRIPE_WEBHOOK_SECRET unset — paid bids will never be applied)" : ""));
+  return app;
+}
+
+if (require.main === module) {
+  boot().then((app) => {
+    const config = app.locals.config;
+    const store = app.locals.store;
+
+    // Only meaningful when running as a persistent process; on Vercel the cron
+    // route does this instead.
+    setInterval(() => store.expireStalePending(DAY).catch(() => {}), 3600 * 1000).unref();
+    const checkEvery = Number(process.env.CHECK_LINKS_INTERVAL_MIN || 0);
+    if (checkEvery > 0) {
+      setInterval(() => {
+        runCheck(store, { limit: 25, delayMs: 2000 })
+          .then((s) => console.log("link check: " + JSON.stringify(s)))
+          .catch((err) => console.error("link check failed", err));
+      }, checkEvery * 60 * 1000).unref();
+    }
+
+    app.listen(config.port, () => {
+      console.log("outdeals api on :" + config.port +
+        " — db: " + app.locals.db.driver + ", payments: " + app.locals.payments.mode +
+        (app.locals.payments.mode === "stripe" && !app.locals.payments.webhookConfigured
+          ? " (WARNING: STRIPE_WEBHOOK_SECRET unset — paid bids will never be applied)" : ""));
+    });
+  }).catch((err) => {
+    console.error("failed to start:", err);
+    process.exit(1);
   });
 }
 
-module.exports = { createApp, loadConfig };
+module.exports = { createApp, boot, loadConfig };
