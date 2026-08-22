@@ -1,0 +1,22 @@
+# The image installs its own dependencies. Without this, "COPY server ./server"
+# would overwrite them with whatever was built on the host — including
+# better-sqlite3's native binary, which is compiled per architecture and will
+# fail at boot on a machine that differs from the one that built it.
+**/node_modules
+
+# Runtime state and secrets never belong in an image.
+server/data
+**/.env
+**/.env.*
+
+.git
+.github
+*.log
+
+# The static front end is served by GitHub Pages, not by the API.
+deals
+index.html
+dashboard.js
+styles.css
+data
+scripts
