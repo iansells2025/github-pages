@@ -1,11 +1,11 @@
 {
-  "updatedAt": "2026-08-23T09:00:58.871Z",
+  "updatedAt": "2026-08-23T09:55:33.248Z",
   "sources": {
     "stripe": {
       "ok": true,
       "weekCount": 14,
       "diagnostics": {
-        "chargeCount": 30263,
+        "chargeCount": 30266,
         "payoutCount": 63,
         "activeSubscriptionCount": 370,
         "mrrBrands": 58390.58,
@@ -114,7 +114,7 @@
       "weekStart": "2026-06-15",
       "revenue": 232248.02,
       "deposits": 209998.97,
-      "mktgSent": 28477,
+      "mktgSent": 28480,
       "mktgViewed": 5946,
       "mktgClicked": 233,
       "newCompanies": 25,
@@ -163,7 +163,7 @@
       "mktgSent": 163443,
       "mktgViewed": 14161,
       "mktgClicked": 320,
-      "newLeads": 13,
+      "newLeads": 10,
       "newClients": 51,
       "newClientsByOwnerName": {
         "Dan Kriss": 6,
@@ -256,16 +256,16 @@
     },
     {
       "weekStart": "2026-08-17",
-      "revenue": 308373.91,
+      "revenue": 308909.44,
       "deposits": 282811.63,
       "mrrBrands": 58390.58,
       "mrrBrandStartup": 25076.58,
       "mrrBrandPro": 14352,
       "mrrBrandMax": 18962,
       "mktgSent": 106946,
-      "mktgViewed": 14008,
+      "mktgViewed": 14011,
       "mktgClicked": 101,
-      "newLeads": 792,
+      "newLeads": 795,
       "newClients": 92,
       "newClientsByOwnerName": {
         "Dee Mechev": 23,
@@ -365,7 +365,7 @@
         "deposits": 209998.97
       },
       "hubspot": {
-        "mktgSent": 28477,
+        "mktgSent": 28480,
         "mktgViewed": 5946,
         "mktgClicked": 233,
         "newCompanies": 25,
@@ -423,7 +423,7 @@
         "mktgSent": 163443,
         "mktgViewed": 14161,
         "mktgClicked": 320,
-        "newLeads": 13,
+        "newLeads": 10,
         "newClients": 51,
         "newClientsByOwnerName": {
           "Dan Kriss": 6,
@@ -532,7 +532,7 @@
     },
     "2026-08-17": {
       "stripe": {
-        "revenue": 308373.91,
+        "revenue": 308909.44,
         "deposits": 282811.63,
         "mrrBrands": 58390.58,
         "mrrBrandStartup": 25076.58,
@@ -541,9 +541,9 @@
       },
       "hubspot": {
         "mktgSent": 106946,
-        "mktgViewed": 14008,
+        "mktgViewed": 14011,
         "mktgClicked": 101,
-        "newLeads": 792,
+        "newLeads": 795,
         "newClients": 92,
         "newClientsByOwnerName": {
           "Dee Mechev": 23,
