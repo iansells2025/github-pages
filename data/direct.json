@@ -1,11 +1,11 @@
 {
-  "updatedAt": "2026-08-23T13:14:42.208Z",
+  "updatedAt": "2026-08-23T13:59:11.596Z",
   "sources": {
     "stripe": {
       "ok": true,
       "weekCount": 14,
       "diagnostics": {
-        "chargeCount": 30267,
+        "chargeCount": 30273,
         "payoutCount": 63,
         "activeSubscriptionCount": 370,
         "mrrBrands": 58390.58,
@@ -55,7 +55,7 @@
   "weeks": [
     {
       "weekStart": "2026-05-18",
-      "revenue": 5388.68,
+      "revenue": 4589.71,
       "deposits": 0,
       "newClients": 2,
       "newClientsByOwnerName": {
@@ -114,8 +114,8 @@
       "weekStart": "2026-06-15",
       "revenue": 232248.02,
       "deposits": 209998.97,
-      "mktgSent": 28501,
-      "mktgViewed": 5953,
+      "mktgSent": 28510,
+      "mktgViewed": 5955,
       "mktgClicked": 233,
       "newCompanies": 25,
       "newClients": 56,
@@ -163,7 +163,6 @@
       "mktgSent": 163443,
       "mktgViewed": 14161,
       "mktgClicked": 320,
-      "newLeads": 1,
       "newClients": 51,
       "newClientsByOwnerName": {
         "Dan Kriss": 6,
@@ -179,7 +178,7 @@
       "mktgSent": 104338,
       "mktgViewed": 15958,
       "mktgClicked": 243,
-      "newLeads": 620,
+      "newLeads": 618,
       "newClients": 63,
       "newClientsByOwnerName": {
         "Dee Mechev": 15,
@@ -206,7 +205,7 @@
     },
     {
       "weekStart": "2026-07-27",
-      "revenue": 310009.97,
+      "revenue": 309879.05,
       "deposits": 256662.07,
       "mktgSent": 106864,
       "mktgViewed": 10367,
@@ -240,7 +239,7 @@
     },
     {
       "weekStart": "2026-08-10",
-      "revenue": 297219.46,
+      "revenue": 297110.2,
       "deposits": 293204.13,
       "mktgSent": 53529,
       "mktgViewed": 5467,
@@ -256,16 +255,16 @@
     },
     {
       "weekStart": "2026-08-17",
-      "revenue": 310076.11,
+      "revenue": 311300.41,
       "deposits": 282811.63,
       "mrrBrands": 58390.58,
       "mrrBrandStartup": 25076.58,
       "mrrBrandPro": 14352,
       "mrrBrandMax": 18962,
       "mktgSent": 106946,
-      "mktgViewed": 14035,
+      "mktgViewed": 14049,
       "mktgClicked": 101,
-      "newLeads": 804,
+      "newLeads": 807,
       "newClients": 92,
       "newClientsByOwnerName": {
         "Dee Mechev": 23,
@@ -292,7 +291,7 @@
   "weeksBySource": {
     "2026-05-18": {
       "stripe": {
-        "revenue": 5388.68,
+        "revenue": 4589.71,
         "deposits": 0
       },
       "hubspot": {
@@ -365,8 +364,8 @@
         "deposits": 209998.97
       },
       "hubspot": {
-        "mktgSent": 28501,
-        "mktgViewed": 5953,
+        "mktgSent": 28510,
+        "mktgViewed": 5955,
         "mktgClicked": 233,
         "newCompanies": 25,
         "newClients": 56,
@@ -423,7 +422,6 @@
         "mktgSent": 163443,
         "mktgViewed": 14161,
         "mktgClicked": 320,
-        "newLeads": 1,
         "newClients": 51,
         "newClientsByOwnerName": {
           "Dan Kriss": 6,
@@ -442,7 +440,7 @@
         "mktgSent": 104338,
         "mktgViewed": 15958,
         "mktgClicked": 243,
-        "newLeads": 620,
+        "newLeads": 618,
         "newClients": 63,
         "newClientsByOwnerName": {
           "Dee Mechev": 15,
@@ -473,7 +471,7 @@
     },
     "2026-07-27": {
       "stripe": {
-        "revenue": 310009.97,
+        "revenue": 309879.05,
         "deposits": 256662.07
       },
       "hubspot": {
@@ -513,7 +511,7 @@
     },
     "2026-08-10": {
       "stripe": {
-        "revenue": 297219.46,
+        "revenue": 297110.2,
         "deposits": 293204.13
       },
       "hubspot": {
@@ -532,7 +530,7 @@
     },
     "2026-08-17": {
       "stripe": {
-        "revenue": 310076.11,
+        "revenue": 311300.41,
         "deposits": 282811.63,
         "mrrBrands": 58390.58,
         "mrrBrandStartup": 25076.58,
@@ -541,9 +539,9 @@
       },
       "hubspot": {
         "mktgSent": 106946,
-        "mktgViewed": 14035,
+        "mktgViewed": 14049,
         "mktgClicked": 101,
-        "newLeads": 804,
+        "newLeads": 807,
         "newClients": 92,
         "newClientsByOwnerName": {
           "Dee Mechev": 23,
