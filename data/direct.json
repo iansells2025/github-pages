@@ -1,18 +1,18 @@
 {
-  "updatedAt": "2026-08-23T19:47:44.398Z",
+  "updatedAt": "2026-08-23T20:51:52.307Z",
   "sources": {
     "stripe": {
       "ok": true,
       "weekCount": 14,
       "diagnostics": {
-        "chargeCount": 30303,
+        "chargeCount": 30326,
         "payoutCount": 63,
-        "activeSubscriptionCount": 370,
-        "mrrBrands": 58390.58,
-        "mrrBrandStartup": 25076.58,
+        "activeSubscriptionCount": 369,
+        "mrrBrands": 58291.58,
+        "mrrBrandStartup": 24977.58,
         "mrrBrandPro": 14352,
         "mrrBrandMax": 18962,
-        "brandSubCount": 340,
+        "brandSubCount": 339,
         "nonBrandSubCount": 30,
         "nonBrandMrrExcluded": 1472.4
       }
@@ -45,7 +45,7 @@
         "ownersCount": 25,
         "contactsCreated": 5000,
         "companiesCreated": 286,
-        "dealsClosedWon": 1113,
+        "dealsClosedWon": 1114,
         "dealsWithUnknownOwner": 460,
         "landingPages": 38,
         "landingPagesNote": "Analytics integration pending — requires HubSpot Analytics API scope"
@@ -55,7 +55,7 @@
   "weeks": [
     {
       "weekStart": "2026-05-18",
-      "revenue": 2079.53,
+      "revenue": 1936.75,
       "deposits": 0,
       "newClients": 1,
       "newClientsByOwnerName": {
@@ -114,8 +114,8 @@
       "weekStart": "2026-06-15",
       "revenue": 232248.02,
       "deposits": 209998.97,
-      "mktgSent": 28599,
-      "mktgViewed": 5978,
+      "mktgSent": 28619,
+      "mktgViewed": 5983,
       "mktgClicked": 233,
       "newCompanies": 25,
       "newClients": 56,
@@ -178,7 +178,7 @@
       "mktgSent": 104338,
       "mktgViewed": 15960,
       "mktgClicked": 243,
-      "newLeads": 603,
+      "newLeads": 602,
       "newClients": 63,
       "newClientsByOwnerName": {
         "Dee Mechev": 15,
@@ -255,22 +255,22 @@
     },
     {
       "weekStart": "2026-08-17",
-      "revenue": 317903.55,
+      "revenue": 318717.77,
       "deposits": 282811.63,
-      "mrrBrands": 58390.58,
-      "mrrBrandStartup": 25076.58,
+      "mrrBrands": 58291.58,
+      "mrrBrandStartup": 24977.58,
       "mrrBrandPro": 14352,
       "mrrBrandMax": 18962,
       "mktgSent": 106946,
-      "mktgViewed": 14106,
+      "mktgViewed": 14114,
       "mktgClicked": 103,
-      "newLeads": 822,
-      "newClients": 94,
+      "newLeads": 823,
+      "newClients": 95,
       "newClientsByOwnerName": {
+        "Dan Kriss": 23,
         "Dee Mechev": 24,
         "Mila Vidakovic": 13,
-        "Nick JoinBrands": 18,
-        "Dan Kriss": 22
+        "Nick JoinBrands": 18
       }
     },
     {
@@ -291,7 +291,7 @@
   "weeksBySource": {
     "2026-05-18": {
       "stripe": {
-        "revenue": 2079.53,
+        "revenue": 1936.75,
         "deposits": 0
       },
       "hubspot": {
@@ -364,8 +364,8 @@
         "deposits": 209998.97
       },
       "hubspot": {
-        "mktgSent": 28599,
-        "mktgViewed": 5978,
+        "mktgSent": 28619,
+        "mktgViewed": 5983,
         "mktgClicked": 233,
         "newCompanies": 25,
         "newClients": 56,
@@ -440,7 +440,7 @@
         "mktgSent": 104338,
         "mktgViewed": 15960,
         "mktgClicked": 243,
-        "newLeads": 603,
+        "newLeads": 602,
         "newClients": 63,
         "newClientsByOwnerName": {
           "Dee Mechev": 15,
@@ -530,24 +530,24 @@
     },
     "2026-08-17": {
       "stripe": {
-        "revenue": 317903.55,
+        "revenue": 318717.77,
         "deposits": 282811.63,
-        "mrrBrands": 58390.58,
-        "mrrBrandStartup": 25076.58,
+        "mrrBrands": 58291.58,
+        "mrrBrandStartup": 24977.58,
         "mrrBrandPro": 14352,
         "mrrBrandMax": 18962
       },
       "hubspot": {
         "mktgSent": 106946,
-        "mktgViewed": 14106,
+        "mktgViewed": 14114,
         "mktgClicked": 103,
-        "newLeads": 822,
-        "newClients": 94,
+        "newLeads": 823,
+        "newClients": 95,
         "newClientsByOwnerName": {
+          "Dan Kriss": 23,
           "Dee Mechev": 24,
           "Mila Vidakovic": 13,
-          "Nick JoinBrands": 18,
-          "Dan Kriss": 22
+          "Nick JoinBrands": 18
         }
       }
     },
