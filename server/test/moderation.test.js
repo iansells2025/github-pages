@@ -91,15 +91,15 @@ test("a disputed raise rolls the listing back to what was actually paid for", as
 test("a dispute on a superseded bid in the chain flags rather than rewrites", async (t) => {
   const h = await harness();
   t.after(h.close);
-  const first = await h.call("POST", "/api/checkout", { url: "altamuta.com/deal/z", amount: 600 });
+  const first = await h.call("POST", "/api/checkout", { url: "target.com/p/z/-/A-42", amount: 600 });
   await h.paid(first.body.bidId);
-  const raise = await h.call("POST", "/api/checkout", { url: "altamuta.com/deal/z", amount: 900 });
+  const raise = await h.call("POST", "/api/checkout", { url: "target.com/p/z/-/A-42", amount: 900 });
   await h.paid(raise.body.bidId);
 
   // The *earlier* payment is disputed, with a later bid stacked on top of it.
   await h.dispute("pi_" + first.body.bidId);
 
-  const row = (await h.call("GET", "/api/board")).body.listings.find((l) => l.path === "/deal/z");
+  const row = (await h.call("GET", "/api/board")).body.listings.find((l) => l.path === "/p/z/-/a-42");
   assert.equal(row.bid, 900, "the later, undisputed bid is left alone");
   const flagged = await h.call("GET", "/api/admin/flagged", null, h.admin);
   assert.equal(flagged.body.flagged.length, 1);
@@ -232,7 +232,7 @@ test("removing a flagged listing takes it off the board for good", async (t) => 
 
 test("a title taken from the URL path is scrubbed like a supplied one", () => {
   const parsed = require("../../shared/engine.js")
-    .normalizeUrl("altamuta.com/deal/<img src=x onerror=alert(1)>");
+    .normalizeUrl("target.com/p/<img src=x onerror=alert(1)>/-/A-1");
   const title = require("../../shared/engine.js").titleFromPath(parsed.path);
   assert.ok(!/[<>]/.test(title),
     "angle brackets must not survive into a stored title — the dev checkout page renders it as HTML");
@@ -253,8 +253,10 @@ test("a listing title cannot inject markup into the test checkout page", async (
 
   const co = await (await fetch(base + "/api/checkout", {
     method: "POST", headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ url: 'altamuta.com/deal/<script>alert(1)</script>', amount: 50 })
+    body: JSON.stringify({ url: 'target.com/p/<script>alert(1)</script>/-/A-2', amount: 50 })
   })).json();
+
+  assert.ok(co.bidId, "the checkout must be accepted, or this test proves nothing");
 
   const html = await (await fetch(base + "/api/dev/checkout/" + co.bidId)).text();
   assert.ok(!html.includes("<script>alert(1)</script>"), "raw markup reached the page");

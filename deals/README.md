@@ -1,7 +1,7 @@
 # outdeals
 
 A pay-to-rank leaderboard for retail discounts — an [outbid.lol](https://outbid.lol)-style board
-rebuilt for consumer products. **One board.** Amazon, Target, Walmart and Altamuta deals all file
+rebuilt for consumer products. **One board.** Amazon, Target and Walmart deals all file
 into the same ranking, and every listing is tagged with the retailer board it came from plus its
 rank within that board. The highest bid is #1. There is no algorithm.
 
@@ -45,7 +45,7 @@ Both modes run the exact same rules engine, so ranking behaves identically eithe
   shows its real global rank alongside its Target rank.
 - Listings are keyed by normalized host + path, so two products from one retailer never share a
   bid. Tracking parameters (`utm_*`, `tag`, `ref`, `gclid`, …) are stripped before matching.
-- Only Amazon, Target, Walmart and Altamuta product links are accepted.
+- Only Amazon, Target and Walmart product links are accepted.
 
 In live mode all of this is enforced server-side. The browser copy is for instant feedback only.
 

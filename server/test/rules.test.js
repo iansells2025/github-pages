@@ -17,8 +17,8 @@ test("normalizeUrl strips protocol, www, tracking params and trailing slash", ()
 });
 
 test("normalizeUrl keeps meaningful query params, sorted", () => {
-  const a = engine.normalizeUrl("altamuta.com/deal/x?size=L&color=Red&utm_medium=cpc");
-  const b = engine.normalizeUrl("altamuta.com/deal/x?color=red&size=l");
+  const a = engine.normalizeUrl("target.com/p/x/-/A-9?size=L&color=Red&utm_medium=cpc");
+  const b = engine.normalizeUrl("target.com/p/x/-/A-9?color=red&size=l");
   assert.equal(a.key, b.key);
   assert.match(a.key, /\?color=red&size=l$/);
 });

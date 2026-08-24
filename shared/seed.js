@@ -36,17 +36,6 @@
     { url: "walmart.com/ip/athletic-works-fleece-hoodie/4455667788", title: "Athletic Works Fleece Hoodie", now: 9.98, was: 16.98, bid: 260, age: 25 },
     { url: "walmart.com/ip/great-value-olive-oil-51oz/5566778899", title: "Great Value Olive Oil 51oz", now: 12.44, was: 18.98, bid: 110, age: 19 },
     { url: "walmart.com/ip/beats-studio-buds-plus/6677889900", title: "Beats Studio Buds +", now: 99.95, was: 169.99, bid: 55, age: 13 },
-    { url: "walmart.com/ip/ozark-trail-40oz-tumbler/7788990011", title: "Ozark Trail 40oz Tumbler", now: 12.98, was: 19.98, bid: 16, age: 8 },
-  
-    // ---- Altamuta ----
-    { url: "altamuta.com/deal/aurora-robot-vacuum-a9", title: "Aurora A9 Self-Emptying Robot Vacuum", now: 249, was: 499, bid: 3980, age: 50 },
-    { url: "altamuta.com/deal/nimbus-mattress-queen", title: "Nimbus Hybrid Mattress — Queen", now: 649, was: 1199, bid: 2110, age: 45 },
-    { url: "altamuta.com/deal/verdant-espresso-pro", title: "Verdant Espresso Pro Machine", now: 379, was: 599, bid: 1290, age: 40 },
-    { url: "altamuta.com/deal/lumen-desk-lamp-duo", title: "Lumen Desk Lamp — 2 Pack", now: 44.5, was: 89, bid: 690, age: 34 },
-    { url: "altamuta.com/deal/trailhead-down-parka", title: "Trailhead 800-Fill Down Parka", now: 189, was: 340, bid: 355, age: 28 },
-    { url: "altamuta.com/deal/copperline-knife-block", title: "Copperline 14pc Knife Block Set", now: 129, was: 259, bid: 170, age: 22 },
-    { url: "altamuta.com/deal/harbor-linen-sheets", title: "Harbor Washed Linen Sheet Set", now: 98, was: 179, bid: 75, age: 16 },
-    { url: "altamuta.com/deal/pace-runner-gt", title: "Pace Runner GT Training Shoes", now: 72, was: 130, bid: 22, age: 9 },
-    { url: "altamuta.com/deal/glasshouse-air-fryer-8qt", title: "Glasshouse 8qt Dual Air Fryer", now: 119, was: 219, bid: 7, age: 4 }
+    { url: "walmart.com/ip/ozark-trail-40oz-tumbler/7788990011", title: "Ozark Trail 40oz Tumbler", now: 12.98, was: 19.98, bid: 16, age: 8 }
   ];
 });

@@ -18,9 +18,7 @@
     { id: "target", name: "Target", host: "target.com", color: "#cc0000", initials: "TG",
       match: /(^|\.)target\.com$/, example: "target.com/p/…/-/A-88259231" },
     { id: "walmart", name: "Walmart", host: "walmart.com", color: "#0071dc", initials: "WM",
-      match: /(^|\.)walmart\.com$/, example: "walmart.com/ip/…/1567890123" },
-    { id: "altamuta", name: "Altamuta", host: "altamuta.com", color: "#7b5bd6", initials: "AL",
-      match: /(^|\.)altamuta\.com$/, example: "altamuta.com/deal/…" }
+      match: /(^|\.)walmart\.com$/, example: "walmart.com/ip/…/1567890123" }
   ];
 
   var TRACKING = /^(utm_[a-z]*|gclid|fbclid|msclkid|ref|ref_|tag|linkcode|linkid|ascsubtag|psc|th|sourceid|irgwc|clickid|athbdg|athcpid|athena|sid|cmp)$/i;
