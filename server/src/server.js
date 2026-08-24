@@ -426,6 +426,17 @@ document.getElementById("cancel").onclick = function () { location.href = ${JSON
 async function boot(options) {
   const o = options || {};
   const config = Object.assign(loadConfig(), o.config);
+
+  /* PGlite is an in-memory fallback for local work. On a serverless platform it
+     would give every instance its own empty board and silently lose paid bids,
+     so refuse to start rather than look healthy while dropping money. */
+  if (!o.db && !config.databaseUrl && (process.env.VERCEL || process.env.NODE_ENV === "production")) {
+    throw new Error(
+      "DATABASE_URL is not set. Refusing to start on an ephemeral in-memory database — " +
+      "paid bids would be lost. Set DATABASE_URL to a pooled Postgres connection string."
+    );
+  }
+
   // Without a DATABASE_URL this runs on PGlite. Point PGLITE_DIR at a folder to
   // keep a local board between restarts; in memory otherwise.
   const db = o.db || await createDb({

@@ -82,3 +82,18 @@ test("unknown routes 404 as JSON rather than crashing the function", async (t) =
   assert.equal(res.status, 404);
   assert.equal((await res.json()).error, "Not found.");
 });
+
+test("booting on a serverless platform without a database is refused", async () => {
+  const { boot } = require("../src/server.js");
+  const prev = process.env.VERCEL;
+  process.env.VERCEL = "1";
+  try {
+    await assert.rejects(
+      () => boot({ config: { databaseUrl: "" } }),
+      /DATABASE_URL is not set/,
+      "an ephemeral board would lose paid bids while looking healthy"
+    );
+  } finally {
+    if (prev === undefined) delete process.env.VERCEL; else process.env.VERCEL = prev;
+  }
+});
