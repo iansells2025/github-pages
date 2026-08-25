@@ -1,11 +1,11 @@
 {
-  "updatedAt": "2026-08-25T21:57:00.089Z",
+  "updatedAt": "2026-08-25T22:57:35.978Z",
   "sources": {
     "stripe": {
       "ok": true,
       "weekCount": 14,
       "diagnostics": {
-        "chargeCount": 30542,
+        "chargeCount": 30540,
         "payoutCount": 64,
         "activeSubscriptionCount": 373,
         "mrrBrands": 58887.58,
@@ -55,7 +55,7 @@
   "weeks": [
     {
       "weekStart": "2026-05-25",
-      "revenue": 138988,
+      "revenue": 136625.89,
       "deposits": 169764.01,
       "mktgSent": 2270,
       "mktgViewed": 569,
@@ -105,9 +105,9 @@
       "weekStart": "2026-06-15",
       "revenue": 232116.59,
       "deposits": 209998.97,
-      "mktgSent": 29117,
-      "mktgViewed": 6143,
-      "mktgClicked": 237,
+      "mktgSent": 29130,
+      "mktgViewed": 6148,
+      "mktgClicked": 238,
       "newCompanies": 25,
       "newClients": 56,
       "newClientsByOwnerName": {
@@ -169,7 +169,7 @@
       "mktgSent": 104338,
       "mktgViewed": 15972,
       "mktgClicked": 243,
-      "newLeads": 88,
+      "newLeads": 86,
       "newClients": 63,
       "newClientsByOwnerName": {
         "Dee Mechev": 15,
@@ -230,10 +230,10 @@
     },
     {
       "weekStart": "2026-08-10",
-      "revenue": 294100.18,
+      "revenue": 293913.32,
       "deposits": 293204.13,
       "mktgSent": 53529,
-      "mktgViewed": 5513,
+      "mktgViewed": 5514,
       "mktgClicked": 54,
       "newLeads": 813,
       "newClients": 194,
@@ -246,10 +246,10 @@
     },
     {
       "weekStart": "2026-08-17",
-      "revenue": 316511.81,
+      "revenue": 316355.37,
       "deposits": 282811.63,
       "mktgSent": 106946,
-      "mktgViewed": 14604,
+      "mktgViewed": 14607,
       "mktgClicked": 112,
       "newLeads": 833,
       "newClients": 95,
@@ -262,13 +262,13 @@
     },
     {
       "weekStart": "2026-08-24",
-      "revenue": 88914.84,
+      "revenue": 90722.21,
       "deposits": 68872.14,
       "mrrBrands": 58887.58,
       "mrrBrandStartup": 25274.58,
       "mrrBrandPro": 14651,
       "mrrBrandMax": 18962,
-      "newLeads": 504,
+      "newLeads": 506,
       "newClients": 24,
       "newClientsByOwnerName": {
         "Nick JoinBrands": 6,
@@ -295,7 +295,7 @@
   "weeksBySource": {
     "2026-05-25": {
       "stripe": {
-        "revenue": 138988,
+        "revenue": 136625.89,
         "deposits": 169764.01
       },
       "hubspot": {
@@ -356,9 +356,9 @@
         "deposits": 209998.97
       },
       "hubspot": {
-        "mktgSent": 29117,
-        "mktgViewed": 6143,
-        "mktgClicked": 237,
+        "mktgSent": 29130,
+        "mktgViewed": 6148,
+        "mktgClicked": 238,
         "newCompanies": 25,
         "newClients": 56,
         "newClientsByOwnerName": {
@@ -432,7 +432,7 @@
         "mktgSent": 104338,
         "mktgViewed": 15972,
         "mktgClicked": 243,
-        "newLeads": 88,
+        "newLeads": 86,
         "newClients": 63,
         "newClientsByOwnerName": {
           "Dee Mechev": 15,
@@ -503,12 +503,12 @@
     },
     "2026-08-10": {
       "stripe": {
-        "revenue": 294100.18,
+        "revenue": 293913.32,
         "deposits": 293204.13
       },
       "hubspot": {
         "mktgSent": 53529,
-        "mktgViewed": 5513,
+        "mktgViewed": 5514,
         "mktgClicked": 54,
         "newLeads": 813,
         "newClients": 194,
@@ -522,12 +522,12 @@
     },
     "2026-08-17": {
       "stripe": {
-        "revenue": 316511.81,
+        "revenue": 316355.37,
         "deposits": 282811.63
       },
       "hubspot": {
         "mktgSent": 106946,
-        "mktgViewed": 14604,
+        "mktgViewed": 14607,
         "mktgClicked": 112,
         "newLeads": 833,
         "newClients": 95,
@@ -541,7 +541,7 @@
     },
     "2026-08-24": {
       "stripe": {
-        "revenue": 88914.84,
+        "revenue": 90722.21,
         "deposits": 68872.14,
         "mrrBrands": 58887.58,
         "mrrBrandStartup": 25274.58,
@@ -549,7 +549,7 @@
         "mrrBrandMax": 18962
       },
       "hubspot": {
-        "newLeads": 504,
+        "newLeads": 506,
         "newClients": 24,
         "newClientsByOwnerName": {
           "Nick JoinBrands": 6,
