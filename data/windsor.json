@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-08-26T00:59:40.445Z",
+  "updatedAt": "2026-08-26T02:27:01.256Z",
   "source": "windsor.ai",
   "endpoint": "blended",
   "weeks": [
@@ -9,7 +9,7 @@
     },
     {
       "weekStart": "2026-08-24",
-      "costs": 1452.77
+      "costs": 1453.75
     }
   ],
   "weeksBySource": {
@@ -23,10 +23,10 @@
     },
     "2026-08-24": {
       "googleads": {
-        "costs": 981.9314
+        "costs": 982.2814
       },
       "facebook": {
-        "costs": 470.84
+        "costs": 471.47
       }
     }
   },
@@ -67,9 +67,9 @@
     "intercom": {
       "account_name": "windsor",
       "datasource": "intercom",
-      "date": "2026-08-18",
+      "date": "2026-08-19",
       "source": "intercom",
-      "email": "collabwithyonna@gmail.com"
+      "email": "teefit21@gmail.com"
     }
   },
   "sampleRowKeys": [
@@ -82,6 +82,6 @@
     "spend",
     "email"
   ],
-  "rowCount": 6695,
+  "rowCount": 6758,
   "usableRowCount": 191
 }
