@@ -1,20 +1,32 @@
 {
-  "updatedAt": "2026-09-01T01:33:40.648Z",
+  "updatedAt": "2026-09-01T07:08:05.117Z",
   "source": "windsor.ai",
   "endpoint": "blended",
   "weeks": [
     {
       "weekStart": "2026-08-24",
-      "costs": 6937.32
+      "costs": 5483.49
+    },
+    {
+      "weekStart": "2026-08-31",
+      "costs": 1027.45
     }
   ],
   "weeksBySource": {
     "2026-08-24": {
       "googleads": {
-        "costs": 3499.5656
+        "costs": 2517.2987
       },
       "facebook": {
-        "costs": 3437.75
+        "costs": 2966.19
+      }
+    },
+    "2026-08-31": {
+      "googleads": {
+        "costs": 460.794
+      },
+      "facebook": {
+        "costs": 566.66
       }
     }
   },
@@ -36,28 +48,28 @@
     "intercom"
   ],
   "fieldsBySource": {
-    "googleads": {
-      "account_name": "Join Brands - MA",
-      "datasource": "google_ads",
-      "date": "2026-08-24",
-      "source": "google",
-      "campaign": "TDD_Search_Brand_US",
-      "spend": 611.8203
-    },
-    "facebook": {
-      "account_name": "Million Dollar Sellers",
-      "datasource": "facebook",
-      "date": "2026-08-24",
-      "source": "facebook",
-      "campaign": "[LL]MDS Lead Form - 18k list",
-      "spend": 62.19
-    },
     "intercom": {
       "account_name": "windsor",
       "datasource": "intercom",
       "date": "2026-08-25",
       "source": "intercom",
       "email": "builtfromscratchpr@outlook.com"
+    },
+    "googleads": {
+      "account_name": "Join Brands - MA",
+      "datasource": "google_ads",
+      "date": "2026-08-25",
+      "source": "google",
+      "campaign": "TDD_Search_Brand_US",
+      "spend": 392.4764
+    },
+    "facebook": {
+      "account_name": "Million Dollar Sellers",
+      "datasource": "facebook",
+      "date": "2026-08-25",
+      "source": "facebook",
+      "campaign": "[LL]MDS Lead Form - 18k list",
+      "spend": 88.28
     }
   },
   "sampleRowKeys": [
@@ -70,6 +82,6 @@
     "spend",
     "email"
   ],
-  "rowCount": 6226,
+  "rowCount": 6107,
   "usableRowCount": 167
 }
