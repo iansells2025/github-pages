@@ -1,11 +1,11 @@
 {
-  "updatedAt": "2026-08-31T22:19:16.553Z",
+  "updatedAt": "2026-09-01T01:33:40.648Z",
   "source": "windsor.ai",
   "endpoint": "blended",
   "weeks": [
     {
       "weekStart": "2026-08-24",
-      "costs": 6937.23
+      "costs": 6937.32
     }
   ],
   "weeksBySource": {
@@ -14,7 +14,7 @@
         "costs": 3499.5656
       },
       "facebook": {
-        "costs": 3437.66
+        "costs": 3437.75
       }
     }
   },
@@ -55,9 +55,9 @@
     "intercom": {
       "account_name": "windsor",
       "datasource": "intercom",
-      "date": "2026-08-24",
+      "date": "2026-08-25",
       "source": "intercom",
-      "email": "hello@pawtraceapp.com"
+      "email": "builtfromscratchpr@outlook.com"
     }
   },
   "sampleRowKeys": [
@@ -70,6 +70,6 @@
     "spend",
     "email"
   ],
-  "rowCount": 6141,
+  "rowCount": 6226,
   "usableRowCount": 167
 }
