@@ -1,32 +1,32 @@
 {
-  "updatedAt": "2026-09-02T00:49:51.967Z",
+  "updatedAt": "2026-09-02T05:22:27.590Z",
   "source": "windsor.ai",
   "endpoint": "blended",
   "weeks": [
     {
       "weekStart": "2026-08-24",
-      "costs": 5483.72
+      "costs": 2838.8
     },
     {
       "weekStart": "2026-08-31",
-      "costs": 1030.62
+      "costs": 1165.67
     }
   ],
   "weeksBySource": {
     "2026-08-24": {
-      "googleads": {
-        "costs": 2517.2987
-      },
       "facebook": {
-        "costs": 2966.42
+        "costs": 1277.96
+      },
+      "googleads": {
+        "costs": 1560.8366
       }
     },
     "2026-08-31": {
       "googleads": {
-        "costs": 460.794
+        "costs": 902.364
       },
       "facebook": {
-        "costs": 569.83
+        "costs": 263.31
       }
     }
   },
@@ -48,28 +48,28 @@
     "intercom"
   ],
   "fieldsBySource": {
-    "googleads": {
-      "account_name": "Join Brands - MA",
-      "datasource": "google_ads",
-      "date": "2026-08-25",
-      "source": "google",
-      "campaign": "TDD_Search_Brand_US",
-      "spend": 392.4764
-    },
     "facebook": {
-      "account_name": "Million Dollar Sellers",
+      "account_name": "JoinBrands",
       "datasource": "facebook",
       "date": "2026-08-25",
       "source": "facebook",
-      "campaign": "[LL]MDS Lead Form - 18k list",
-      "spend": 88.28
+      "campaign": "TDD - Remarketing - US - Onboarding Leads",
+      "spend": 32.67
+    },
+    "googleads": {
+      "account_name": "Join Brands - MA",
+      "datasource": "google_ads",
+      "date": "2026-08-26",
+      "source": "google",
+      "campaign": "TDD_Search_Brand_US",
+      "spend": 138.4564
     },
     "intercom": {
       "account_name": "windsor",
       "datasource": "intercom",
-      "date": "2026-08-25",
+      "date": "2026-08-26",
       "source": "intercom",
-      "email": "builtfromscratchpr@outlook.com"
+      "email": "ugccontentbyellie@gmail.com"
     }
   },
   "sampleRowKeys": [
@@ -82,6 +82,6 @@
     "spend",
     "email"
   ],
-  "rowCount": 6202,
-  "usableRowCount": 167
+  "rowCount": 6490,
+  "usableRowCount": 126
 }
