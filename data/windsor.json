@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-04T22:44:14.675Z",
+  "updatedAt": "2026-09-05T00:34:40.484Z",
   "source": "windsor.ai",
   "endpoint": "blended",
   "weeks": [
@@ -9,7 +9,7 @@
     },
     {
       "weekStart": "2026-08-31",
-      "costs": 3025.32
+      "costs": 3025.17
     }
   ],
   "weeksBySource": {
@@ -23,10 +23,10 @@
     },
     "2026-08-31": {
       "googleads": {
-        "costs": 2121.4212
+        "costs": 2121.2554
       },
       "facebook": {
-        "costs": 903.9
+        "costs": 903.91
       }
     }
   },
@@ -67,9 +67,9 @@
     "intercom": {
       "account_name": "windsor",
       "datasource": "intercom",
-      "date": "2026-08-28",
+      "date": "2026-08-29",
       "source": "intercom",
-      "email": "tjhinliliy@gmail.com"
+      "email": "jenny.nancykesa@gmail.com"
     }
   },
   "sampleRowKeys": [
@@ -82,6 +82,6 @@
     "spend",
     "email"
   ],
-  "rowCount": 6754,
+  "rowCount": 6948,
   "usableRowCount": 134
 }
