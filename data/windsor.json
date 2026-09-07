@@ -1,20 +1,20 @@
 {
-  "updatedAt": "2026-09-07T18:32:44.626Z",
+  "updatedAt": "2026-09-07T21:52:26.486Z",
   "source": "windsor.ai",
   "endpoint": "blended",
   "weeks": [
     {
       "weekStart": "2026-08-31",
-      "costs": 4864.97
+      "costs": 4864.75
     }
   ],
   "weeksBySource": {
     "2026-08-31": {
       "googleads": {
-        "costs": 3355.7417
+        "costs": 3355.3338
       },
       "facebook": {
-        "costs": 1509.23
+        "costs": 1509.42
       }
     }
   },
@@ -57,7 +57,7 @@
       "datasource": "intercom",
       "date": "2026-08-31",
       "source": "intercom",
-      "email": "mike@duvalcreativeco.com"
+      "email": "naskaeliana@gmail.com"
     }
   },
   "sampleRowKeys": [
@@ -70,6 +70,6 @@
     "spend",
     "email"
   ],
-  "rowCount": 6927,
+  "rowCount": 7942,
   "usableRowCount": 144
 }
