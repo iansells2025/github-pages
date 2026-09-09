@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-09T07:47:24.948Z",
+  "updatedAt": "2026-09-09T12:39:19.040Z",
   "source": "windsor.ai",
   "endpoint": "blended",
   "weeks": [
@@ -48,6 +48,13 @@
     "intercom"
   ],
   "fieldsBySource": {
+    "intercom": {
+      "account_name": "windsor",
+      "datasource": "intercom",
+      "date": "2026-09-02",
+      "source": "intercom",
+      "email": "spark@jashapet.com"
+    },
     "googleads": {
       "account_name": "Join Brands - MA",
       "datasource": "google_ads",
@@ -63,13 +70,6 @@
       "source": "facebook",
       "campaign": "TDD - Remarketing - US - Onboarding Leads",
       "spend": 29.85
-    },
-    "intercom": {
-      "account_name": "windsor",
-      "datasource": "intercom",
-      "date": "2026-09-02",
-      "source": "intercom",
-      "email": "spark@jashapet.com"
     }
   },
   "sampleRowKeys": [
@@ -82,6 +82,6 @@
     "spend",
     "email"
   ],
-  "rowCount": 8165,
+  "rowCount": 7841,
   "usableRowCount": 148
 }
