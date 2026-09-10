@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="robots" content="noindex, nofollow" />
+<title>Redirecting…</title>
+<style>
+  :root {
+    --accent: #5b8dff;
+    --bg: #f5f7fb;
+    --card: #ffffff;
+    --text: #14192b;
+    --muted: #5f6982;
+    --border: #e2e7f0;
+    --shadow: 0 12px 40px rgba(18, 26, 51, .10);
+    --danger: #c0392b;
+    color-scheme: light dark;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0b1020;
+      --card: #141a2e;
+      --text: #e7ecf7;
+      --muted: #9aa3bf;
+      --border: #26304d;
+      --shadow: 0 12px 40px rgba(0, 0, 0, .45);
+      --danger: #f87171;
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px 16px;
+    background: var(--bg);
+    color: var(--text);
+    font: 16px/1.55 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .card {
+    width: 100%;
+    max-width: 460px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    box-shadow: var(--shadow);
+    padding: 32px 28px;
+    text-align: center;
+  }
+  .logo { max-height: 56px; max-width: 200px; margin: 0 auto 20px; display: block; }
+  h1 { font-size: 1.4rem; line-height: 1.3; margin: 0 0 10px; letter-spacing: -.01em; }
+  p { margin: 0 0 18px; color: var(--muted); }
+  p.lead { color: var(--text); white-space: pre-wrap; }
+  .btn {
+    display: inline-block;
+    width: 100%;
+    padding: 13px 20px;
+    border: 0;
+    border-radius: 10px;
+    background: var(--accent);
+    color: #fff;
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    transition: filter .15s ease;
+  }
+  .btn:hover:not(:disabled) { filter: brightness(1.08); }
+  .btn:disabled { opacity: .6; cursor: progress; }
+  .btn.link {
+    background: none;
+    color: var(--muted);
+    font-weight: 500;
+    font-size: .9rem;
+    padding: 10px;
+    text-decoration: underline;
+  }
+  form { text-align: left; margin-top: 4px; }
+  label { display: block; font-size: .85rem; font-weight: 600; margin-bottom: 6px; }
+  input[type="email"] {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--bg);
+    color: var(--text);
+    font: inherit;
+    margin-bottom: 14px;
+  }
+  input[type="email"]:focus { outline: 2px solid var(--accent); outline-offset: 1px; border-color: transparent; }
+  .fine { font-size: .78rem; color: var(--muted); margin: 14px 0 0; text-align: center; white-space: pre-wrap; }
+  .dest {
+    font-size: .78rem;
+    color: var(--muted);
+    margin-top: 18px;
+    word-break: break-all;
+  }
+  .dest b { color: var(--text); font-weight: 600; }
+  .err { color: var(--danger); font-size: .85rem; margin: 0 0 12px; text-align: left; }
+  .spinner {
+    width: 30px; height: 30px; margin: 6px auto 18px;
+    border: 3px solid var(--border);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin .8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @media (prefers-reduced-motion: reduce) { .spinner { animation-duration: 3s; } }
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<main class="card">
+
+  <!-- Loading -->
+  <section id="panel-loading">
+    <div class="spinner" role="status" aria-label="Loading"></div>
+    <p>One moment…</p>
+  </section>
+
+  <!-- Landing page -->
+  <section id="panel-landing" hidden>
+    <img id="landing-logo" class="logo" alt="" hidden />
+    <h1 id="landing-headline"></h1>
+    <p class="lead" id="landing-message"></p>
+    <button type="button" class="btn" id="landing-continue"></button>
+    <p class="dest" id="landing-dest" hidden>Takes you to <b id="landing-host"></b></p>
+  </section>
+
+  <!-- Email gate -->
+  <section id="panel-gate" hidden>
+    <img id="gate-logo" class="logo" alt="" hidden />
+    <h1 id="gate-headline"></h1>
+    <p class="lead" id="gate-message"></p>
+    <form id="gate-form" novalidate>
+      <p class="err" id="gate-error" hidden></p>
+      <label for="gate-email">Email address</label>
+      <input type="email" id="gate-email" name="email" autocomplete="email"
+             inputmode="email" placeholder="you@example.com" required />
+      <button type="submit" class="btn" id="gate-submit"></button>
+    </form>
+    <button type="button" class="btn link" id="gate-skip" hidden>No thanks, continue</button>
+    <p class="fine" id="gate-consent" hidden></p>
+    <p class="dest" id="gate-dest" hidden>Takes you to <b id="gate-host"></b></p>
+  </section>
+
+  <!-- Not found / error -->
+  <section id="panel-error" hidden>
+    <h1 id="error-title">Link not found</h1>
+    <p id="error-message">This QR code isn’t pointing anywhere yet. Please check with whoever shared it.</p>
+  </section>
+
+</main>
+<script src="redirect.js"></script>
+</body>
+</html>

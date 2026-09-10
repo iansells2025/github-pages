@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="robots" content="noindex" />
+<title>QR Links</title>
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <div class="logo">QR</div>
+    <div>
+      <h1>QR Links</h1>
+      <p class="subtitle">Permanent QR codes with editable destinations</p>
+    </div>
+  </div>
+  <div class="actions">
+    <span id="dirtyFlag" class="dirty-flag" hidden>Unsaved changes</span>
+    <button id="saveBtn" class="btn primary">Publish to GitHub</button>
+    <button id="settingsBtn" class="btn">Settings</button>
+    <button id="exportBtn" class="btn">Download links.json</button>
+    <label class="btn file-btn">
+      Import
+      <input type="file" id="importInput" accept="application/json,.json" hidden />
+    </label>
+  </div>
+</header>
+
+<main>
+
+  <!-- ============================ editor ============================ -->
+  <section class="panel">
+    <div class="panel-head">
+      <div>
+        <h2 id="editorTitle">New QR link</h2>
+        <p class="hint" id="editorHint">The QR code encodes the short link, never the destination — so you can change where it points at any time.</p>
+      </div>
+      <button id="newLinkBtn" class="btn small" hidden>New link</button>
+    </div>
+
+    <div class="qr-preview">
+      <div class="qr-canvas" id="qrCanvas">
+        <span class="placeholder">Enter a destination to preview the QR code</span>
+      </div>
+      <div class="qr-meta">
+        <div class="short-url" id="shortUrl">—</div>
+        <button type="button" class="btn small" id="copyUrlBtn" disabled>Copy link</button>
+        <button type="button" class="btn small" id="downloadPngBtn" disabled>PNG</button>
+        <button type="button" class="btn small" id="downloadSvgBtn" disabled>SVG</button>
+        <button type="button" class="btn small" id="openLandingBtn" disabled>Preview</button>
+      </div>
+    </div>
+
+    <form id="linkForm" novalidate>
+      <p class="error-text" id="formError" hidden></p>
+
+      <div class="field">
+        <label for="destination">Destination URL</label>
+        <input type="url" id="destination" placeholder="https://example.com/page" required />
+        <p class="note">Change this whenever you like — printed QR codes keep working.</p>
+      </div>
+
+      <div class="row">
+        <div class="field">
+          <label for="title">Label</label>
+          <input type="text" id="title" placeholder="Spring flyer" />
+        </div>
+        <div class="field">
+          <label for="code">Short code</label>
+          <input type="text" id="code" placeholder="spring25" spellcheck="false" />
+          <p class="note">Letters, numbers, <code>-</code> and <code>_</code>. Permanent once printed.</p>
+        </div>
+      </div>
+
+      <label class="check">
+        <input type="checkbox" id="active" checked />
+        <span>Active<small>Turn off to show a “paused” notice instead of redirecting.</small></span>
+      </label>
+
+      <!-- ---------------------------- landing ---------------------------- -->
+      <fieldset>
+        <legend>Landing page</legend>
+
+        <label class="check">
+          <input type="checkbox" id="landingEnabled" checked />
+          <span>Show a landing page first<small>Uncheck to send people straight to the destination.</small></span>
+        </label>
+
+        <div id="landingFields">
+          <div class="field">
+            <label for="landingHeadline">Headline</label>
+            <input type="text" id="landingHeadline" placeholder="Thanks for scanning!" />
+          </div>
+          <div class="field">
+            <label for="landingMessage">Message</label>
+            <textarea id="landingMessage" placeholder="A short line about what they’re about to see."></textarea>
+          </div>
+          <div class="row">
+            <div class="field">
+              <label for="landingButton">Button text</label>
+              <input type="text" id="landingButton" placeholder="Continue" />
+            </div>
+            <div class="field">
+              <label for="landingAuto">Auto-continue after</label>
+              <input type="number" id="landingAuto" min="0" max="60" step="1" placeholder="0" />
+              <p class="note">Seconds. 0 means wait for a click.</p>
+            </div>
+          </div>
+          <div class="row">
+            <div class="field">
+              <label for="landingAccent">Accent colour</label>
+              <input type="color" id="landingAccent" value="#5b8dff" />
+            </div>
+            <div class="field">
+              <label for="landingLogo">Logo image URL</label>
+              <input type="url" id="landingLogo" placeholder="https://example.com/logo.png" />
+            </div>
+          </div>
+          <label class="check">
+            <input type="checkbox" id="landingShowDest" checked />
+            <span>Show where the link goes<small>Displays the destination’s domain — reassures people it is safe to tap.</small></span>
+          </label>
+        </div>
+      </fieldset>
+
+      <!-- --------------------------- email gate -------------------------- -->
+      <fieldset>
+        <legend>Email capture</legend>
+
+        <label class="check">
+          <input type="checkbox" id="gateEnabled" />
+          <span>Ask for an email before continuing<small>Shown instead of the landing page, then forwards to the destination.</small></span>
+        </label>
+
+        <div id="gateFields" hidden>
+          <div class="field">
+            <label for="gatePrompt">Prompt</label>
+            <input type="text" id="gatePrompt" placeholder="Enter your email to continue" />
+          </div>
+
+          <label class="check">
+            <input type="checkbox" id="gateRequired" checked />
+            <span>Required<small>Uncheck to offer a “no thanks” link.</small></span>
+          </label>
+
+          <label class="check">
+            <input type="checkbox" id="gateAskOnce" checked />
+            <span>Only ask each person once<small>Remembered in that visitor’s browser.</small></span>
+          </label>
+
+          <div class="field">
+            <label for="gateEndpointType">Send addresses to</label>
+            <select id="gateEndpointType">
+              <option value="none">Nowhere (collect nothing)</option>
+              <option value="formspree">Formspree</option>
+              <option value="webhook">Webhook (Zapier, Make, n8n…)</option>
+              <option value="googleform">Google Form</option>
+            </select>
+            <p class="note" id="gateEndpointNote">Static hosting can’t store data — pick a service to receive the addresses.</p>
+          </div>
+
+          <div class="field" id="gateEndpointField" hidden>
+            <label for="gateEndpoint">Endpoint URL</label>
+            <input type="url" id="gateEndpoint" placeholder="https://formspree.io/f/abcdwxyz" />
+          </div>
+
+          <div class="field" id="gateFieldNameField" hidden>
+            <label for="gateFieldName">Field name</label>
+            <input type="text" id="gateFieldName" placeholder="email" spellcheck="false" />
+          </div>
+
+          <div class="field">
+            <label for="gateConsent">Small print</label>
+            <textarea id="gateConsent" placeholder="We’ll only email you about this offer. Unsubscribe any time."></textarea>
+          </div>
+        </div>
+      </fieldset>
+
+      <div class="form-actions">
+        <button type="submit" class="btn primary" id="submitBtn">Add link</button>
+        <button type="button" class="btn" id="cancelBtn" hidden>Cancel</button>
+      </div>
+    </form>
+  </section>
+
+  <!-- ============================ listing ============================ -->
+  <section class="panel">
+    <div class="panel-head">
+      <div>
+        <h2>Your links</h2>
+        <p class="hint" id="listHint">Loading…</p>
+      </div>
+      <button id="reloadBtn" class="btn small">Reload published</button>
+    </div>
+    <ul class="link-list" id="linkList"></ul>
+    <div class="empty" id="emptyState" hidden>
+      No links yet. Create your first one on the left.
+    </div>
+  </section>
+
+</main>
+
+<!-- ============================ settings ============================ -->
+<dialog id="settingsDialog">
+  <h2>Publishing settings</h2>
+  <p class="hint">
+    Publishing commits <code>qr/links.json</code> straight to your repository using the
+    GitHub API. The token stays in this browser’s local storage and is sent only to
+    <code>api.github.com</code>.
+  </p>
+  <form method="dialog" id="settingsForm">
+    <div class="row">
+      <div class="field">
+        <label for="ghOwner">Owner</label>
+        <input type="text" id="ghOwner" spellcheck="false" />
+      </div>
+      <div class="field">
+        <label for="ghRepo">Repository</label>
+        <input type="text" id="ghRepo" spellcheck="false" />
+      </div>
+    </div>
+    <div class="row">
+      <div class="field">
+        <label for="ghBranch">Branch</label>
+        <input type="text" id="ghBranch" spellcheck="false" />
+      </div>
+      <div class="field">
+        <label for="ghPath">File path</label>
+        <input type="text" id="ghPath" spellcheck="false" />
+      </div>
+    </div>
+    <div class="field">
+      <label for="ghToken">Access token</label>
+      <input type="text" id="ghToken" spellcheck="false" autocomplete="off"
+             placeholder="github_pat_… or ghp_…" />
+      <p class="note">
+        A fine-grained token limited to this one repository with
+        <b>Contents: read and write</b> is enough. Anyone with this token can write
+        to the repository, so don’t use it on a shared computer.
+      </p>
+    </div>
+    <div class="form-actions">
+      <button type="submit" class="btn primary" value="save">Save settings</button>
+      <button type="button" class="btn" id="settingsCancel">Close</button>
+      <button type="button" class="btn danger" id="forgetToken">Forget token</button>
+    </div>
+  </form>
+</dialog>
+
+<script src="vendor/qrcode.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
