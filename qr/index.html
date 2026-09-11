@@ -18,6 +18,7 @@
     </div>
   </div>
   <div class="actions">
+    <span id="ghStatus" class="status-pill warn">GitHub not connected</span>
     <span id="dirtyFlag" class="dirty-flag" hidden>Unsaved changes</span>
     <button id="saveBtn" class="btn primary">Publish to GitHub</button>
     <button id="settingsBtn" class="btn">Settings</button>
@@ -30,6 +31,44 @@
 </header>
 
 <main>
+
+  <!-- ========================= first-run setup ======================== -->
+  <section class="panel setup" id="setupBanner" hidden>
+    <h2>One-time setup — connect GitHub so your links can go live</h2>
+    <p class="hint">
+      This site is static hosting: there is no server behind it that can save
+      anything. Publishing works by committing <code>links.json</code> back into
+      your repository, and that needs a token you create once. It takes about a
+      minute.
+    </p>
+
+    <ol class="setup-steps">
+      <li>
+        <b>Create a token on GitHub</b>
+        <p class="note">
+          Set <b>Repository access</b> to <b>Only select repositories</b> and pick
+          <code id="setupRepoName">your repository</code>.<br />
+          Under <b>Permissions → Repository permissions</b>, set
+          <b>Contents</b> to <b>Read and write</b>. Leave everything else alone.
+        </p>
+        <a class="btn primary small" id="setupTokenLink"
+           href="https://github.com/settings/personal-access-tokens/new"
+           target="_blank" rel="noopener noreferrer">Create a token on GitHub ↗</a>
+      </li>
+      <li>
+        <b>Paste it here</b>
+        <div class="setup-row">
+          <input type="password" id="setupToken" placeholder="github_pat_…"
+                 autocomplete="off" spellcheck="false" aria-label="Access token" />
+          <button type="button" class="btn primary" id="setupSave">Connect</button>
+        </div>
+        <p class="note" id="setupTarget"></p>
+      </li>
+    </ol>
+
+    <p class="error-text" id="setupError" hidden></p>
+    <p class="ok-text" id="setupOk" hidden></p>
+  </section>
 
   <!-- ============================ editor ============================ -->
   <section class="panel">
@@ -234,7 +273,7 @@
     </div>
     <div class="field">
       <label for="ghToken">Access token</label>
-      <input type="text" id="ghToken" spellcheck="false" autocomplete="off"
+      <input type="password" id="ghToken" spellcheck="false" autocomplete="off"
              placeholder="github_pat_… or ghp_…" />
       <p class="note">
         A fine-grained token limited to this one repository with
@@ -242,8 +281,11 @@
         to the repository, so don’t use it on a shared computer.
       </p>
     </div>
+    <p class="error-text" id="settingsError" hidden></p>
+    <p class="ok-text" id="settingsOk" hidden></p>
     <div class="form-actions">
       <button type="submit" class="btn primary" value="save">Save settings</button>
+      <button type="button" class="btn" id="testConnBtn">Test connection</button>
       <button type="button" class="btn" id="settingsCancel">Close</button>
       <button type="button" class="btn danger" id="forgetToken">Forget token</button>
     </div>

@@ -43,11 +43,20 @@ then commit the file yourself — the result is identical.
 
 ### Publishing with a token
 
-To publish from the manager, open **Settings** and add a GitHub token:
+Until a token is set, the manager shows a **one-time setup** panel and the
+publish button reads *Connect GitHub to publish* — links you create are held in
+your browser but are not live. The panel walks through it:
 
 - Create a [fine-grained personal access token], limited to **only this
   repository**, with **Repository permissions → Contents: Read and write**.
 - Nothing else is needed. Give it a short expiry.
+- Paste it into the panel and press **Connect**. The token is checked
+  immediately, and anything pending is published straight away.
+
+The header pill shows the current state — *GitHub not connected*, or the repo
+and branch being published to. **Settings → Test connection** re-checks the
+whole chain (token, repository, branch, write permission, file) and names
+whichever part is wrong.
 
 The token is kept in this browser's local storage and is only ever sent to
 `api.github.com`. Anyone holding it can write to the repository, so don't set

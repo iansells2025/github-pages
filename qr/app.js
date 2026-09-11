@@ -593,11 +593,128 @@
     return 'GitHub returned an error (' + status + ').';
   }
 
+  function isConnected(config) {
+    config = config || loadConfig();
+    return !!(config.token && config.owner && config.repo);
+  }
+
+  /** Reflect "can we publish?" everywhere it matters, so it is never a surprise. */
+  function renderConnectionState() {
+    var config = loadConfig();
+    var connected = isConnected(config);
+
+    var pill = $('ghStatus');
+    pill.classList.toggle('good', connected);
+    pill.classList.toggle('warn', !connected);
+    pill.textContent = connected
+      ? 'Publishing to ' + config.owner + '/' + config.repo + ' @ ' + config.branch
+      : 'GitHub not connected';
+
+    $('setupBanner').hidden = connected;
+    $('saveBtn').textContent = connected ? 'Publish to GitHub' : 'Connect GitHub to publish';
+
+    $('setupRepoName').textContent = (config.owner && config.repo)
+      ? config.owner + '/' + config.repo
+      : 'your repository';
+    $('setupTarget').textContent = (config.owner && config.repo)
+      ? 'Saves to ' + config.owner + '/' + config.repo + ' → ' + config.path +
+        ' on the ' + config.branch + ' branch. Change that under Settings.'
+      : 'Set the owner and repository under Settings first — this page could not work them out from its own address.';
+  }
+
+  /** Collapse the setup panel once it has nothing left to say. */
+  function scheduleBannerCollapse() {
+    window.setTimeout(function () {
+      if (isConnected() && $('setupError').hidden) $('setupBanner').hidden = true;
+    }, 6000);
+  }
+
+  function setMessage(errorId, okId, text, isError) {
+    var err = $(errorId);
+    var ok = $(okId);
+    err.hidden = true;
+    ok.hidden = true;
+    if (!text) return;
+    var target = isError ? err : ok;
+    target.textContent = text;
+    target.hidden = false;
+  }
+
+  /**
+   * Check the whole chain — token, repository, branch, write permission, file —
+   * and say exactly which link is broken rather than a bare HTTP status.
+   */
+  async function testConnection(config) {
+    if (!config.owner || !config.repo) {
+      return { ok: false, message: 'Fill in the owner and repository first.' };
+    }
+    if (!config.token) {
+      return { ok: false, message: 'Paste an access token first.' };
+    }
+
+    var base = 'https://api.github.com/repos/' +
+               encodeURIComponent(config.owner) + '/' + encodeURIComponent(config.repo);
+    var repoRes;
+    try {
+      repoRes = await fetch(base, { headers: ghHeaders(config), cache: 'no-store' });
+    } catch (err) {
+      return { ok: false, message: 'Could not reach api.github.com. Check your connection and try again.' };
+    }
+
+    if (repoRes.status === 401) {
+      return { ok: false, message: 'GitHub rejected that token.\nIt may be mistyped, expired, or revoked — create a fresh one and paste it again.' };
+    }
+    if (repoRes.status === 404) {
+      return { ok: false, message: 'Cannot see ' + config.owner + '/' + config.repo + '.\nEither the name is wrong, or the token was not granted access to this repository (Repository access → Only select repositories).' };
+    }
+    if (!repoRes.ok) {
+      return { ok: false, message: 'GitHub returned ' + repoRes.status + ' when reading the repository.' };
+    }
+
+    var repo = await repoRes.json();
+    if (repo.permissions && repo.permissions.push === false) {
+      return { ok: false, message: 'The token can read ' + config.owner + '/' + config.repo + ' but not write to it.\nGive it Permissions → Contents: Read and write.' };
+    }
+
+    var branchRes = await fetch(base + '/branches/' + encodeURIComponent(config.branch), {
+      headers: ghHeaders(config), cache: 'no-store'
+    });
+    if (branchRes.status === 404) {
+      return { ok: false, message: 'Branch "' + config.branch + '" does not exist in ' + config.owner + '/' + config.repo + '.\nThe published branch is usually "main".' };
+    }
+    if (!branchRes.ok) {
+      return { ok: false, message: 'GitHub returned ' + branchRes.status + ' when checking the branch.' };
+    }
+
+    var fileRes = await fetch(contentsUrl(config) + '?ref=' + encodeURIComponent(config.branch), {
+      headers: ghHeaders(config), cache: 'no-store'
+    });
+    var fileNote = fileRes.ok
+      ? config.path + ' found — publishing will update it.'
+      : config.path + ' does not exist yet — publishing will create it.';
+
+    var who = '';
+    try {
+      var userRes = await fetch('https://api.github.com/user', { headers: ghHeaders(config), cache: 'no-store' });
+      if (userRes.ok) who = ' as ' + (await userRes.json()).login;
+    } catch (err) { /* identity is a nicety, not a requirement */ }
+
+    return {
+      ok: true,
+      message: 'Connected' + who + '.\n' + config.owner + '/' + config.repo +
+               ' on branch ' + config.branch + '.\n' + fileNote
+    };
+  }
+
   async function publish() {
     var config = loadConfig();
-    if (!config.token || !config.owner || !config.repo) {
-      toast('Add your repository details and token in Settings first', 'bad');
-      openSettings();
+    if (!isConnected(config)) {
+      // Not an error the user caused — walk them into the one-time setup.
+      $('setupBanner').hidden = false;
+      setMessage('setupError', 'setupOk',
+        'Connect GitHub first — your links are saved in this browser but are not live yet.', true);
+      $('setupBanner').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      window.setTimeout(function () { $('setupToken').focus(); }, 300);
       return;
     }
 
@@ -634,9 +751,17 @@
 
       markClean();
       renderList();
+      setMessage('setupError', 'setupOk',
+        'Published to ' + config.owner + '/' + config.repo + '. Your links go live once ' +
+        'GitHub Pages rebuilds, usually within a minute.', false);
+      scheduleBannerCollapse();
       toast('Published. GitHub Pages takes a minute or so to rebuild.', 'good');
     } catch (err) {
-      toast(err.message || 'Publishing failed', 'bad');
+      // Toasts vanish; a failed publish needs to stay on screen.
+      $('setupBanner').hidden = false;
+      setMessage('setupError', 'setupOk',
+        'Publishing failed. ' + (err.message || 'Unknown error'), true);
+      toast('Publishing failed — see the message at the top of the page', 'bad');
     } finally {
       saveBtn.disabled = false;
       saveBtn.textContent = 'Publish to GitHub';
@@ -699,6 +824,7 @@
     $('ghBranch').value = config.branch;
     $('ghPath').value = config.path;
     $('ghToken').value = config.token;
+    setMessage('settingsError', 'settingsOk', '', false);
     $('settingsDialog').showModal();
   }
 
@@ -795,6 +921,7 @@
         path: $('ghPath').value.trim() || 'qr/' + LINKS_FILE,
         token: $('ghToken').value.trim()
       });
+      renderConnectionState();
       toast('Settings saved', 'good');
     });
     $('settingsCancel').addEventListener('click', function () { $('settingsDialog').close(); });
@@ -803,7 +930,76 @@
       config.token = '';
       saveConfig(config);
       $('ghToken').value = '';
+      renderConnectionState();
       toast('Token removed from this browser', 'good');
+    });
+
+    // ---- one-time setup banner -------------------------------------------
+    $('setupSave').addEventListener('click', async function () {
+      var token = $('setupToken').value.trim();
+      if (!token) {
+        setMessage('setupError', 'setupOk', 'Paste the token you created on GitHub.', true);
+        $('setupToken').focus();
+        return;
+      }
+
+      var button = $('setupSave');
+      button.disabled = true;
+      button.textContent = 'Checking…';
+      setMessage('setupError', 'setupOk', '', false);
+
+      var config = loadConfig();
+      config.token = token;
+
+      var result = await testConnection(config);
+      if (!result.ok) {
+        button.disabled = false;
+        button.textContent = 'Connect';
+        setMessage('setupError', 'setupOk', result.message, true);
+        return;
+      }
+
+      saveConfig(config);
+      $('setupToken').value = '';
+      button.disabled = false;
+      button.textContent = 'Connect';
+      renderConnectionState();
+      // Keep the panel up long enough to read the confirmation, then collapse it.
+      $('setupBanner').hidden = false;
+      setMessage('setupError', 'setupOk', result.message, false);
+      toast('GitHub connected — you can publish now', 'good');
+
+      if (state.dirty) {
+        await publish();
+      } else {
+        scheduleBannerCollapse();
+      }
+    });
+
+    $('setupToken').addEventListener('keydown', function (event) {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        $('setupSave').click();
+      }
+    });
+
+    $('testConnBtn').addEventListener('click', async function () {
+      var button = $('testConnBtn');
+      button.disabled = true;
+      button.textContent = 'Checking…';
+      setMessage('settingsError', 'settingsOk', '', false);
+
+      var result = await testConnection({
+        owner: $('ghOwner').value.trim(),
+        repo: $('ghRepo').value.trim(),
+        branch: $('ghBranch').value.trim() || 'main',
+        path: $('ghPath').value.trim() || 'qr/' + LINKS_FILE,
+        token: $('ghToken').value.trim()
+      });
+
+      button.disabled = false;
+      button.textContent = 'Test connection';
+      setMessage('settingsError', 'settingsOk', result.message, !result.ok);
     });
 
     window.addEventListener('beforeunload', function (event) {
@@ -815,5 +1011,6 @@
 
   wire();
   syncConditionalFields();
+  renderConnectionState();
   loadPublished().then(restoreDraft);
 }());
