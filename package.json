@@ -1,0 +1,13 @@
+{
+  "name": "outdeals",
+  "private": true,
+  "description": "Repo root — exists so Vercel installs the API's dependencies via workspaces",
+  "workspaces": [
+    "server"
+  ],
+  "scripts": {
+    "test": "npm test --workspace server",
+    "dev": "npm run dev --workspace server",
+    "check-links": "npm run check-links --workspace server"
+  }
+}

@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>About — outdeals</title>
+<meta name="description" content="What outdeals is and how the board has grown." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="styles.css" />
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='26' font-size='26'>%F0%9F%8F%B7</text></svg>" />
+</head>
+<body>
+
+<header class="topbar">
+  <div class="wrap topbar-inner">
+    <a class="brand" href="index.html">
+      <svg class="brand-mark" width="30" height="24" viewBox="0 0 30 24" aria-hidden="true">
+        <rect x="0" y="17" width="30" height="5" rx="2.5" />
+        <rect x="5" y="9" width="20" height="4" rx="2" />
+        <rect x="10" y="2" width="10" height="3.5" rx="1.75" />
+      </svg>
+      <span>outdeals<span class="dot">.</span></span>
+    </a>
+    <nav>
+      <a href="index.html">Leaderboard</a>
+      <a href="about.html" class="active">About</a>
+      <a href="rules.html">Rules</a>
+      <button id="themeBtn" class="icon-btn" title="Toggle dark mode" aria-label="Toggle dark mode">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg>
+      </button>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="statpill">
+    <span class="live-dot"></span>
+    <b><span id="onlineCount">0</span> online</b>
+    <span class="sep">·</span>
+    <span><span id="visitorCount">0</span> visitors<span class="hide-sm"> since launch</span></span>
+  </div>
+
+  <article class="prose">
+    <h1>About</h1>
+    <p>outdeals started as <a href="rules.html">a simple idea</a>: no ads, no affiliate cuts,
+    no ranking algorithm. Brands and deal hunters outbid each other to rank #1 — that's it.</p>
+
+    <h2>One board, three retailers</h2>
+    <p>Everything files into a single leaderboard. An Amazon lightning deal, a Target clearance
+    and a Walmart rollback all compete for the same #1 spot, because a shopper scanning for
+    something worth buying does not care which logo is on it.</p>
+    <p>What the retailer does decide is context, so every listing carries its board as a tag —
+    and its rank <em>within</em> that board next to it. A deal showing <em>Target #1</em> at
+    overall #7 is the best Target deal on the site even though six other deals outbid it. The
+    tabs above the board filter to one retailer without renumbering anything: the ranks you see
+    are always the real, global ones.</p>
+
+    <h2>The board so far</h2>
+    <div class="statgrid">
+      <div class="stat">
+        <div class="num"><span class="live-dot"></span><span data-stat="visitors">0</span></div>
+        <div class="label">visitors</div>
+      </div>
+      <div class="stat">
+        <div class="num"><span class="cur">$</span><span data-stat="revenue">0</span></div>
+        <div class="label">collected from bids</div>
+      </div>
+      <div class="stat">
+        <div class="num"><span data-stat="listings">0</span></div>
+        <div class="label">deals on the board</div>
+      </div>
+      <div class="stat">
+        <div class="num"><span class="cur">$</span><span data-stat="top">0</span></div>
+        <div class="label">highest bid so far · <span data-stat="topName">—</span></div>
+      </div>
+    </div>
+
+    <h2>How the money works</h2>
+    <p>A bid is a one-time payment for a position, not a subscription and not a cut of your
+    sales. Raise your own listing and you pay only the difference between your old bid and your
+    new one. Get outranked and your bid stays where it is until you decide to raise it — that is
+    the whole business model, and there is nothing else behind it.</p>
+    <p>Payments run through Stripe Checkout. A bid is held pending while you are on the payment
+    page and only joins the board once the charge is confirmed, so nothing ranks that was not
+    paid for. If the same deal is listed or raised by someone else while you are paying, your
+    payment is refunded in full instead of buying a spot you did not agree to.</p>
+
+    <h2>Running it yourself</h2>
+    <p>The board is two pieces: a static front end (this page) and an API server that owns
+    submissions, ranking and payments. Both share one rules engine, so they can never disagree
+    about what a bid buys.</p>
+    <p>Served without a server behind it — as on GitHub Pages — the page falls back to demo mode:
+    the seeded board plus your own bids, kept in <code>localStorage</code>, with a checkout that
+    takes no money. Point <code>deals/config.js</code> at a deployed API and the same page becomes
+    the real thing. The server's README covers deployment, environment variables and the Stripe
+    webhook.</p>
+    <p>Read the <a href="rules.html">rules</a> for exactly how ranking, raises, refunds and
+    removals work.</p>
+  </article>
+
+  <footer class="site">
+    <span>outdeals — a demo clone. Bids are stored in your browser only.</span>
+    <span class="spacer"></span>
+    <a href="rules.html">Rules</a>
+    <a href="about.html">About</a>
+    <button type="button" data-reset>Reset board</button>
+  </footer>
+</main>
+
+<script src="../shared/engine.js"></script>
+<script src="../shared/seed.js"></script>
+<script src="config.js"></script>
+<script src="backend.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

@@ -35,3 +35,8 @@
 .Trashes
 ehthumbs.db
 Thumbs.db
+
+# Node — the repo root is now an npm workspace
+node_modules/
+.vercel
+server/data/
