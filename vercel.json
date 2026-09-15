@@ -1,0 +1,13 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "rewrites": [
+    { "source": "/api/(.*)", "destination": "/api" }
+  ],
+  "crons": [
+    {
+      "comment": "Serverless has no long-lived process, so expiry and link checks run here. Hobby plans allow one run per day.",
+      "path": "/api/cron/maintenance",
+      "schedule": "0 4 * * *"
+    }
+  ]
+}
