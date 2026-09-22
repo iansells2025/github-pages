@@ -1,20 +1,29 @@
 {
-  "updatedAt": "2026-09-22T00:31:42.540Z",
+  "updatedAt": "2026-09-22T05:46:32.390Z",
   "source": "windsor.ai",
   "endpoint": "blended",
   "weeks": [
     {
       "weekStart": "2026-09-14",
-      "costs": 4405.72
+      "costs": 3849.49
+    },
+    {
+      "weekStart": "2026-09-21",
+      "costs": 566
     }
   ],
   "weeksBySource": {
     "2026-09-14": {
-      "googleads": {
-        "costs": 3144.7264
-      },
       "facebook": {
         "costs": 1260.99
+      },
+      "googleads": {
+        "costs": 2588.5019
+      }
+    },
+    "2026-09-21": {
+      "googleads": {
+        "costs": 566.0026
       }
     }
   },
@@ -36,14 +45,6 @@
     "intercom"
   ],
   "fieldsBySource": {
-    "googleads": {
-      "account_name": "Join Brands - MA",
-      "datasource": "google_ads",
-      "date": "2026-09-14",
-      "source": "google",
-      "campaign": "TDD_Search_Brand_US",
-      "spend": 0.42
-    },
     "facebook": {
       "account_name": "JoinBrands",
       "datasource": "facebook",
@@ -58,6 +59,14 @@
       "date": "2026-09-15",
       "source": "intercom",
       "email": "ebethgarrett1115@gmail.com"
+    },
+    "googleads": {
+      "account_name": "Join Brands - MA",
+      "datasource": "google_ads",
+      "date": "2026-09-15",
+      "source": "google",
+      "campaign": "TDD_Search_Brand_US",
+      "spend": 0.9709
     }
   },
   "sampleRowKeys": [
@@ -70,6 +79,6 @@
     "spend",
     "email"
   ],
-  "rowCount": 8771,
+  "rowCount": 8722,
   "usableRowCount": 142
 }
