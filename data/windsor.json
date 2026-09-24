@@ -1,24 +1,24 @@
 {
-  "updatedAt": "2026-09-24T05:48:09.741Z",
+  "updatedAt": "2026-09-24T10:59:04.400Z",
   "source": "windsor.ai",
   "endpoint": "blended",
   "weeks": [
     {
       "weekStart": "2026-09-14",
-      "costs": 2286.95
+      "costs": 2062.75
     },
     {
       "weekStart": "2026-09-21",
-      "costs": 1850.83
+      "costs": 1987.7
     }
   ],
   "weeksBySource": {
     "2026-09-14": {
-      "facebook": {
-        "costs": 765.51
-      },
       "googleads": {
         "costs": 1521.4407
+      },
+      "facebook": {
+        "costs": 541.31
       }
     },
     "2026-09-21": {
@@ -26,7 +26,7 @@
         "costs": 1541.9635
       },
       "facebook": {
-        "costs": 308.87
+        "costs": 445.74
       }
     }
   },
@@ -48,13 +48,12 @@
     "intercom"
   ],
   "fieldsBySource": {
-    "facebook": {
-      "account_name": "JoinBrands",
-      "datasource": "facebook",
-      "date": "2026-09-16",
-      "source": "facebook",
-      "campaign": "TDD - Remarketing - US - Onboarding Leads",
-      "spend": 34.82
+    "intercom": {
+      "account_name": "windsor",
+      "datasource": "intercom",
+      "date": "2026-09-17",
+      "source": "intercom",
+      "email": "tweetlynds@gmail.com"
     },
     "googleads": {
       "account_name": "Join Brands - MA",
@@ -64,12 +63,13 @@
       "campaign": "TDD_Search_Brand_US",
       "spend": 1.02
     },
-    "intercom": {
-      "account_name": "windsor",
-      "datasource": "intercom",
+    "facebook": {
+      "account_name": "JoinBrands",
+      "datasource": "facebook",
       "date": "2026-09-17",
-      "source": "intercom",
-      "email": "tweetlynds@gmail.com"
+      "source": "facebook",
+      "campaign": "TDD - Remarketing - US - Onboarding Leads",
+      "spend": 12.98
     }
   },
   "sampleRowKeys": [
@@ -82,6 +82,6 @@
     "spend",
     "email"
   ],
-  "rowCount": 9290,
+  "rowCount": 8996,
   "usableRowCount": 143
 }
