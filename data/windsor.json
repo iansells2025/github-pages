@@ -1,32 +1,20 @@
 {
-  "updatedAt": "2026-09-28T03:14:09.028Z",
+  "updatedAt": "2026-09-28T10:26:24.741Z",
   "source": "windsor.ai",
   "endpoint": "blended",
   "weeks": [
     {
-      "weekStart": "2026-09-14",
-      "costs": 536.5
-    },
-    {
       "weekStart": "2026-09-21",
-      "costs": 3439.27
+      "costs": 3915.79
     }
   ],
   "weeksBySource": {
-    "2026-09-14": {
-      "googleads": {
-        "costs": 360.915
-      },
-      "facebook": {
-        "costs": 175.59
-      }
-    },
     "2026-09-21": {
       "googleads": {
-        "costs": 2687.8299
+        "costs": 3000.692
       },
       "facebook": {
-        "costs": 751.44
+        "costs": 915.1
       }
     }
   },
@@ -51,18 +39,18 @@
     "googleads": {
       "account_name": "Join Brands - MA",
       "datasource": "google_ads",
-      "date": "2026-09-20",
+      "date": "2026-09-21",
       "source": "google",
       "campaign": "TDD_Search_Brand_US",
-      "spend": 0.91
+      "spend": 1.15
     },
     "facebook": {
       "account_name": "JoinBrands",
       "datasource": "facebook",
-      "date": "2026-09-20",
+      "date": "2026-09-21",
       "source": "facebook",
       "campaign": "TDD - Branding - US - Video- May25",
-      "spend": 21.75
+      "spend": 21.67
     },
     "intercom": {
       "account_name": "windsor",
@@ -82,6 +70,6 @@
     "spend",
     "email"
   ],
-  "rowCount": 7970,
+  "rowCount": 7759,
   "usableRowCount": 142
 }
