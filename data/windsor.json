@@ -1,53 +1,51 @@
 {
-  "updatedAt": "2026-09-30T13:16:28.640Z",
+  "updatedAt": "2026-09-30T18:46:30.076Z",
   "source": "windsor.ai",
   "endpoint": "blended",
   "weeks": [
     {
       "weekStart": "2026-09-21",
-      "costs": 2538.34
+      "costs": 1931.2
     },
     {
       "weekStart": "2026-09-28",
-      "costs": 1148.06
+      "costs": 778.61
     }
   ],
   "weeksBySource": {
     "2026-09-21": {
       "googleads": {
         "costs": 1931.1978
-      },
-      "facebook": {
-        "costs": 607.14
       }
     },
     "2026-09-28": {
       "googleads": {
         "costs": 778.609
-      },
-      "facebook": {
-        "costs": 369.45
       }
     }
   },
   "sourcesDiscovered": [
-    "facebook",
     "google_ads",
     "intercom"
   ],
   "sourcesNormalized": [
-    "facebook",
     "googleads",
     "intercom"
   ],
   "sourcesMapped": [
-    "facebook",
     "googleads"
   ],
   "sourcesUnmapped": [
     "intercom"
   ],
   "fieldsBySource": {
+    "intercom": {
+      "account_name": "windsor",
+      "datasource": "intercom",
+      "date": "2026-09-23",
+      "source": "intercom",
+      "email": "brookenoelzeigler@gmail.com"
+    },
     "googleads": {
       "account_name": "Join Brands - MA",
       "datasource": "google_ads",
@@ -55,21 +53,6 @@
       "source": "google",
       "campaign": "TDD_Search_Brand_US",
       "spend": 0.9632
-    },
-    "facebook": {
-      "account_name": "JoinBrands",
-      "datasource": "facebook",
-      "date": "2026-09-23",
-      "source": "facebook",
-      "campaign": "TDD - Branding - US - Video- May25",
-      "spend": 20.16
-    },
-    "intercom": {
-      "account_name": "windsor",
-      "datasource": "intercom",
-      "date": "2026-09-23",
-      "source": "intercom",
-      "email": "brookenoelzeigler@gmail.com"
     }
   },
   "sampleRowKeys": [
@@ -82,6 +65,6 @@
     "spend",
     "email"
   ],
-  "rowCount": 7611,
-  "usableRowCount": 135
+  "rowCount": 7285,
+  "usableRowCount": 85
 }
