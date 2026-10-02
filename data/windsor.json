@@ -1,32 +1,32 @@
 {
-  "updatedAt": "2026-10-02T00:27:32.202Z",
+  "updatedAt": "2026-10-02T06:36:04.379Z",
   "source": "windsor.ai",
   "endpoint": "blended",
   "weeks": [
     {
       "weekStart": "2026-09-21",
-      "costs": 1927.71
+      "costs": 1477.43
     },
     {
       "weekStart": "2026-09-28",
-      "costs": 1703.18
+      "costs": 2059.42
     }
   ],
   "weeksBySource": {
     "2026-09-21": {
-      "googleads": {
-        "costs": 1458.2085
-      },
       "facebook": {
         "costs": 469.5
+      },
+      "googleads": {
+        "costs": 1007.9337
       }
     },
     "2026-09-28": {
       "googleads": {
-        "costs": 1064.679
+        "costs": 1420.4926
       },
       "facebook": {
-        "costs": 638.5
+        "costs": 638.93
       }
     }
   },
@@ -48,21 +48,6 @@
     "intercom"
   ],
   "fieldsBySource": {
-    "intercom": {
-      "account_name": "windsor",
-      "datasource": "intercom",
-      "date": "2026-09-24",
-      "source": "intercom",
-      "email": "dorisb.ugc@gmail.com"
-    },
-    "googleads": {
-      "account_name": "Join Brands - MA",
-      "datasource": "google_ads",
-      "date": "2026-09-24",
-      "source": "google",
-      "campaign": "TDD_Search_Brand_US",
-      "spend": 1.0253
-    },
     "facebook": {
       "account_name": "JoinBrands",
       "datasource": "facebook",
@@ -70,6 +55,21 @@
       "source": "facebook",
       "campaign": "TDD - Branding - US - Video- May25",
       "spend": 19.26
+    },
+    "googleads": {
+      "account_name": "Join Brands - MA",
+      "datasource": "google_ads",
+      "date": "2026-09-25",
+      "source": "google",
+      "campaign": "TDD_Search_Brand_US",
+      "spend": 1.01
+    },
+    "intercom": {
+      "account_name": "windsor",
+      "datasource": "intercom",
+      "date": "2026-09-25",
+      "source": "intercom",
+      "email": "company.emna@gmail.com"
     }
   },
   "sampleRowKeys": [
@@ -82,6 +82,6 @@
     "spend",
     "email"
   ],
-  "rowCount": 7273,
-  "usableRowCount": 132
+  "rowCount": 7717,
+  "usableRowCount": 128
 }
