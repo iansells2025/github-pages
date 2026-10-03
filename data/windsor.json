@@ -1,32 +1,32 @@
 {
-  "updatedAt": "2026-10-03T01:40:19.829Z",
+  "updatedAt": "2026-10-03T07:29:12.724Z",
   "source": "windsor.ai",
   "endpoint": "blended",
   "weeks": [
     {
       "weekStart": "2026-09-21",
-      "costs": 1360.88
+      "costs": 847.52
     },
     {
       "weekStart": "2026-09-28",
-      "costs": 2288.68
+      "costs": 2873.07
     }
   ],
   "weeksBySource": {
     "2026-09-21": {
       "googleads": {
-        "costs": 1007.9337
+        "costs": 603.454
       },
       "facebook": {
-        "costs": 352.95
+        "costs": 244.07
       }
     },
     "2026-09-28": {
       "googleads": {
-        "costs": 1420.6473
+        "costs": 1743.2202
       },
       "facebook": {
-        "costs": 868.03
+        "costs": 1129.85
       }
     }
   },
@@ -48,28 +48,28 @@
     "intercom"
   ],
   "fieldsBySource": {
-    "googleads": {
-      "account_name": "Join Brands - MA",
-      "datasource": "google_ads",
-      "date": "2026-09-25",
-      "source": "google",
-      "campaign": "TDD_Search_Brand_US",
-      "spend": 1.01
-    },
-    "facebook": {
-      "account_name": "JoinBrands",
-      "datasource": "facebook",
-      "date": "2026-09-25",
-      "source": "facebook",
-      "campaign": "TDD - Branding - US - Video- May25",
-      "spend": 19.8
-    },
     "intercom": {
       "account_name": "windsor",
       "datasource": "intercom",
       "date": "2026-09-26",
       "source": "intercom",
       "email": "tarynh73@gmail.com"
+    },
+    "googleads": {
+      "account_name": "Join Brands - MA",
+      "datasource": "google_ads",
+      "date": "2026-09-26",
+      "source": "google",
+      "campaign": "TDD_Search_Brand_US",
+      "spend": 0.99
+    },
+    "facebook": {
+      "account_name": "JoinBrands",
+      "datasource": "facebook",
+      "date": "2026-09-26",
+      "source": "facebook",
+      "campaign": "TDD - Branding - US - Video- May25",
+      "spend": 18.48
     }
   },
   "sampleRowKeys": [
@@ -82,6 +82,6 @@
     "spend",
     "email"
   ],
-  "rowCount": 7508,
-  "usableRowCount": 129
+  "rowCount": 7434,
+  "usableRowCount": 126
 }
