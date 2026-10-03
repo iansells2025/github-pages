@@ -1,11 +1,11 @@
 {
-  "updatedAt": "2026-10-03T17:27:46.365Z",
+  "updatedAt": "2026-10-03T20:04:28.825Z",
   "sources": {
     "stripe": {
       "ok": true,
       "weekCount": 14,
       "diagnostics": {
-        "chargeCount": 32275,
+        "chargeCount": 32248,
         "payoutCount": 64,
         "activeSubscriptionCount": 394,
         "mrrBrands": 61910.75,
@@ -55,7 +55,7 @@
   "weeks": [
     {
       "weekStart": "2026-06-29",
-      "revenue": 16333.77,
+      "revenue": 13084.08,
       "deposits": 0,
       "mktgSent": 55329,
       "mktgViewed": 5098,
@@ -165,7 +165,7 @@
       "mktgSent": 106946,
       "mktgViewed": 15219,
       "mktgClicked": 128,
-      "newLeads": 606,
+      "newLeads": 599,
       "newClients": 95,
       "newClientsByOwnerName": {
         "Dan Kriss": 23,
@@ -209,7 +209,7 @@
     },
     {
       "weekStart": "2026-09-07",
-      "revenue": 239575.45,
+      "revenue": 239529.98,
       "deposits": 223712.52,
       "mktgSent": 26322,
       "mktgViewed": 3688,
@@ -225,12 +225,12 @@
     },
     {
       "weekStart": "2026-09-14",
-      "revenue": 305319.58,
+      "revenue": 305139.91,
       "deposits": 263926.93,
       "mktgSent": 36466,
       "mktgViewed": 6112,
       "mktgClicked": 66,
-      "newLeads": 742,
+      "newLeads": 741,
       "newClients": 89,
       "newClientsByOwnerName": {
         "Nick JoinBrands": 17,
@@ -241,10 +241,10 @@
     },
     {
       "weekStart": "2026-09-21",
-      "revenue": 281383.34,
+      "revenue": 280651.88,
       "deposits": 238220.2,
       "mktgSent": 48055,
-      "mktgViewed": 7335,
+      "mktgViewed": 7336,
       "mktgClicked": 105,
       "newLeads": 691,
       "newClients": 141,
@@ -257,16 +257,16 @@
     },
     {
       "weekStart": "2026-09-28",
-      "revenue": 271264.33,
+      "revenue": 272217.06,
       "deposits": 270647.92,
       "mrrBrands": 61910.75,
       "mrrBrandStartup": 26561.58,
       "mrrBrandPro": 14890.17,
       "mrrBrandMax": 20459,
       "mktgSent": 13376,
-      "mktgViewed": 1330,
+      "mktgViewed": 1332,
       "mktgClicked": 21,
-      "newLeads": 601,
+      "newLeads": 609,
       "newClients": 109,
       "newClientsByOwnerName": {
         "Nick JoinBrands": 14,
@@ -287,7 +287,7 @@
   "weeksBySource": {
     "2026-06-29": {
       "stripe": {
-        "revenue": 16333.77,
+        "revenue": 13084.08,
         "deposits": 0
       },
       "hubspot": {
@@ -420,7 +420,7 @@
         "mktgSent": 106946,
         "mktgViewed": 15219,
         "mktgClicked": 128,
-        "newLeads": 606,
+        "newLeads": 599,
         "newClients": 95,
         "newClientsByOwnerName": {
           "Dan Kriss": 23,
@@ -471,7 +471,7 @@
     },
     "2026-09-07": {
       "stripe": {
-        "revenue": 239575.45,
+        "revenue": 239529.98,
         "deposits": 223712.52
       },
       "hubspot": {
@@ -490,14 +490,14 @@
     },
     "2026-09-14": {
       "stripe": {
-        "revenue": 305319.58,
+        "revenue": 305139.91,
         "deposits": 263926.93
       },
       "hubspot": {
         "mktgSent": 36466,
         "mktgViewed": 6112,
         "mktgClicked": 66,
-        "newLeads": 742,
+        "newLeads": 741,
         "newClients": 89,
         "newClientsByOwnerName": {
           "Nick JoinBrands": 17,
@@ -509,12 +509,12 @@
     },
     "2026-09-21": {
       "stripe": {
-        "revenue": 281383.34,
+        "revenue": 280651.88,
         "deposits": 238220.2
       },
       "hubspot": {
         "mktgSent": 48055,
-        "mktgViewed": 7335,
+        "mktgViewed": 7336,
         "mktgClicked": 105,
         "newLeads": 691,
         "newClients": 141,
@@ -528,7 +528,7 @@
     },
     "2026-09-28": {
       "stripe": {
-        "revenue": 271264.33,
+        "revenue": 272217.06,
         "deposits": 270647.92,
         "mrrBrands": 61910.75,
         "mrrBrandStartup": 26561.58,
@@ -537,9 +537,9 @@
       },
       "hubspot": {
         "mktgSent": 13376,
-        "mktgViewed": 1330,
+        "mktgViewed": 1332,
         "mktgClicked": 21,
-        "newLeads": 601,
+        "newLeads": 609,
         "newClients": 109,
         "newClientsByOwnerName": {
           "Nick JoinBrands": 14,
