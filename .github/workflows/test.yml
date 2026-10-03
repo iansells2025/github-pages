@@ -1,0 +1,24 @@
+name: tests
+
+# The board takes payments, so the rules engine and the payment lifecycle should
+# not be able to regress unnoticed. The suite needs no services: it runs against
+# PGlite, an embedded Postgres.
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - run: npm test
