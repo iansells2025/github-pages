@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-10-02T22:46:53.412Z",
+  "updatedAt": "2026-10-03T01:40:19.829Z",
   "source": "windsor.ai",
   "endpoint": "blended",
   "weeks": [
@@ -9,7 +9,7 @@
     },
     {
       "weekStart": "2026-09-28",
-      "costs": 2288.33
+      "costs": 2288.68
     }
   ],
   "weeksBySource": {
@@ -23,10 +23,10 @@
     },
     "2026-09-28": {
       "googleads": {
-        "costs": 1420.4926
+        "costs": 1420.6473
       },
       "facebook": {
-        "costs": 867.84
+        "costs": 868.03
       }
     }
   },
@@ -48,13 +48,6 @@
     "intercom"
   ],
   "fieldsBySource": {
-    "intercom": {
-      "account_name": "windsor",
-      "datasource": "intercom",
-      "date": "2026-09-25",
-      "source": "intercom",
-      "email": "company.emna@gmail.com"
-    },
     "googleads": {
       "account_name": "Join Brands - MA",
       "datasource": "google_ads",
@@ -70,6 +63,13 @@
       "source": "facebook",
       "campaign": "TDD - Branding - US - Video- May25",
       "spend": 19.8
+    },
+    "intercom": {
+      "account_name": "windsor",
+      "datasource": "intercom",
+      "date": "2026-09-26",
+      "source": "intercom",
+      "email": "tarynh73@gmail.com"
     }
   },
   "sampleRowKeys": [
@@ -82,6 +82,6 @@
     "spend",
     "email"
   ],
-  "rowCount": 7159,
+  "rowCount": 7508,
   "usableRowCount": 129
 }
