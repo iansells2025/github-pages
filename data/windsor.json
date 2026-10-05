@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-10-04T22:14:14.163Z",
+  "updatedAt": "2026-10-05T01:31:08.325Z",
   "source": "windsor.ai",
   "endpoint": "blended",
   "weeks": [
@@ -67,9 +67,9 @@
     "intercom": {
       "account_name": "windsor",
       "datasource": "intercom",
-      "date": "2026-09-27",
+      "date": "2026-09-28",
       "source": "intercom",
-      "email": "ss9212052@gmail.com"
+      "email": "katelynpeterson7@gmail.com"
     }
   },
   "sampleRowKeys": [
@@ -82,6 +82,6 @@
     "spend",
     "email"
   ],
-  "rowCount": 7190,
+  "rowCount": 7334,
   "usableRowCount": 125
 }
