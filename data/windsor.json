@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-10-05T17:45:24.319Z",
+  "updatedAt": "2026-10-05T23:37:43.049Z",
   "source": "windsor.ai",
   "endpoint": "blended",
   "weeks": [
@@ -36,6 +36,13 @@
     "intercom"
   ],
   "fieldsBySource": {
+    "intercom": {
+      "account_name": "windsor",
+      "datasource": "intercom",
+      "date": "2026-09-28",
+      "source": "intercom",
+      "email": "katelynpeterson7@gmail.com"
+    },
     "googleads": {
       "account_name": "Join Brands - MA",
       "datasource": "google_ads",
@@ -51,13 +58,6 @@
       "source": "facebook",
       "campaign": "TDD - Branding - US - Video- May25",
       "spend": 19.91
-    },
-    "intercom": {
-      "account_name": "windsor",
-      "datasource": "intercom",
-      "date": "2026-09-28",
-      "source": "intercom",
-      "email": "katelynpeterson7@gmail.com"
     }
   },
   "sampleRowKeys": [
@@ -70,6 +70,6 @@
     "spend",
     "email"
   ],
-  "rowCount": 7212,
+  "rowCount": 6960,
   "usableRowCount": 123
 }
