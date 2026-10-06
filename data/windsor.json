@@ -1,20 +1,20 @@
 {
-  "updatedAt": "2026-10-05T23:37:43.049Z",
+  "updatedAt": "2026-10-06T04:30:04.497Z",
   "source": "windsor.ai",
   "endpoint": "blended",
   "weeks": [
     {
       "weekStart": "2026-09-28",
-      "costs": 3764.8
+      "costs": 3764.94
     }
   ],
   "weeksBySource": {
     "2026-09-28": {
       "googleads": {
-        "costs": 2175.2234
+        "costs": 2175.2143
       },
       "facebook": {
-        "costs": 1589.58
+        "costs": 1589.73
       }
     }
   },
@@ -36,13 +36,6 @@
     "intercom"
   ],
   "fieldsBySource": {
-    "intercom": {
-      "account_name": "windsor",
-      "datasource": "intercom",
-      "date": "2026-09-28",
-      "source": "intercom",
-      "email": "katelynpeterson7@gmail.com"
-    },
     "googleads": {
       "account_name": "Join Brands - MA",
       "datasource": "google_ads",
@@ -58,6 +51,13 @@
       "source": "facebook",
       "campaign": "TDD - Branding - US - Video- May25",
       "spend": 19.91
+    },
+    "intercom": {
+      "account_name": "windsor",
+      "datasource": "intercom",
+      "date": "2026-09-29",
+      "source": "intercom",
+      "email": "rocioholguin1111@gmail.com"
     }
   },
   "sampleRowKeys": [
@@ -70,6 +70,6 @@
     "spend",
     "email"
   ],
-  "rowCount": 6960,
+  "rowCount": 7551,
   "usableRowCount": 123
 }
