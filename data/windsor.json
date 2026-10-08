@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-10-07T21:44:13.222Z",
+  "updatedAt": "2026-10-08T01:31:20.134Z",
   "source": "windsor.ai",
   "endpoint": "blended",
   "weeks": [
@@ -9,7 +9,7 @@
     },
     {
       "weekStart": "2026-10-05",
-      "costs": 1241.42
+      "costs": 1241.94
     }
   ],
   "weeksBySource": {
@@ -23,10 +23,10 @@
     },
     "2026-10-05": {
       "googleads": {
-        "costs": 681.4663
+        "costs": 681.7213
       },
       "facebook": {
-        "costs": 559.95
+        "costs": 560.22
       }
     }
   },
@@ -48,13 +48,6 @@
     "intercom"
   ],
   "fieldsBySource": {
-    "intercom": {
-      "account_name": "windsor",
-      "datasource": "intercom",
-      "date": "2026-09-30",
-      "source": "intercom",
-      "email": "klohesmart123@gmail.com"
-    },
     "googleads": {
       "account_name": "Join Brands - MA",
       "datasource": "google_ads",
@@ -70,6 +63,13 @@
       "source": "facebook",
       "campaign": "TDD - Remarketing - US - Onboarding Leads",
       "spend": 50.83
+    },
+    "intercom": {
+      "account_name": "windsor",
+      "datasource": "intercom",
+      "date": "2026-10-01",
+      "source": "intercom",
+      "email": "shannonfenton24@gmail.com"
     }
   },
   "sampleRowKeys": [
@@ -82,6 +82,6 @@
     "spend",
     "email"
   ],
-  "rowCount": 7268,
+  "rowCount": 7744,
   "usableRowCount": 128
 }
