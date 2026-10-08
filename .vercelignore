@@ -1,0 +1,13 @@
+# Only the API is deployed here. The board itself is served by GitHub Pages,
+# and the repo root holds an unrelated marketing dashboard that must not end up
+# on the API's domain.
+deals
+index.html
+dashboard.js
+styles.css
+data
+scripts
+.github
+DEPLOY.md
+README.md
+LICENSE
