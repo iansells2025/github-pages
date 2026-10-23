@@ -1,0 +1,20 @@
+{
+  "manifest_version": 3,
+  "name": "Gmail Priority Inbox: Oldest First",
+  "version": "1.0.0",
+  "description": "Adds a switch to Gmail's top bar that flips each Priority Inbox section to show oldest emails first.",
+  "permissions": ["storage"],
+  "content_scripts": [
+    {
+      "matches": ["https://mail.google.com/*"],
+      "js": ["content.js"],
+      "css": ["content.css"],
+      "run_at": "document_idle"
+    }
+  ],
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  }
+}

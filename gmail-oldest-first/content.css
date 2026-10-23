@@ -1,0 +1,72 @@
+/*
+ * Reversal is done visually: the row group is flipped upside down and each
+ * row is flipped back. Gmail's own DOM is never reordered, so new mail,
+ * selection and clicks keep working normally.
+ * Each Priority Inbox section is its own table, so each one flips on its own.
+ */
+html.gof-active div[role="main"] tbody:has(> tr.zA) {
+  transform: scaleY(-1);
+}
+html.gof-active div[role="main"] tbody:has(> tr.zA) > tr {
+  transform: scaleY(-1);
+}
+
+/* The switch in Gmail's top bar */
+.gof-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 32px;
+  margin: 0 6px;
+  padding: 0 10px 0 8px;
+  border: 1px solid transparent;
+  border-radius: 16px;
+  background: transparent;
+  color: #444746;
+  font: 500 13px/1 "Google Sans", Roboto, Arial, sans-serif;
+  white-space: nowrap;
+  cursor: pointer;
+  align-self: center;
+  flex-shrink: 0;
+}
+.gof-toggle:hover { background: rgba(68, 71, 70, 0.08); }
+.gof-toggle:focus-visible { outline: 2px solid #0b57d0; outline-offset: 1px; }
+
+.gof-track {
+  position: relative;
+  width: 28px;
+  height: 16px;
+  border-radius: 8px;
+  background: #747775;
+  transition: background 0.15s;
+  flex-shrink: 0;
+}
+.gof-knob {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #fff;
+  transition: left 0.15s;
+}
+.gof-toggle[aria-checked="true"] .gof-track { background: #0b57d0; }
+.gof-toggle[aria-checked="true"] .gof-knob { left: 14px; }
+
+/* Used only if Gmail's Settings button can't be found */
+.gof-toggle.gof-floating {
+  position: fixed;
+  top: 12px;
+  right: 280px;
+  z-index: 9999;
+  background: #fff;
+  border-color: #c4c7c5;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+}
+
+@media (prefers-color-scheme: dark) {
+  .gof-toggle { color: #e3e3e3; }
+  .gof-toggle:hover { background: rgba(227, 227, 227, 0.08); }
+  .gof-toggle.gof-floating { background: #1f1f1f; border-color: #444746; }
+}
